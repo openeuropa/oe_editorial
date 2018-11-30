@@ -6,6 +6,7 @@ services:
     ports:
       - 8080:8080
     volumes:
+      # - ~/.cache/composer:/root/.composer/cache # use composer local cache.
       - .:/var/www/html # Non Mac users.
       # - nfsmount:/var/www/html # Mac Users with the nfsmount volume.
     environment:
