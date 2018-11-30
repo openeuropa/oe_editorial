@@ -1,0 +1,8 @@
+<?php
+
+/**
+ * @file
+ * OpenEuropa Editorial module.
+ */
+
+declare(strict_types = 1);
