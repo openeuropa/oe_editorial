@@ -1,0 +1,139 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - content_moderation
+id: oe_corporate_workflow
+label: 'Corporate Workflow'
+type: content_moderation
+type_settings:
+  states:
+    archived:
+      published: false
+      default_revision: true
+      label: Archived
+      weight: 1
+    draft:
+      published: false
+      default_revision: false
+      label: Draft
+      weight: -4
+    expired:
+      published: false
+      default_revision: true
+      label: Expired
+      weight: 2
+    needs_review:
+      published: false
+      default_revision: false
+      label: 'Needs Review'
+      weight: -3
+    published:
+      label: Published
+      published: true
+      default_revision: true
+      weight: 0
+    request_validation:
+      published: false
+      default_revision: false
+      label: 'Request Validation'
+      weight: -2
+    validated:
+      published: false
+      default_revision: false
+      label: Validated
+      weight: -1
+  transitions:
+    archived_to_draft:
+      label: 'Archived to Draft'
+      from:
+        - archived
+        - expired
+      to: draft
+      weight: 7
+    create_new_draft:
+      label: 'Create New Draft'
+      to: draft
+      weight: -6
+      from:
+        - draft
+        - published
+    needs_review_to_draft:
+      label: 'Needs Review to Draft'
+      from:
+        - needs_review
+      to: draft
+      weight: -4
+    needs_review_to_request_validation:
+      label: 'Needs Review to Request Validation'
+      from:
+        - needs_review
+        - request_validation
+      to: request_validation
+      weight: -3
+    publish:
+      label: 'Published to Draft'
+      to: published
+      weight: 3
+      from:
+        - draft
+    published_to_archived:
+      label: 'Published to Archived'
+      from:
+        - archived
+        - published
+      to: archived
+      weight: 5
+    published_to_draft:
+      label: 'Published to Needs Review'
+      from:
+        - published
+      to: needs_review
+      weight: 4
+    published_to_expired:
+      label: 'Published to Expired'
+      from:
+        - expired
+        - published
+      to: expired
+      weight: 6
+    request_review:
+      label: 'Draft to Needs Review'
+      from:
+        - draft
+        - needs_review
+      to: needs_review
+      weight: -5
+    request_validation_to_draft:
+      label: 'Request Validation to Draft'
+      from:
+        - request_validation
+      to: draft
+      weight: -2
+    request_validation_to_needs_review:
+      label: 'Request Validation to Needs Review'
+      from:
+        - request_validation
+      to: needs_review
+      weight: -1
+    request_validation_to_validated:
+      label: 'Request Validation to Validated'
+      from:
+        - request_validation
+        - validated
+      to: validated
+      weight: 0
+    validated_to_draft:
+      label: 'Validated to Draft'
+      from:
+        - validated
+      to: draft
+      weight: 1
+    validated_to_published:
+      label: 'Validated to Published'
+      from:
+        - published
+        - validated
+      to: published
+      weight: 2
+  entity_types: {  }
