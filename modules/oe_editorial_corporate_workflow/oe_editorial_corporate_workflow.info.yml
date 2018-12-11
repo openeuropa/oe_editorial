@@ -10,3 +10,8 @@ dependencies:
 config_devel:
   install:
     - workflows.workflow.oe_corporate_workflow
+    - user.role.oe_author
+    - user.role.oe_reviewer
+    - user.role.oe_translator
+    - user.role.oe_validator
+
