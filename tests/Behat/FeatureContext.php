@@ -17,6 +17,9 @@ class FeatureContext extends RawDrupalContext {
 
   /**
    * Checks that the given select field has the options listed in the table.
+   * | option 1 |
+   * | option 2 |
+   * |   ...    |
    *
    * @Then I should have the following options for the :select select:
    */
@@ -35,7 +38,7 @@ class FeatureContext extends RawDrupalContext {
       $value = reset($value);
     });
 
-    // Retrieve the actual options that are shown in the page.
+    // Retrieve the actual options that are shown in the select field.
     $actual_options = $field->findAll('css', 'option');
 
     // Convert into a flat list of option text strings.
@@ -48,23 +51,6 @@ class FeatureContext extends RawDrupalContext {
       if (!in_array($expected_option, $actual_options)) {
         throw new ExpectationException("Option '$expected_option' is missing from select list '$select'.", $this->getSession());
       }
-    }
-  }
-
-  /**
-   * Checks that the given element is of the given type.
-   *
-   * @param \NodeElement $element
-   *   The element to check.
-   * @param string $type
-   *   The expected type.
-   *
-   * @throws \ExpectationException
-   *   Thrown when the given element is not of the expected type.
-   */
-  public function assertElementType(NodeElement $element, string $type): void {
-    if ($element->getTagName() !== $type) {
-      throw new ExpectationException("The element is not a '$type'' field.", $this->getSession());
     }
   }
 
@@ -86,6 +72,23 @@ class FeatureContext extends RawDrupalContext {
     }
     // Need to remove the label from the string.
     Assert::assertEquals($state, ltrim(trim($element->getText()), 'Current state'));
+  }
+
+  /**
+   * Checks that the given element is of the given type.
+   *
+   * @param \NodeElement $element
+   *   The element to check.
+   * @param string $type
+   *   The expected type.
+   *
+   * @throws \ExpectationException
+   *   Thrown when the given element is not of the expected type.
+   */
+  protected function assertElementType(NodeElement $element, string $type): void {
+    if ($element->getTagName() !== $type) {
+      throw new ExpectationException("The element is not a '$type'' field.", $this->getSession());
+    }
   }
 
 }

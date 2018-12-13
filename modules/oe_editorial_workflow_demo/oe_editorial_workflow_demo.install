@@ -18,7 +18,7 @@ function oe_editorial_workflow_demo_install(): void {
   $config_value[] = 'oe_workflow_demo';
   $config->set('type_settings.entity_types.node', $config_value)
     ->save();
-  _oe_editorial_demo_permissions();
+  _oe_editorial_demo_handle_permissions();
 }
 
 /**
@@ -44,7 +44,7 @@ function oe_editorial_workflow_demo_uninstall(): void {
     }
   }
 
-  _oe_editorial_demo_permissions('revoke');
+  _oe_editorial_demo_handle_permissions('revoke');
 }
 
 /**
@@ -53,7 +53,7 @@ function oe_editorial_workflow_demo_uninstall(): void {
  * @param string $action
  *   Grant or revoke permission, default is grant.
  */
-function _oe_editorial_demo_permissions(string $action = 'grant'): void {
+function _oe_editorial_demo_handle_permissions(string $action = 'grant'): void {
   $roles_permissions = [
     'oe_author' => [
       'create oe_workflow_demo content',
