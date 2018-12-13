@@ -17,11 +17,13 @@ class FeatureContext extends RawDrupalContext {
 
   /**
    * Checks that the given select field has the options listed in the table.
+   *
+   * // phpcs:disable
+   * @Then I should have the following options for the :select select:
    * | option 1 |
    * | option 2 |
    * |   ...    |
-   *
-   * @Then I should have the following options for the :select select:
+   * // phpcs:enable
    */
   public function assertSelectOptions(string $select, TableNode $options): void {
     // Retrieve the specified field.
