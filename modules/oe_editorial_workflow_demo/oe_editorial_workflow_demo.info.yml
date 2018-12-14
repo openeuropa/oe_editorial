@@ -1,0 +1,12 @@
+name: OpenEuropa Editorial Workflow Demo
+description: Editorial workflow demo module to showcase the workflows for the OpenEuropa project.
+package: OpenEuropa
+type: module
+core: 8.x
+
+dependencies:
+  - oe_editorial_corporate_workflow:oe_editorial_corporate_workflow
+
+config_devel:
+  install:
+    - node.type.oe_workflow_demo
