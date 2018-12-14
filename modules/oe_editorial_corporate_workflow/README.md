@@ -16,3 +16,5 @@ In order to be able to use the functionality you need to do the following:
 content type under "THIS WORKFLOW APPLIES TO:" to this workflow
 
 After executing these steps as a site administrator, you should have the workflow applied to your desired content type.
+
+Content workflows can also be applied to other entity types as long as they are revisionable for instance media types. Other entities like taxonomy terms or RDF entities are currently not revisionable and therefore cannot have any content workflow applied on them.
