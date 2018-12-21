@@ -70,7 +70,7 @@ Feature: Corporate editorial workflow
       | Published |
     When I select "Published" from "Change to"
     And I press "Save"
-    And I click "Edit"
+    And I click "New draft"
     Then the current workflow state should be "Published"
 
   Scenario: As an Author user, I can Publish a Validated demo content.
@@ -92,11 +92,35 @@ Feature: Corporate editorial workflow
       | Published |
     When I select "Published" from "Change to"
     And I press "Save"
-    And I click "Edit"
+    And I click "New draft"
     # After Publish I can restart the workflow.
     Then I should have the following options for the "Change to" select:
       | Draft |
     Then the current workflow state should be "Published"
+    When I visit "admin/content"
+    # The content is created and it is published.
+    Then I should see text matching "published"
+    And I should not see text matching "not published"
+
+  Scenario: As an Author user, I can create new draft for published content.
+    Given users:
+      | name        | roles  |
+      | author_user | Author |
+    And "oe_workflow_demo" content:
+      | title         | moderation_state | author      |
+      | Workflow node | published        | author_user |
+    And I am logged in as "author_user"
+    When I visit "admin/content"
+    # The content is created and it is published.
+    Then I should see the text "published" in the "Workflow node" row
+    When I click "Workflow node"
+    And I click "New draft"
+     # After Publish I can restart the workflow.
+    Then I should have the following options for the "Change to" select:
+      | Draft     |
+    When I select "Draft" from "Change to"
+    And I press "Save"
+    And I should see "Edit draft"
     When I visit "admin/content"
     # The content is created and it is published.
     Then I should see text matching "published"

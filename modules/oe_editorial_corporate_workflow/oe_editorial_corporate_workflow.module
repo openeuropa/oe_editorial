@@ -2,7 +2,7 @@
 
 /**
  * @file
- * OpenEuropa Editorial module.
+ * OpenEuropa Editorial Corporate Workflow module.
  */
 
 declare(strict_types = 1);
