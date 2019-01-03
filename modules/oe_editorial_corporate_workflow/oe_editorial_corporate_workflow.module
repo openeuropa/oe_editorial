@@ -18,13 +18,12 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
     /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_information */
     $moderation_information = \Drupal::service('content_moderation.moderation_information');
     if ($moderation_information->isModeratedEntity($node) &&
-      $moderation_information->isModeratedEntity($node) &&
       $moderation_information->isDefaultRevisionPublished($node)) {
-      if (!$moderation_information->hasPendingRevision($node)) {
-        $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('New draft');
+      if ($moderation_information->hasPendingRevision($node)) {
+        $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('Edit draft');
       }
       else {
-        $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('Edit draft');
+        $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('New draft');
       }
     }
   }
