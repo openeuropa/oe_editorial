@@ -16,6 +16,13 @@ use PHPUnit\Framework\Assert;
 class FeatureContext extends RawDrupalContext {
 
   /**
+   * Keep track of modules so they can be cleaned up.
+   *
+   * @var array
+   */
+  protected $modules = [];
+
+  /**
    * Checks that the given select field has the options listed in the table.
    *
    * // phpcs:disable
@@ -91,6 +98,51 @@ class FeatureContext extends RawDrupalContext {
     if ($element->getTagName() !== $type) {
       throw new ExpectationException("The element is not a '$type'' field.", $this->getSession());
     }
+  }
+
+  /**
+   * Enables a module.
+   *
+   * @param string $module
+   *   The module to be enabled.
+   *
+   * @Given the module(s) :module is/are enabled
+   */
+  public function theModuleIsEnabled($module) {
+    $modules = explode(',', $module);
+    $modules = array_map('trim', $modules);
+    foreach ($modules as $module) {
+      \Drupal::service('module_installer')->install([$module]);
+      \Drupal::service('config.installer')->installDefaultConfig('module', $module);
+      $this->modules[] = $module;
+    }
+  }
+
+  /**
+   * Uninstall any installed module.
+   *
+   * @AfterScenario
+   */
+  public function cleanModules() {
+    // Revert config that was changed.
+    foreach ($this->modules as $module) {
+      \Drupal::service('module_installer')->uninstall([$module]);
+    }
+    $this->modules = [];
+  }
+
+  /**
+   * Remove any created nodes.
+   *
+   * @AfterScenario
+   */
+  public function cleanNodes() {
+    // Remove any nodes that were created.
+    foreach ($this->nodes as $node) {
+      \Drupal::service('content_lock')->uninstall([$node->id]);
+      $this->getDriver()->nodeDelete($node);
+    }
+    $this->nodes = [];
   }
 
 }
