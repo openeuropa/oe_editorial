@@ -1,6 +1,6 @@
 # OpenEuropa Corporate Content Lock
 
-This module provides the ability to prevent concurrent content editing on an OpenEuropa project.
+This module provides the ability to prevent concurrent content editing on a site.
 By installing this module, a user that starts to edit content on the site will lock it preventing other users from
 editing it at the same time.
 
