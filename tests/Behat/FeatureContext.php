@@ -101,31 +101,13 @@ class FeatureContext extends RawDrupalContext {
   }
 
   /**
-   * Enables a module.
-   *
-   * @param string $module
-   *   The module to be enabled.
-   *
-   * @Given the module(s) :module is/are enabled
-   */
-  public function theModuleIsEnabled($module) {
-    $modules = explode(',', $module);
-    $modules = array_map('trim', $modules);
-    foreach ($modules as $module) {
-      \Drupal::service('module_installer')->install([$module]);
-      \Drupal::service('config.installer')->installDefaultConfig('module', $module);
-      $this->modules[] = $module;
-    }
-  }
-
-  /**
    * Install the content_lock component.
    *
    * @BeforeScenario @content_lock
    */
   public function enableContentLock() {
     // Revert config that was changed.
-    \Drupal::service('module_installer')->uninstall(['oe_editorial_content_lock']);
+    \Drupal::service('module_installer')->install(['oe_editorial_content_lock']);
   }
 
   /**
