@@ -3,6 +3,7 @@ Feature: Content lock
   As a content editor
   When I edit a node I want the node to be locked so that other users can't edit it
 
+  @content_lock
   Scenario: As a content creator user I want content that I edit to be locked
     Given I am logged in as a user with the "Author" role
     And the modules "content_lock, oe_editorial_content_lock" are enabled

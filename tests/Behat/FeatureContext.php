@@ -119,30 +119,29 @@ class FeatureContext extends RawDrupalContext {
   }
 
   /**
-   * Uninstall any installed module.
+   * Install the content_lock component.
    *
-   * @AfterScenario
+   * @BeforeScenario @content_lock
    */
-  public function cleanModules() {
+  public function enableContentLock() {
     // Revert config that was changed.
-    foreach ($this->modules as $module) {
-      \Drupal::service('module_installer')->uninstall([$module]);
-    }
-    $this->modules = [];
+    \Drupal::service('module_installer')->uninstall(['oe_editorial_content_lock']);
   }
 
   /**
-   * Remove any created nodes.
+   * Uninstall the content_lock component.
    *
-   * @AfterScenario
+   * @AfterScenario @content_lock
    */
-  public function cleanNodes() {
-    // Remove any nodes that were created.
-    foreach ($this->nodes as $node) {
-      \Drupal::service('content_lock')->uninstall([$node->id]);
-      $this->getDriver()->nodeDelete($node);
+  public function disableContentLock() {
+    $modules = [
+      'oe_editorial_content_lock',
+      'content_lock',
+    ];
+    foreach ($modules as $module) {
+      \Drupal::service('module_installer')->uninstall([$module]);
     }
-    $this->nodes = [];
+    $this->modules = [];
   }
 
 }
