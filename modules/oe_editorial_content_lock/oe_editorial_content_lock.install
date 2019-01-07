@@ -19,12 +19,6 @@ function oe_editorial_content_lock_install() {
     'node' => [
       '*' => '*',
     ],
-    'rdf_entity' => [
-      '*' => '*',
-    ],
-    'skos_concept' => [
-      '*' => '*',
-    ],
   ];
   \Drupal::configFactory()
     ->getEditable('content_lock.settings')
