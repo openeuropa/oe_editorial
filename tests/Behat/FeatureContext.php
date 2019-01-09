@@ -16,13 +16,6 @@ use PHPUnit\Framework\Assert;
 class FeatureContext extends RawDrupalContext {
 
   /**
-   * Keep track of modules so they can be cleaned up.
-   *
-   * @var array
-   */
-  protected $modules = [];
-
-  /**
    * Checks that the given select field has the options listed in the table.
    *
    * // phpcs:disable
@@ -98,32 +91,6 @@ class FeatureContext extends RawDrupalContext {
     if ($element->getTagName() !== $type) {
       throw new ExpectationException("The element is not a '$type'' field.", $this->getSession());
     }
-  }
-
-  /**
-   * Install the content_lock component.
-   *
-   * @BeforeScenario @content_lock
-   */
-  public function enableContentLock() {
-    // Revert config that was changed.
-    \Drupal::service('module_installer')->install(['oe_editorial_content_lock']);
-  }
-
-  /**
-   * Uninstall the content_lock component.
-   *
-   * @AfterScenario @content_lock
-   */
-  public function disableContentLock() {
-    $modules = [
-      'oe_editorial_content_lock',
-      'content_lock',
-    ];
-    foreach ($modules as $module) {
-      \Drupal::service('module_installer')->uninstall([$module]);
-    }
-    $this->modules = [];
   }
 
 }
