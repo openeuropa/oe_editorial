@@ -1,7 +1,8 @@
 @api @javascript
 Feature: Content lock
-  As a content editor
-  When I edit a node I want the node to be locked so that other users can't edit it
+  as a content editor
+  I should be prevented from concurrently editing a node
+  so that no work is lost
 
   @content_lock
   Scenario: Content gets lock and lock can be broken
