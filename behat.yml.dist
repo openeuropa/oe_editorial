@@ -7,6 +7,10 @@ default:
         - Drupal\DrupalExtension\Context\MinkContext
         - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\Tests\oe_editorial\Behat\FeatureContext
+        - OpenEuropa\Behat\TransformationContext:
+            pages:
+              Add Demo: 'node/add/oe_workflow_demo'
+              Content: 'admin/content'
   extensions:
     Behat\MinkExtension:
       goutte: ~

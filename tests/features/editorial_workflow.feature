@@ -5,13 +5,13 @@ Feature: Corporate editorial workflow
 
   Scenario: As an Author user, I can create a Draft demo content and I can send it for Needs Review
     Given I am logged in as a user with the "Author" role
-    When I visit "node/add/oe_workflow_demo"
+    When I visit "the Add Demo page"
     Then I should have the following options for the "Save as" select:
       | Draft        |
       | Needs Review |
     When I fill in "Title" with "Workflow demo"
     And I press "Save"
-    And I visit "admin/content"
+    And I visit "the Content page"
     # The content is created and it is not published.
     Then I should see the text "not published" in the "Workflow demo" row
     When I click "Edit"
@@ -28,7 +28,7 @@ Feature: Corporate editorial workflow
     And "oe_workflow_demo" content:
       | title         | moderation_state |
       | Workflow node | needs_review     |
-    And I visit "admin/content"
+    And I visit "the Content page"
     And I click "Workflow node"
     When I click "Edit"
     # We are on the node edit page and we see the current state is Needs Review.
@@ -49,7 +49,7 @@ Feature: Corporate editorial workflow
     And "oe_workflow_demo" content:
       | title         | moderation_state   |
       | Workflow node | request_validation |
-    And I visit "admin/content"
+    And I visit "the Content page"
     And I click "Workflow node"
     When I click "Edit"
     # We are on the node edit page and we see the current state is Request Validation.
@@ -81,7 +81,7 @@ Feature: Corporate editorial workflow
       | title         | moderation_state | author      |
       | Workflow node | validated        | author_user |
     And I am logged in as "author_user"
-    When I visit "admin/content"
+    When I visit "the Content page"
     # The content is created and it is not published.
     Then I should see the text "not published" in the "Workflow node" row
     When I click "Workflow node"
@@ -97,7 +97,7 @@ Feature: Corporate editorial workflow
     Then I should have the following options for the "Change to" select:
       | Draft |
     Then the current workflow state should be "Published"
-    When I visit "admin/content"
+    When I visit "the Content page"
     # The content is created and it is published.
     Then I should see text matching "published"
     And I should not see text matching "not published"
@@ -110,7 +110,7 @@ Feature: Corporate editorial workflow
       | title         | moderation_state | author      |
       | Workflow node | published        | author_user |
     And I am logged in as "author_user"
-    When I visit "admin/content"
+    When I visit "the Content page"
     # The content is created and it is published.
     Then I should see the text "published" in the "Workflow node" row
     When I click "Workflow node"
@@ -121,14 +121,14 @@ Feature: Corporate editorial workflow
     When I select "Draft" from "Change to"
     And I press "Save"
     And I should see "Edit draft"
-    When I visit "admin/content"
+    When I visit "the Content page"
     # The content is created and it is published.
     Then I should see text matching "published"
     And I should not see text matching "not published"
 
   Scenario: As an Author user, I can see the node revisions.
     Given I am logged in as a user with the "Author" role
-    And I visit "node/add/oe_workflow_demo"
+    And I visit "the Add Demo page"
     And I fill in "Title" with "Workflow demo"
     And I press "Save"
     And I click Edit
@@ -139,7 +139,7 @@ Feature: Corporate editorial workflow
 
   Scenario: As a user with combined roles I can publish a node and I can revert revisions.
     Given I am logged in as a user with the "Author, Reviewer, Validator" roles
-    And I visit "node/add/oe_workflow_demo"
+    And I visit "the Add Demo page"
     And I fill in "Title" with "Workflow demo"
     And I select "Needs Review" from "Save as"
     And I press "Save"
