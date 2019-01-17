@@ -16,7 +16,7 @@ class ContentLockContext extends RawDrupalContext {
    *
    * @BeforeScenario @content_lock
    */
-  public function enableContentLock() {
+  public function enableContentLock(): void {
     // Enable the Content Lock feature.
     \Drupal::service('module_installer')->install(['oe_editorial_content_lock']);
   }
@@ -26,7 +26,7 @@ class ContentLockContext extends RawDrupalContext {
    *
    * @AfterScenario @content_lock
    */
-  public function disableContentLock() {
+  public function disableContentLock(): void {
     $modules = [
       'oe_editorial_content_lock',
       'content_lock',

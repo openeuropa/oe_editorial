@@ -10,7 +10,7 @@ declare(strict_types = 1);
 /**
  * Implements hook_install().
  */
-function oe_editorial_content_lock_install() {
+function oe_editorial_content_lock_install(): void {
   // Set default settings for Content Lock.
   $locked_contents = [
     'node' => [

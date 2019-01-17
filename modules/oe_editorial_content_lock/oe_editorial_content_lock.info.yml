@@ -5,5 +5,5 @@ type: module
 core: 8.x
 
 dependencies:
-  - drupal:content_lock
+  - content_lock:content_lock
   - oe_editorial:oe_editorial
