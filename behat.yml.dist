@@ -9,8 +9,8 @@ default:
         - Drupal\Tests\oe_editorial\Behat\FeatureContext
         - OpenEuropa\Behat\TransformationContext:
             pages:
-              Add Demo: 'node/add/oe_workflow_demo'
-              Content: 'admin/content'
+              demo content creation: 'node/add/oe_workflow_demo'
+              content administration: 'admin/content'
   extensions:
     Behat\MinkExtension:
       goutte: ~
