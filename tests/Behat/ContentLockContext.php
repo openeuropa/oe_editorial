@@ -26,9 +26,7 @@ class ContentLockContext extends RawDrupalContext {
       ->loadByProperties(['name' => $type_name]);
 
     if (empty($content_type)) {
-      if ($this->getUserManager()->currentUserIsAnonymous()) {
-        throw new \Exception(sprintf('No %s content type found.', $type_name));
-      }
+      throw new \Exception(sprintf('No %s content type found.', $type_name));
     }
     /** @var \Drupal\node\Entity\NodeType $content_type */
     $content_type = reset($content_type);
