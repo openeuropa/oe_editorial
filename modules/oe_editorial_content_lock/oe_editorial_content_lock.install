@@ -11,7 +11,6 @@ declare(strict_types = 1);
  * Implements hook_install().
  */
 function oe_editorial_content_lock_install(): void {
-
   if (\Drupal::isConfigSyncing() === TRUE) {
     // If config is syncing, we do nothing here.
     return;

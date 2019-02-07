@@ -18,7 +18,7 @@ class ContentLockContext extends RawDrupalContext {
    */
   public function createMyNode($type_name, $title): void {
     if ($this->getUserManager()->currentUserIsAnonymous()) {
-      throw new \Exception(sprintf('There is no current logged in user to create a node for.'));
+      throw new \Exception('There is no current logged in user to create a node for.');
     }
 
     $content_type = \Drupal::entityTypeManager()
