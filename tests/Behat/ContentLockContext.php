@@ -39,7 +39,7 @@ class ContentLockContext extends DrupalContext {
   }
 
   /**
-   * Navigates to a particular node..
+   * Navigates to a particular node.
    *
    * @param string $type_name
    *   The content type of the node.
