@@ -4,13 +4,13 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_editorial\Behat;
 
-use Drupal\DrupalExtension\Context\DrupalContext;
+use Drupal\DrupalExtension\Context\RawDrupalContext;
 use PHPUnit\Framework\Assert;
 
 /**
  * Defines step definitions for testing the Content Lock feature.
  */
-class ContentLockContext extends DrupalContext {
+class ContentLockContext extends RawDrupalContext {
 
   /**
    * Creates content authored by the current user.
@@ -117,16 +117,18 @@ class ContentLockContext extends DrupalContext {
   }
 
   /**
-   * Remove any created nodes.
+   * Removes lock from all nodes.
    *
-   * @AfterScenario
+   * This step is required because the default cleanNodes method runs before any
+   * custom afterscenario method triggering errors.
+   *
+   * @Then all nodes are unlocked
    */
-  public function cleanNodes(): void {
+  public function allNodesAreUnlocked(): void {
     if (\Drupal::moduleHandler()->moduleExists('content_lock')) {
       \Drupal::database()->delete('content_lock')
         ->execute();
     }
-    parent::cleanNodes();
   }
 
   /**

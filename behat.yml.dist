@@ -5,6 +5,7 @@ default:
         - %paths.base%/tests/features
       contexts:
         - Drupal\DrupalExtension\Context\MinkContext
+        - Drupal\DrupalExtension\Context\DrupalContext
         - Drupal\Tests\oe_editorial\Behat\ContentLockContext
         - Drupal\Tests\oe_editorial\Behat\FeatureContext
         - OpenEuropa\Behat\TransformationContext:

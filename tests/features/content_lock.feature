@@ -20,3 +20,4 @@ Feature: Content lock
     And I press "Confirm break lock"
     Then I should see "Lock broken. Anyone can now edit this content."
     And I press "Save"
+    And all nodes are unlocked
