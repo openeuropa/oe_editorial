@@ -122,6 +122,7 @@ class ContentLockContext extends RawDrupalContext {
     foreach ($modules as $module) {
       \Drupal::service('module_installer')->uninstall([$module]);
     }
+    \Drupal::configFactory()->getEditable('content_lock.settings')->delete();
   }
 
   /**
@@ -133,6 +134,7 @@ class ContentLockContext extends RawDrupalContext {
    * @Then all nodes are unlocked
    */
   public function allNodesAreUnlocked(): void {
+
     if (\Drupal::moduleHandler()->moduleExists('content_lock')) {
       \Drupal::database()->delete('content_lock')
         ->execute();
