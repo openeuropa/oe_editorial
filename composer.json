@@ -12,6 +12,7 @@
     "require-dev": {
         "composer/installers": "~1.5",
         "drupal-composer/drupal-scaffold": "~2.2",
+        "drupal/content_lock": "^1.0-alpha8",
         "drupal/config_devel": "~1.2",
         "drupal/console": "~1.0",
         "drupal/drupal-extension": "~4.0",
@@ -54,6 +55,13 @@
             "build/profiles/contrib/{$name}": ["type:drupal-profile"],
             "build/modules/contrib/{$name}": ["type:drupal-module"],
             "build/themes/contrib/{$name}": ["type:drupal-theme"]
+        },
+        "patches": {
+            "drupal/content_lock": {
+                "https://www.drupal.org/project/content_lock/issues/2919019": "https://www.drupal.org/files/issues/content_lock-caching-invalidation-2919019-3.patch",
+                "https://www.drupal.org/project/content_lock/issues/2956625": "https://www.drupal.org/files/issues/2018-03-28/error-on-locked-content-by-deleted-user-2956625.2.patch",
+                "https://www.drupal.org/project/content_lock/issues/2949198": "https://www.drupal.org/files/issues/content_lock-unlocking-already-locked-2949198-9.patch"
+            }
         }
     },
     "config": {
