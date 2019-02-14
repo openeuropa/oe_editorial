@@ -15,12 +15,17 @@ class ContentLockContext extends RawDrupalContext {
   /**
    * Creates content authored by the current user.
    *
+   * @param string $type_name
+   *   The content type of the node.
+   * @param string $title
+   *   The title of the node.
+   *
    * @throws \Exception
    *   Throws an exception when the content type or the node are not found.
    *
    * @Given I am viewing my :type_name content titled :title
    */
-  public function createMyNode($type_name, $title): void {
+  public function createAndViewMyNodeWithTitle(string $type_name, string $title): void {
     if ($this->getUserManager()->currentUserIsAnonymous()) {
       throw new \Exception('There is no current logged in user to create a node for.');
     }
@@ -51,7 +56,7 @@ class ContentLockContext extends RawDrupalContext {
    *
    * @Then I visit the :type_name content titled :title
    */
-  public function visitContentWithTitle($type_name, $title): void {
+  public function visitContentWithTitle(string $type_name, string $title): void {
 
     $content_type = $this->getContentTypeFromName($type_name);
 
@@ -75,12 +80,15 @@ class ContentLockContext extends RawDrupalContext {
   /**
    * Asserts the button with specified id|name|title|alt|value is disabled.
    *
+   * @param string $button
+   *   A button identifier.
+   *
    * @throws \Exception
    *   Thrown when the button is not found.
    *
    * @Then the :button button is disabled
    */
-  public function buttonIsDisabled($button) {
+  public function buttonIsDisabled(string $button): void {
     $button_element = $this->getSession()->getPage()->findButton($button);
     if (empty($button_element)) {
       throw new \Exception(sprintf('Button %s was not found.', $button));
@@ -143,7 +151,7 @@ class ContentLockContext extends RawDrupalContext {
    * @return string
    *   Machine name of the content type.
    */
-  private function getContentTypeFromName($type_name): string {
+  private function getContentTypeFromName(string $type_name): string {
     $content_type = \Drupal::entityTypeManager()
       ->getStorage('node_type')
       ->loadByProperties(['name' => $type_name]);

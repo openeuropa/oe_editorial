@@ -17,13 +17,13 @@ function oe_editorial_content_lock_install(): void {
   }
 
   // Set default settings for Content Lock.
-  $locked_contents = [
+  $locked_content = [
     'node' => [
       '*' => '*',
     ],
   ];
   \Drupal::configFactory()
     ->getEditable('content_lock.settings')
-    ->set('types', $locked_contents)
+    ->set('types', $locked_content)
     ->save();
 }
