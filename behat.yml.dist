@@ -6,6 +6,7 @@ default:
       contexts:
         - Drupal\DrupalExtension\Context\MinkContext
         - Drupal\DrupalExtension\Context\DrupalContext
+        - Drupal\Tests\oe_editorial\Behat\ContentLockContext
         - Drupal\Tests\oe_editorial\Behat\FeatureContext
         - OpenEuropa\Behat\TransformationContext:
             pages:
@@ -16,8 +17,12 @@ default:
       goutte: ~
       selenium2: ~
       ajax_timeout: 10
+      browser_name: 'chrome'
       javascript_session: selenium2
       base_url: "${drupal.base_url}"
+      selenium2:
+        wd_host: '${selenium.host}:${selenium.port}/wd/hub'
+        capabilities: { "browser": "chrome", "version": "*" }
     Drupal\DrupalExtension:
       api_driver: "drupal"
       drupal:

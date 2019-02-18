@@ -1,0 +1,9 @@
+name: OpenEuropa Editorial Content Lock
+description: Lock content to prevent concurrent editing.
+package: OpenEuropa
+type: module
+core: 8.x
+
+dependencies:
+  - content_lock:content_lock
+  - oe_editorial:oe_editorial
