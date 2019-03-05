@@ -7,82 +7,16 @@
 
 declare(strict_types = 1);
 
-use Drupal\user\Entity\Role;
-
 /**
  * Implements hook_install().
  */
 function oe_editorial_workflow_demo_install(): void {
-  $config = \Drupal::configFactory()->getEditable('workflows.workflow.oe_corporate_workflow');
-  $config_value = $config->get('type_settings.entity_types.node');
-  $config_value[] = 'oe_workflow_demo';
-  $config->set('type_settings.entity_types.node', $config_value)
-    ->save();
-  _oe_editorial_demo_handle_permissions();
+  \Drupal::service('oe_editorial_corporate_workflow.workflow_installer')->installWorkflow('oe_workflow_demo');
 }
 
 /**
  * Implements hook_uninstall().
  */
 function oe_editorial_workflow_demo_uninstall(): void {
-  $config = \Drupal::configFactory()->getEditable('workflows.workflow.oe_corporate_workflow');
-  $config_values = $config->get('type_settings.entity_types.node');
-  if (!$config_values) {
-    return;
-  }
-
-  if (($key = array_search('oe_workflow_demo', $config_values)) !== FALSE) {
-    unset($config_values[$key]);
-
-    if (!empty($config_values)) {
-      $config->set('type_settings.entity_types.node', $config_values)
-        ->save();
-    }
-    else {
-      $config->set('type_settings.entity_types', [])
-        ->save();
-    }
-  }
-
-  _oe_editorial_demo_handle_permissions('revoke');
-}
-
-/**
- * Helper function to handle the demo content type related permissions.
- *
- * @param string $action
- *   Grant or revoke permission, default is grant.
- */
-function _oe_editorial_demo_handle_permissions(string $action = 'grant'): void {
-  $roles_permissions = [
-    'oe_author' => [
-      'create oe_workflow_demo content',
-      'delete own oe_workflow_demo content',
-      'edit own oe_workflow_demo content',
-    ],
-    'oe_reviewer' => [
-      'delete oe_workflow_demo revisions',
-      'edit any oe_workflow_demo content',
-      'revert oe_workflow_demo revisions',
-    ],
-    'oe_validator' => [
-      'delete oe_workflow_demo revisions',
-      'edit any oe_workflow_demo content',
-      'revert oe_workflow_demo revisions',
-    ],
-  ];
-
-  foreach ($roles_permissions as $role => $permissions) {
-    if ($drupal_role = Role::load($role)) {
-      foreach ($permissions as $permission) {
-        if ($action == 'revoke') {
-          $drupal_role->revokePermission($permission);
-        }
-        else {
-          $drupal_role->grantPermission($permission);
-        }
-      }
-      $drupal_role->save();
-    }
-  }
+  \Drupal::service('oe_editorial_corporate_workflow.workflow_installer')->uninstallWorkflow('oe_workflow_demo');
 }
