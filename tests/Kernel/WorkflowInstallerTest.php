@@ -63,7 +63,7 @@ class WorkflowInstallerTest extends KernelTestBase {
   /**
    * Tests the workflow installation and uninstallation.
    */
-  public function testWorkflowInstallationService() {
+  public function testWorkflowInstallationService(): void {
     $workflow = $this->container->get('config.factory')->getEditable('workflows.workflow.oe_corporate_workflow');
     $this->assertEmpty($workflow->get('type_settings.entity_types'));
     $this->assertRolePermissions(FALSE);
