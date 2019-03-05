@@ -46,7 +46,7 @@ class CorporateWorkflowInstaller {
    * @param string $content_type
    *   The content type to enable the workflow on.
    */
-  public function installWorkflow(string $content_type) {
+  public function installWorkflow(string $content_type): void {
     $config = $this->configFactory->getEditable('workflows.workflow.oe_corporate_workflow');
     $config_value = $config->get('type_settings.entity_types.node');
     $config_value[] = $content_type;
@@ -60,7 +60,7 @@ class CorporateWorkflowInstaller {
    * @param string $content_type
    *   The content type to uninstall the workflow from.
    */
-  public function uninstallWorkflow(string $content_type) {
+  public function uninstallWorkflow(string $content_type): void {
     $config = $this->configFactory->getEditable('workflows.workflow.oe_corporate_workflow');
     $config_values = $config->get('type_settings.entity_types.node');
     if (!$config_values) {
@@ -88,19 +88,16 @@ class CorporateWorkflowInstaller {
   }
 
   /**
-   * Grants or revokes permissions to the workflow roles.
+   * Returns a mapping of the relevant workflow roles with their permissions.
    *
-   * @param string $action
-   *   Grant or revoke permission.
    * @param string $content_type
-   *   The content type.
+   *   The content type to include in the permissions.
+   *
+   * @return array
+   *   The mapping.
    */
-  protected function handlePermissions(string $action, string $content_type): void {
-    if (!in_array($action, ['grant', 'revoke'])) {
-      throw new \Exception('Invalid action specified');
-    }
-
-    $roles_permissions = [
+  public static function getRolePermissionMapping(string $content_type): array {
+    return [
       'oe_author' => [
         "create $content_type content",
         "delete own $content_type content",
@@ -117,6 +114,22 @@ class CorporateWorkflowInstaller {
         "revert $content_type revisions",
       ],
     ];
+  }
+
+  /**
+   * Grants or revokes permissions to the workflow roles.
+   *
+   * @param string $action
+   *   Grant or revoke permission.
+   * @param string $content_type
+   *   The content type.
+   */
+  protected function handlePermissions(string $action, string $content_type): void {
+    if (!in_array($action, ['grant', 'revoke'])) {
+      throw new \Exception('Invalid action specified');
+    }
+
+    $roles_permissions = static::getRolePermissionMapping($content_type);
 
     foreach ($roles_permissions as $role => $permissions) {
       $drupal_role = $this->entityTypeManager->getStorage('user_role')->load($role);
