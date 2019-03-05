@@ -1,0 +1,4 @@
+services:
+  oe_editorial_corporate_workflow.workflow_installer:
+    class: Drupal\oe_editorial_corporate_workflow\CorporateWorkflowInstaller
+    arguments: ['@config.factory', '@entity_type.manager']
