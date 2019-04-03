@@ -33,12 +33,12 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
 /**
  * Implements hook_form_FORM_ID_alter().
  *
- * We need to force the Draft state on node edit forms.
+ * Force the Draft state on node edit forms.
  */
 function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (isset($form['moderation_state']['widget'][0]['state']['#options']['draft'])) {
     $form['moderation_state']['widget'][0]['state']['#options'] = [
-      'draft' => $form['moderation_state']['widget'][0]['state']['#options']['draft']
+      'draft' => $form['moderation_state']['widget'][0]['state']['#options']['draft'],
     ];
   }
 }

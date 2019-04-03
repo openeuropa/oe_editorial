@@ -7,19 +7,21 @@ Feature: Corporate editorial workflow
     Given I am logged in as a user with the "Author" role
     When I visit "the demo content creation page"
     Then I should have the following options for the "Save as" select:
-      | Draft        |
-      | Needs Review |
+      | Draft |
     When I fill in "Title" with "Workflow demo"
     And I press "Save"
     And I visit "the content administration page"
     # The content is created and it is not published.
     Then I should see the text "not published" in the "Workflow demo" row
     When I click "Edit"
-    # We are on the node edit page and we see the current state is Draft.
     Then the current workflow state should be "Draft"
+    # Check that the only available next state is Needs Review.
+    When I click "View"
+    Then I should have the following options for the "Change to" select:
+      | Needs Review |
     # After setting it to Needs Review the Author can't edit the node anymore.
     When I select "Needs Review" from "Change to"
-    And I press "Save"
+    And I press "Apply"
     Then I should not see the link "Edit"
 
   Scenario: As a Reviewer user, I can edit demo content in Needs Review state and
@@ -30,17 +32,19 @@ Feature: Corporate editorial workflow
       | Workflow node | needs_review     |
     And I visit "the content administration page"
     And I click "Workflow node"
+    # We are on the node edit page and we see the current state is Needs Review and we can only save as Draft.
     When I click "Edit"
-    # We are on the node edit page and we see the current state is Needs Review.
     Then I should see text matching "Edit Demo Workflow node"
     And the current workflow state should be "Needs Review"
     And I should have the following options for the "Change to" select:
+      | Draft |
+    When I click "View"
+    Then I should have the following options for the "Change to" select:
       | Draft              |
-      | Needs Review       |
       | Request Validation |
     # After Request Validation I have no Edit access.
     When I select "Request Validation" from "Change to"
-    And I press "Save"
+    And I press "Apply"
     Then I should not see the link "Edit"
 
   Scenario: As a Validator user, I can edit demo content in Request Validation state and
@@ -52,24 +56,28 @@ Feature: Corporate editorial workflow
     And I visit "the content administration page"
     And I click "Workflow node"
     When I click "Edit"
-    # We are on the node edit page and we see the current state is Request Validation.
+    # We are on the node edit page and we see the current state is Request Validation and we can only save as Draft.
     Then I should see text matching "Edit Demo Workflow node"
     And the current workflow state should be "Request Validation"
     And I should have the following options for the "Change to" select:
-      | Draft              |
-      | Needs Review       |
-      | Request Validation |
-      | Validated          |
+      | Draft |
     # After validation I have Edit access and I can publish the node.
+    When I click "View"
+    And I should have the following options for the "Change to" select:
+      | Draft        |
+      | Needs Review |
+      | Validated    |
     When I select "Validated" from "Change to"
-    And I press "Save"
+    And I press "Apply"
     And I click "Edit"
     Then I should have the following options for the "Change to" select:
+      | Draft |
+    When I click "View"
+    Then I should have the following options for the "Change to" select:
       | Draft     |
-      | Validated |
       | Published |
     When I select "Published" from "Change to"
-    And I press "Save"
+    And I press "Apply"
     And I click "New draft"
     Then the current workflow state should be "Published"
 
@@ -88,10 +96,13 @@ Feature: Corporate editorial workflow
     And I click "Edit"
     # After validation I have Edit access and I can publish the node.
     Then I should have the following options for the "Change to" select:
+      | Draft |
+    When I click "View"
+    Then I should have the following options for the "Change to" select:
       | Draft     |
       | Published |
     When I select "Published" from "Change to"
-    And I press "Save"
+    And I press "Apply"
     And I click "New draft"
     # After Publish I can restart the workflow.
     Then I should have the following options for the "Change to" select:
@@ -117,7 +128,7 @@ Feature: Corporate editorial workflow
     And I click "New draft"
      # After Publish I can restart the workflow.
     Then I should have the following options for the "Change to" select:
-      | Draft     |
+      | Draft |
     When I select "Draft" from "Change to"
     And I press "Save"
     And I should see "Edit draft"
@@ -131,9 +142,8 @@ Feature: Corporate editorial workflow
     And I visit "the demo content creation page"
     And I fill in "Title" with "Workflow demo"
     And I press "Save"
-    And I click Edit
     When I select "Needs Review" from "Change to"
-    And I press "Save"
+    And I press "Apply"
     And I click Revisions
     Then I should see "Revisions for Workflow demo"
 
@@ -141,23 +151,17 @@ Feature: Corporate editorial workflow
     Given I am logged in as a user with the "Author, Reviewer, Validator" roles
     And I visit "the demo content creation page"
     And I fill in "Title" with "Workflow demo"
-    And I select "Needs Review" from "Save as"
     And I press "Save"
-    And I click Edit
+    And I select "Needs Review" from "Change to"
+    And I press "Apply"
     And I select "Request Validation" from "Change to"
-    And I press "Save"
-    And I click Edit
-    And I select "Request Validation" from "Change to"
-    And I press "Save"
-    And I click Edit
+    And I press "Apply"
     And I select "Validated" from "Change to"
-    And I press "Save"
-    And I click Edit
+    And I press "Apply"
     # Node is in published state.
     And I select "Published" from "Change to"
-    And I press "Save"
+    And I press "Apply"
     When I click Revisions
     And I click Revert
     # Confirmation page.
     Then I should see "Are you sure you want to revert to the revision"
-
