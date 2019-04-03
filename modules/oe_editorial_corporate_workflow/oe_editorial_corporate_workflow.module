@@ -7,6 +7,7 @@
 
 declare(strict_types = 1);
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
 
 /**
@@ -26,5 +27,18 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
         $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('New draft');
       }
     }
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * We need to force the Draft state on node edit forms.
+ */
+function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (isset($form['moderation_state']['widget'][0]['state']['#options']['draft'])) {
+    $form['moderation_state']['widget'][0]['state']['#options'] = [
+      'draft' => $form['moderation_state']['widget'][0]['state']['#options']['draft']
+    ];
   }
 }
