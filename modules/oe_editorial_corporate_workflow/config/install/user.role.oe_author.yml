@@ -8,8 +8,10 @@ is_admin: null
 permissions:
   - 'access content overview'
   - 'use oe_corporate_workflow transition create_new_draft'
+  - 'use oe_corporate_workflow transition needs_review_to_draft'
   - 'use oe_corporate_workflow transition publish'
   - 'use oe_corporate_workflow transition request_review'
+  - 'use oe_corporate_workflow transition request_validation_to_draft'
   - 'use oe_corporate_workflow transition validated_to_draft'
   - 'use oe_corporate_workflow transition validated_to_published'
   - 'view all revisions'
