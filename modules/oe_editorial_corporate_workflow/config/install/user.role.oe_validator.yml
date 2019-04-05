@@ -12,6 +12,7 @@ permissions:
   - 'use oe_corporate_workflow transition published_to_draft'
   - 'use oe_corporate_workflow transition published_to_expired'
   - 'use oe_corporate_workflow transition published_to_published'
+  - 'use oe_corporate_workflow transition request_validation_to_draft'
   - 'use oe_corporate_workflow transition request_validation_to_needs_review'
   - 'use oe_corporate_workflow transition request_validation_to_request_validation'
   - 'use oe_corporate_workflow transition request_validation_to_validated'
