@@ -19,4 +19,4 @@ permissions:
   - 'use oe_corporate_workflow transition validated_to_published'
   - 'view all revisions'
   - 'view latest version'
-  - 'view own unpublished content'
+  - 'view any unpublished content'

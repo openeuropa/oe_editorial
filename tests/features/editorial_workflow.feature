@@ -112,7 +112,7 @@ Feature: Corporate editorial workflow
     Then I should see the text "published" in the "Workflow node" row
     When I click "Workflow node"
     And I click "New draft"
-     # After Publish I can restart the workflow.
+     # After Publish I can restart the workflow and Edit draft to draft.
     Then I should have the following options for the "Change to" select:
       | Draft |
     When I select "Draft" from "Change to"
@@ -170,3 +170,23 @@ Feature: Corporate editorial workflow
       | Draft    |
       | Archived |
       | Expired  |
+
+  Scenario: As an Author, when node has only published revision I see "New draft"
+    and when a node has new draft after the published revision I see "Edit draft" on the node tabs.
+    Given users:
+      | name        | roles  |
+      | author_user | Author |
+    And "oe_workflow_demo" content:
+      | title         | moderation_state | author      |
+      | Workflow node | published        | author_user |
+    And I am logged in as "author_user"
+    When I visit "the content administration page"
+    And I click "Workflow node"
+    And I click "New draft"
+    Then I should have the following options for the "Change to" select:
+      | Draft    |
+      | Archived |
+      | Expired  |
+    When I select "Draft" from "Change to"
+    And I press "Save"
+    And I should see "Edit draft"

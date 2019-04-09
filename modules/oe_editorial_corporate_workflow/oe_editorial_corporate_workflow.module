@@ -16,16 +16,11 @@ use Drupal\node\NodeInterface;
 function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
   $node = \Drupal::routeMatch()->getParameter('node');
   if ($node instanceof NodeInterface && !empty($data['tabs'][0]['entity.node.edit_form']['#link'])) {
-    /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_information */
-    $moderation_information = \Drupal::service('content_moderation.moderation_information');
-    if ($moderation_information->isModeratedEntity($node) &&
-      $moderation_information->isDefaultRevisionPublished($node)) {
-      if ($moderation_information->hasPendingRevision($node)) {
-        $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('Edit draft');
-      }
-      else {
-        $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('New draft');
-      }
+    if (_oe_editorial_corporate_workflow_is_last_revision_published($node)) {
+      $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('New draft');
+    }
+    else {
+      $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('Edit draft');
     }
   }
 }
@@ -38,12 +33,8 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
 function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   // Do not do anything if the node is published.
   $node = \Drupal::routeMatch()->getParameter('node');
-  if ($node instanceof NodeInterface) {
-    /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_information */
-    $moderation_information = \Drupal::service('content_moderation.moderation_information');
-    if ($moderation_information->isModeratedEntity($node) && $moderation_information->isDefaultRevisionPublished($node)) {
-      return;
-    }
+  if ($node instanceof NodeInterface && _oe_editorial_corporate_workflow_is_last_revision_published($node)) {
+    return;
   }
 
   if (isset($form['moderation_state']['widget'][0]['state']['#options']['draft'])) {
@@ -51,4 +42,27 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
       'draft' => $form['moderation_state']['widget'][0]['state']['#options']['draft'],
     ];
   }
+}
+
+/**
+ * Helper function to determine if the last revision is published.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   The node object.
+ *
+ * @return bool
+ *   True if the node is published.
+ */
+function _oe_editorial_corporate_workflow_is_last_revision_published(NodeInterface $node): bool {
+  /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
+  $moderation_info = \Drupal::service('content_moderation.moderation_information');
+  if ($moderation_info->isModeratedEntity($node) && $moderation_info->isDefaultRevisionPublished($node)) {
+    $entity_type_id = $node->getEntityTypeId();
+    $entity_id = $node->id();
+    if ($moderation_info->getDefaultRevisionId($entity_type_id, $entity_id) === $moderation_info->getLatestRevisionId($entity_type_id, $entity_id)) {
+      return TRUE;
+    }
+  }
+
+  return FALSE;
 }
