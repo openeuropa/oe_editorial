@@ -70,7 +70,7 @@ type_settings:
         - needs_review
       to: request_validation
       weight: -4
-    publish:
+    published_to_draft:
       label: 'Published to Draft'
       to: draft
       weight: 2

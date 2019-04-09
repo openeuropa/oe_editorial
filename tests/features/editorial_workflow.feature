@@ -3,7 +3,7 @@ Feature: Corporate editorial workflow
   As a content editor
   I can moderate content through different states by different roles
 
-  Scenario: As an Author user, I can create a Draft demo content and I can send it for Needs Review
+  Scenario: As an Author user, I can create a Draft demo content and I can send it for Needs Review.
     Given I am logged in as a user with the "Author" role
     When I visit "the demo content creation page"
     Then I should have the following options for the "Save as" select:
@@ -26,8 +26,8 @@ Feature: Corporate editorial workflow
     Then I should have the following options for the "Change to" select:
       | Draft |
 
-  Scenario: As a Reviewer user, I can moderate demo content by send it back to Draft or to Request Validation
-    Given I am logged in as a user with the "Reviewer" roles
+  Scenario: As a Reviewer user, I can moderate demo content by send it back to Draft or to Request Validation.
+    Given I am logged in as a user with the "Reviewer" role
     And "oe_workflow_demo" content:
       | title         | moderation_state |
       | Workflow node | needs_review     |
@@ -154,3 +154,19 @@ Feature: Corporate editorial workflow
     And I click Revert
     # Confirmation page.
     Then I should see "Are you sure you want to revert to the revision"
+
+  Scenario: As a Author user, I can move published content to Archived or Expired.
+    Given users:
+      | name        | roles  |
+      | author_user | Author |
+    And "oe_workflow_demo" content:
+      | title         | moderation_state | author      |
+      | Workflow node | published        | author_user |
+    And I am logged in as "author_user"
+    When I visit "the content administration page"
+    And I click "Workflow node"
+    And I click "New draft"
+    Then I should have the following options for the "Change to" select:
+      | Draft    |
+      | Archived |
+      | Expired  |

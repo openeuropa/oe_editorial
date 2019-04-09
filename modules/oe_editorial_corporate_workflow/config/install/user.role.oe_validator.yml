@@ -7,10 +7,6 @@ weight: 4
 is_admin: null
 permissions:
   - 'access content overview'
-  - 'use oe_corporate_workflow transition archived_to_draft'
-  - 'use oe_corporate_workflow transition published_to_archived'
-  - 'use oe_corporate_workflow transition published_to_draft'
-  - 'use oe_corporate_workflow transition published_to_expired'
   - 'use oe_corporate_workflow transition published_to_published'
   - 'use oe_corporate_workflow transition request_validation_to_draft'
   - 'use oe_corporate_workflow transition request_validation_to_needs_review'

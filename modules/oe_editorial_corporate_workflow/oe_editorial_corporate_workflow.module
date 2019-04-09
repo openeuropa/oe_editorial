@@ -36,6 +36,16 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
  * Force the Draft state on node edit forms.
  */
 function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  // Do not do anything if the node is published.
+  $node = \Drupal::routeMatch()->getParameter('node');
+  if ($node instanceof NodeInterface) {
+    /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_information */
+    $moderation_information = \Drupal::service('content_moderation.moderation_information');
+    if ($moderation_information->isModeratedEntity($node) && $moderation_information->isDefaultRevisionPublished($node)) {
+      return;
+    }
+  }
+
   if (isset($form['moderation_state']['widget'][0]['state']['#options']['draft'])) {
     $form['moderation_state']['widget'][0]['state']['#options'] = [
       'draft' => $form['moderation_state']['widget'][0]['state']['#options']['draft'],
