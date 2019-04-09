@@ -155,10 +155,10 @@ Feature: Corporate editorial workflow
     # Confirmation page.
     Then I should see "Are you sure you want to revert to the revision"
 
-  Scenario: As a Author user, I can move published content to Archived or Expired.
+  Scenario: As a Author and Validator user, I can move published content to Archived or Expired.
     Given users:
       | name        | roles  |
-      | author_user | Author |
+      | author_user | Author, Validator |
     And "oe_workflow_demo" content:
       | title         | moderation_state | author      |
       | Workflow node | published        | author_user |
@@ -185,8 +185,6 @@ Feature: Corporate editorial workflow
     And I click "New draft"
     Then I should have the following options for the "Change to" select:
       | Draft    |
-      | Archived |
-      | Expired  |
     When I select "Draft" from "Change to"
     And I press "Save"
     And I should see "Edit draft"
