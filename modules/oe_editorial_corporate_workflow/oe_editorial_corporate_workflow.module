@@ -56,13 +56,6 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
 function _oe_editorial_corporate_workflow_is_last_revision_published(NodeInterface $node): bool {
   /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
   $moderation_info = \Drupal::service('content_moderation.moderation_information');
-  if ($moderation_info->isModeratedEntity($node) && $moderation_info->isDefaultRevisionPublished($node)) {
-    $entity_type_id = $node->getEntityTypeId();
-    $entity_id = $node->id();
-    if ($moderation_info->getDefaultRevisionId($entity_type_id, $entity_id) === $moderation_info->getLatestRevisionId($entity_type_id, $entity_id)) {
-      return TRUE;
-    }
-  }
 
-  return FALSE;
+  return !$moderation_info->hasPendingRevision($node) && $moderation_info->isDefaultRevisionPublished($node);
 }
