@@ -50,11 +50,11 @@ type_settings:
         - archived
         - expired
       to: draft
-      weight: 8
+      weight: 5
     create_new_draft:
       label: 'Create New Draft'
       to: draft
-      weight: -9
+      weight: -7
       from:
         - draft
         - published
@@ -63,23 +63,17 @@ type_settings:
       from:
         - needs_review
       to: draft
-      weight: -6
-    needs_review_to_needs_review:
-      label: 'Needs Review to Needs Review'
-      from:
-        - needs_review
-      to: needs_review
-      weight: -7
+      weight: -5
     needs_review_to_request_validation:
       label: 'Needs Review to Request Validation'
       from:
         - needs_review
       to: request_validation
-      weight: -5
-    publish:
+      weight: -4
+    published_to_draft:
       label: 'Published to Draft'
       to: draft
-      weight: 4
+      weight: 2
       from:
         - published
     published_to_archived:
@@ -88,32 +82,20 @@ type_settings:
         - archived
         - published
       to: archived
-      weight: 6
-    published_to_draft:
-      label: 'Published to Needs Review'
-      from:
-        - published
-      to: needs_review
-      weight: 5
+      weight: 3
     published_to_expired:
       label: 'Published to Expired'
       from:
         - expired
         - published
       to: expired
-      weight: 7
-    published_to_published:
-      label: 'Published to Published'
-      from:
-        - published
-      to: published
-      weight: 3
+      weight: 4
     request_review:
       label: 'Draft to Needs Review'
       from:
         - draft
       to: needs_review
-      weight: -8
+      weight: -6
     request_validation_to_draft:
       label: 'Request Validation to Draft'
       from:
@@ -126,12 +108,6 @@ type_settings:
         - request_validation
       to: needs_review
       weight: -2
-    request_validation_to_request_validation:
-      label: 'Request Validation to Request Validation'
-      from:
-        - request_validation
-      to: request_validation
-      weight: -4
     request_validation_to_validated:
       label: 'Request Validation to Validated'
       from:
@@ -143,17 +119,10 @@ type_settings:
       from:
         - validated
       to: draft
-      weight: 1
+      weight: 0
     validated_to_published:
       label: 'Validated to Published'
       from:
         - validated
       to: published
-      weight: 2
-    validated_to_validated:
-      label: 'Validated to Validated'
-      from:
-        - validated
-      to: validated
-      weight: 0
-  entity_types: {  }
+      weight: 1

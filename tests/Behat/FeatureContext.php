@@ -68,12 +68,15 @@ class FeatureContext extends RawDrupalContext {
    * @Then the current workflow state should be :state
    */
   public function assertCurrentWorkflowState(string $state): void {
-    $element = $this->getSession()->getPage()->find('css', 'div#edit-moderation-state-0-current');
+    // Find the content moderation form.
+    $xpath = '//form[@class and contains(concat(" ", normalize-space(@class), " "), " content-moderation-entity-moderation-form ")]'
+      // Target the text after the "Moderation state" label.
+      . '//label[text()="Moderation state"]/following-sibling::text()[1]';
+    $element = $this->getSession()->getPage()->find('xpath', $xpath);
     if (empty($element)) {
       throw new \Exception('The current workflow state field is not present on the page.');
     }
-    // Need to remove the label from the string.
-    Assert::assertEquals($state, ltrim(trim($element->getText()), 'Current state'));
+    Assert::assertEquals($state, trim($element->getText()));
   }
 
   /**
