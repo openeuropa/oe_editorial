@@ -65,6 +65,9 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
     return;
   }
 
+  $entity = $form_state->getFormObject()->getEntity();
+  $entity->in_form = TRUE;
+
   if (isset($form['moderation_state']['widget'][0]['state']['#options']['draft'])) {
     $form['moderation_state']['widget'][0]['state']['#options'] = [
       'draft' => $form['moderation_state']['widget'][0]['state']['#options']['draft'],
