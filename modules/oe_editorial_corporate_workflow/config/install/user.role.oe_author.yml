@@ -18,3 +18,4 @@ permissions:
   - 'view all revisions'
   - 'view latest version'
   - 'view any unpublished content'
+  - 'view own unpublished content'
