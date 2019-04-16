@@ -15,12 +15,26 @@ use Drupal\node\NodeInterface;
  */
 function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
   $node = \Drupal::routeMatch()->getParameter('node');
-  if ($node instanceof NodeInterface && !empty($data['tabs'][0]['entity.node.edit_form']['#link'])) {
+  if (!$node instanceof NodeInterface) {
+    return;
+  }
+
+  // Edit tab.
+  if (!empty($data['tabs'][0]['entity.node.edit_form']['#link'])) {
     if (_oe_editorial_corporate_workflow_is_last_revision_published($node)) {
       $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('New draft');
     }
     else {
       $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('Edit draft');
+    }
+  }
+
+  // View tab.
+  if (!empty($data['tabs'][0]['entity.node.canonical']['#link'])) {
+    /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
+    $moderation_info = \Drupal::service('content_moderation.moderation_information');
+    if ($moderation_info->isModeratedEntity($node) && $moderation_info->isDefaultRevisionPublished($node)) {
+      $data['tabs'][0]['entity.node.canonical']['#link']['title'] = t('View published');
     }
   }
 }
