@@ -31,9 +31,9 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
  * Force the Draft state on node edit forms.
  */
 function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  // Do not do anything if the node is published.
+  /** @var \Drupal\node\NodeInterface $node */
   $node = $form_state->getFormObject()->getEntity();
-  if ($node instanceof NodeInterface && _oe_editorial_corporate_workflow_is_last_revision_published($node)) {
+  if (!$node->isNew() && $node instanceof NodeInterface && _oe_editorial_corporate_workflow_is_last_revision_published($node)) {
     return;
   }
 

@@ -48,12 +48,7 @@ class FeatureContext extends RawDrupalContext {
       $value = $value->getText();
     });
 
-    // Check that all expected options are present.
-    foreach ($expected_options as $expected_option) {
-      if (!in_array($expected_option, $actual_options)) {
-        throw new ExpectationException("Option '$expected_option' is missing from select list '$select'.", $this->getSession());
-      }
-    }
+    Assert::assertEquals($expected_options, $actual_options);
   }
 
   /**
