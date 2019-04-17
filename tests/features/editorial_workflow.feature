@@ -157,7 +157,7 @@ Feature: Corporate editorial workflow
 
   Scenario: As a Author and Validator user, I can move published content to Archived or Expired.
     Given users:
-      | name        | roles  |
+      | name        | roles             |
       | author_user | Author, Validator |
     And "oe_workflow_demo" content:
       | title         | moderation_state | author      |
@@ -172,7 +172,7 @@ Feature: Corporate editorial workflow
       | Expired  |
 
   Scenario: As an Author, when node has only published revision I see "New draft"
-    and when a node has new draft after the published revision I see "Edit draft" on the node tabs.
+  and when a node has new draft after the published revision I see "Edit draft" on the node tabs.
     Given users:
       | name        | roles  |
       | author_user | Author |
@@ -184,7 +184,19 @@ Feature: Corporate editorial workflow
     And I click "Workflow node"
     And I click "New draft"
     Then I should have the following options for the "Change to" select:
-      | Draft    |
+      | Draft |
     When I select "Draft" from "Change to"
     And I press "Save"
     And I should see "Edit draft"
+
+  Scenario: As user with all editorial roles, I can't delete content.
+    Given users:
+      | name        | roles                       |
+      | author_user | Author, Reviewer, Validator |
+    And "oe_workflow_demo" content:
+      | title         | moderation_state | author      |
+      | Workflow node | draft            | author_user |
+    And I am logged in as "author_user"
+    When I visit "the content administration page"
+    And I click "Workflow node"
+    Then I should not see "Delete"
