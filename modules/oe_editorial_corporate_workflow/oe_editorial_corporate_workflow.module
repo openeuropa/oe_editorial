@@ -29,12 +29,24 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
     }
   }
 
+  // Latest revision tab.
+  if (!empty($data['tabs'][0]['content_moderation.workflows:node.latest_version_tab']) &&
+    $data['tabs'][0]['content_moderation.workflows:node.latest_version_tab']['#active'] === TRUE
+  ) {
+    $data['tabs'][0]['content_moderation.workflows:node.latest_version_tab']['#link']['title'] = t('View draft');
+  }
+
   // View tab.
   if (!empty($data['tabs'][0]['entity.node.canonical']['#link'])) {
     /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
     $moderation_info = \Drupal::service('content_moderation.moderation_information');
-    if ($moderation_info->isModeratedEntity($node) && $moderation_info->isDefaultRevisionPublished($node)) {
+    if ($moderation_info->isModeratedEntity($node) &&
+      ($moderation_info->isDefaultRevisionPublished($node) || $moderation_info->isLiveRevision($node))
+    ) {
       $data['tabs'][0]['entity.node.canonical']['#link']['title'] = t('View published');
+    }
+    else {
+      $data['tabs'][0]['entity.node.canonical']['#link']['title'] = t('View draft');
     }
   }
 }
