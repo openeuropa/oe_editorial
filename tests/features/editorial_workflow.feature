@@ -189,10 +189,10 @@ Feature: Corporate editorial workflow
     And I press "Save"
     And I should see "Edit draft"
 
-  Scenario: As user with all editorial roles, I can't delete content.
+  Scenario: Permission to delete content is not given to any editorial role.
     Given users:
-      | name        | roles                       |
-      | author_user | Author, Reviewer, Validator |
+      | name        | roles                                   |
+      | author_user | Author, Reviewer, Validator, Translator |
     And "oe_workflow_demo" content:
       | title         | moderation_state | author      |
       | Workflow node | draft            | author_user |
