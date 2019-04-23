@@ -100,7 +100,6 @@ class CorporateWorkflowInstaller {
     return [
       'oe_author' => [
         "create $content_type content",
-        "delete own $content_type content",
         "edit any $content_type content",
         "edit own $content_type content",
       ],
