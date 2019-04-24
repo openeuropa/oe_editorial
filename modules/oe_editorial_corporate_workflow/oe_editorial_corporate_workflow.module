@@ -30,9 +30,7 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
   }
 
   // Latest revision tab.
-  if (!empty($data['tabs'][0]['content_moderation.workflows:node.latest_version_tab']) &&
-    $data['tabs'][0]['content_moderation.workflows:node.latest_version_tab']['#active'] === TRUE
-  ) {
+  if (!empty($data['tabs'][0]['content_moderation.workflows:node.latest_version_tab'])) {
     $data['tabs'][0]['content_moderation.workflows:node.latest_version_tab']['#link']['title'] = t('View draft');
   }
 
