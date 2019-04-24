@@ -200,3 +200,20 @@ Feature: Corporate editorial workflow
     When I visit "the content administration page"
     And I click "Workflow node"
     Then I should not see "Delete"
+
+  Scenario: Node has "View published" or "View draft" tab instead of "View" tab.
+    Given users:
+      | name        | roles  |
+      | author_user | Author, Validator |
+    And "oe_workflow_demo" content:
+      | title         | moderation_state | author      |
+      | Workflow node | validated        | author_user |
+    And I am logged in as "author_user"
+    When I visit "the content administration page"
+    And I click "Workflow node"
+    Then I should see "View draft"
+    And I should not see "View published"
+    When I select "Published" from "Change to"
+    And I press "Apply"
+    Then I should see "View published"
+    And I should not see "View draft"
