@@ -216,4 +216,4 @@ Feature: Corporate editorial workflow
     When I select "Published" from "Change to"
     And I press "Apply"
     Then I should see "View published"
-    And I should see "View draft"
+    And I should not see "View draft"
