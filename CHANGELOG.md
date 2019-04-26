@@ -1,8 +1,16 @@
 # Change Log
 
+## [0.1.1](https://github.com/openeuropa/oe_editorial/tree/0.1.1) (2019-04-26)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/0.1.0...0.1.1)
+
+**Merged pull requests:**
+
+- Fixing the menu local task alter moderation check. [\#20](https://github.com/openeuropa/oe_editorial/pull/20) ([upchuk](https://github.com/upchuk))
+
 ## [0.1.0](https://github.com/openeuropa/oe_editorial/tree/0.1.0) (2019-04-25)
 **Merged pull requests:**
 
+- Update CHANGELOG.md for release 0.1.0. [\#19](https://github.com/openeuropa/oe_editorial/pull/19) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-1841: Author should not delete content. [\#18](https://github.com/openeuropa/oe_editorial/pull/18) ([nagyad](https://github.com/nagyad))
 - OPENEUROPA-1825: Fix bug on with oe\_editorial\_corporate\_workflow and … [\#17](https://github.com/openeuropa/oe_editorial/pull/17) ([hernani](https://github.com/hernani))
 - OPENEUROPA-1810: Rename View tab when the node has published revision. [\#16](https://github.com/openeuropa/oe_editorial/pull/16) ([nagyad](https://github.com/nagyad))
