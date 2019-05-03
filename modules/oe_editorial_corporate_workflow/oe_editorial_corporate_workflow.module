@@ -55,23 +55,40 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
 
 /**
  * Implements hook_form_FORM_ID_alter().
- *
- * Force the Draft state on node edit forms.
  */
 function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   /** @var \Drupal\node\NodeInterface $node */
-  $node = $form_state->getFormObject()->getEntity();
-  if ($node instanceof NodeInterface && !$node->isNew() && _oe_editorial_corporate_workflow_is_last_revision_published($node)) {
+  $entity = $form_state->getFormObject()->getEntity();
+  /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
+  $moderation_info = \Drupal::service('content_moderation.moderation_information');
+  if ($entity instanceof NodeInterface && !$moderation_info->isModeratedEntity($entity)) {
     return;
   }
 
-  $entity = $form_state->getFormObject()->getEntity();
-  $entity->in_form = TRUE;
+  if (1 < count($form['moderation_state']['widget'][0]['state']['#options'])) {
+    /** @var \Drupal\workflows\WorkflowInterface $workflow */
+    $workflow = $moderation_info->getWorkflowForEntity($entity);
 
-  if (isset($form['moderation_state']['widget'][0]['state']['#options']['draft'])) {
-    $form['moderation_state']['widget'][0]['state']['#options'] = [
-      'draft' => $form['moderation_state']['widget'][0]['state']['#options']['draft'],
+    // Enforce Draft state in forms.
+    $options = [
+      'draft' => $workflow->getTypePlugin()->getState('draft')->label(),
     ];
+    // Remove access since Draft is the only option.
+    $form['moderation_state']['widget'][0]['state']['#access'] = FALSE;
+
+    if (_oe_editorial_corporate_workflow_is_last_revision_published($entity)) {
+      // Restore access, the node is published and not only Draft is available.
+      $form['moderation_state']['widget'][0]['state']['#access'] = TRUE;
+      // These are exception since they have to be available on edit form.
+      if (isset($form['moderation_state']['widget'][0]['state']['#options']['expired'])) {
+        $options['expired'] = $form['moderation_state']['widget'][0]['state']['#options']['expired'];
+      }
+      if (isset($form['moderation_state']['widget'][0]['state']['#options']['archived'])) {
+        $options['expired'] = $form['moderation_state']['widget'][0]['state']['#options']['archived'];
+      }
+    }
+
+    $form['moderation_state']['widget'][0]['state']['#options'] = $options;
   }
 }
 

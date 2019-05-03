@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Drupal\oe_editorial_corporate_workflow;
 
 use Drupal\content_moderation\StateTransitionValidation;
 use Drupal\content_moderation\StateTransitionValidationInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Session\AccountInterface;
+use Drupal\workflows\StateInterface;
 
 /**
  * Override StateTransitionValidation.
@@ -15,21 +18,27 @@ class OeStateTransitionValidation extends StateTransitionValidation implements S
   /**
    * {@inheritdoc}
    */
-  public function getValidTransitions(ContentEntityInterface $entity, AccountInterface $user) {
+  public function getValidTransitions(ContentEntityInterface $entity, AccountInterface $user): array {
     $workflow = $this->moderationInfo->getWorkflowForEntity($entity);
     $current_state = $entity->moderation_state->value ? $workflow->getTypePlugin()->getState($entity->moderation_state->value) : $workflow->getTypePlugin()->getInitialState($entity);
-
 
     return $entity->isNew() || $entity->isNewRevision() ? $current_state->getTransitions() : $this->getNextTransitions($current_state, $entity);
   }
 
   /**
-   * @param $current_state
-   * @param $entity
-   * @param null $next_transitions
-   * @return |null
+   * Get the next state up in the workflow chain based on the actual state.
+   *
+   * @param \Drupal\workflows\StateInterface $current_state
+   *   The actual state.
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The entity under moderation.
+   * @param null|array $next_transitions
+   *   The next available transitions in the chain.
+   *
+   * @return array
+   *   The next available transitions in the chain.
    */
-  public function getNextTransitions($current_state, $entity, &$next_transitions = NULL) {
+  protected function getNextTransitions(StateInterface $current_state, ContentEntityInterface $entity, &$next_transitions = NULL): array {
     $transitions = $current_state->getTransitions();
     $next_transition = end($transitions);
     $next_state = $next_transition->to();
