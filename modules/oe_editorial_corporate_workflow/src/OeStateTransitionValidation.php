@@ -45,6 +45,12 @@ class OeStateTransitionValidation extends StateTransitionValidation implements S
 
     if ($next_state->id() != $entity->moderation_state->value) {
       $next_transitions[$next_transition->id()] = $next_transition;
+
+      // Exception to include Archive beside Expired state.
+      if (isset($transitions['published_to_archived'])) {
+        $next_transitions['published_to_archived'] = $transitions['published_to_archived'];
+      }
+
       $this->getNextTransitions($next_state, $entity, $next_transitions);
     }
 

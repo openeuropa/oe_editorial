@@ -84,7 +84,7 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
         $options['expired'] = $form['moderation_state']['widget'][0]['state']['#options']['expired'];
       }
       if (isset($form['moderation_state']['widget'][0]['state']['#options']['archived'])) {
-        $options['expired'] = $form['moderation_state']['widget'][0]['state']['#options']['archived'];
+        $options['archived'] = $form['moderation_state']['widget'][0]['state']['#options']['archived'];
       }
     }
 
