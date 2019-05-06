@@ -65,26 +65,25 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
     return;
   }
 
-  if (1 < count($form['moderation_state']['widget'][0]['state']['#options'])) {
+  // Enforce Draft state in forms.
+  if (!empty($form['moderation_state']['widget'][0]['state']['#options'])) {
     /** @var \Drupal\workflows\WorkflowInterface $workflow */
     $workflow = $moderation_info->getWorkflowForEntity($entity);
-
-    // Enforce Draft state in forms.
     $options = [
       'draft' => $workflow->getTypePlugin()->getState('draft')->label(),
     ];
-    // Remove access since Draft is the only option.
+    // Remove access because Draft is the only option.
     $form['moderation_state']['widget'][0]['state']['#access'] = FALSE;
+    $form['moderation_state']['widget'][0]['state']['#default_value'] = 'draft';
 
+    // Exceptions for 'Published' state.
     if (_oe_editorial_corporate_workflow_is_last_revision_published($entity)) {
-      // Restore access, the node is published and not only Draft is available.
-      $form['moderation_state']['widget'][0]['state']['#access'] = TRUE;
-      // These are exception since they have to be available on edit form.
+      // 'Expired' and 'Archived' are only available through 'Edit form'
+      // and they always present together.
       if (isset($form['moderation_state']['widget'][0]['state']['#options']['expired'])) {
         $options['expired'] = $form['moderation_state']['widget'][0]['state']['#options']['expired'];
-      }
-      if (isset($form['moderation_state']['widget'][0]['state']['#options']['archived'])) {
         $options['archived'] = $form['moderation_state']['widget'][0]['state']['#options']['archived'];
+        $form['moderation_state']['widget'][0]['state']['#access'] = TRUE;
       }
     }
 

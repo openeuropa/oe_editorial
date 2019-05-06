@@ -10,7 +10,7 @@ use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 /**
  * Service provider.
  */
-class OeEditorialCorporateWorkflowServiceProvider implements ServiceModifierInterface {
+class CorporateWorkflowServiceProvider implements ServiceModifierInterface {
 
   /**
    * {@inheritdoc}
@@ -18,7 +18,7 @@ class OeEditorialCorporateWorkflowServiceProvider implements ServiceModifierInte
   public function alter(ContainerBuilder $container): void {
     if ($container->has('content_moderation.state_transition_validation')) {
       $definition = $container->getDefinition('content_moderation.state_transition_validation');
-      $definition->setClass('Drupal\oe_editorial_corporate_workflow\OeStateTransitionValidation');
+      $definition->setClass('Drupal\oe_editorial_corporate_workflow\CorporateWorkflowStateTransitionValidation');
     }
   }
 

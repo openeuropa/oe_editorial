@@ -3,11 +3,11 @@ Feature: Corporate editorial workflow
   As a content editor
   I can moderate content through different states by different roles
 
+  @run
   Scenario: As an Author user, I can create a Draft demo content and I can send it for Needs Review.
     Given I am logged in as a user with the "Author" role
     When I visit "the demo content creation page"
-    Then I should have the following options for the "Save as" select:
-      | Draft |
+    Then I should not see "Save as"
     When I fill in "Title" with "Workflow demo"
     And I press "Save"
     And I visit "the content administration page"

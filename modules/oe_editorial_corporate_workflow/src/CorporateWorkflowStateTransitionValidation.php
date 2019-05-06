@@ -13,16 +13,26 @@ use Drupal\workflows\StateInterface;
 /**
  * Override StateTransitionValidation.
  */
-class OeStateTransitionValidation extends StateTransitionValidation implements StateTransitionValidationInterface {
+class CorporateWorkflowStateTransitionValidation extends StateTransitionValidation implements StateTransitionValidationInterface {
 
   /**
    * {@inheritdoc}
    */
   public function getValidTransitions(ContentEntityInterface $entity, AccountInterface $user): array {
+    $valid_transitions = [];
     $workflow = $this->moderationInfo->getWorkflowForEntity($entity);
     $current_state = $entity->moderation_state->value ? $workflow->getTypePlugin()->getState($entity->moderation_state->value) : $workflow->getTypePlugin()->getInitialState($entity);
+    $next_transitions = $this->getNextTransitions($current_state, $entity);
 
-    return $entity->isNew() || $entity->isNewRevision() ? $current_state->getTransitions() : $this->getNextTransitions($current_state, $entity);
+    // Look for permission gap in the transition chain leave the valid ones.
+    foreach ($next_transitions as $key => $transition) {
+      if (!$user->hasPermission('use ' . $workflow->id() . ' transition ' . $transition->id())) {
+        break;
+      }
+      $valid_transitions[$key] = $transition;
+    }
+
+    return $valid_transitions;
   }
 
   /**
