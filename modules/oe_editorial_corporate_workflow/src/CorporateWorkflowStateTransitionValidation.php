@@ -24,7 +24,7 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
     $current_state = $entity->moderation_state->value ? $workflow->getTypePlugin()->getState($entity->moderation_state->value) : $workflow->getTypePlugin()->getInitialState($entity);
     $next_transitions = $this->getNextTransitions($current_state, $entity);
 
-    // Look for permission gap in the transition chain leave the valid ones.
+    // Look for permission gap in the transition chain and leave the valid ones.
     foreach ($next_transitions as $key => $transition) {
       if (!$user->hasPermission('use ' . $workflow->id() . ' transition ' . $transition->id())) {
         break;
@@ -36,7 +36,7 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
   }
 
   /**
-   * Get the next state up in the workflow chain based on the actual state.
+   * Get the next transition up in the workflow chain based on the actual state.
    *
    * @param \Drupal\workflows\StateInterface $current_state
    *   The actual state.
@@ -50,18 +50,21 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
    */
   protected function getNextTransitions(StateInterface $current_state, ContentEntityInterface $entity, &$next_transitions = NULL): array {
     $transitions = $current_state->getTransitions();
-    $next_transition = end($transitions);
-    $next_state = $next_transition->to();
+    if (empty($next_transitions)) {
+      $next_transitions = $transitions;
+    }
+    $upcoming_transition = end($transitions);
+    $upcoming_state = $upcoming_transition->to();
 
-    if ($next_state->id() != $entity->moderation_state->value) {
-      $next_transitions[$next_transition->id()] = $next_transition;
+    if ($upcoming_state->id() != $entity->moderation_state->value) {
+      $next_transitions[$upcoming_transition->id()] = $upcoming_transition;
 
-      // Exception to include Archive beside Expired state.
+      // Exception to include Archive with Expired state.
       if (isset($transitions['published_to_archived'])) {
         $next_transitions['published_to_archived'] = $transitions['published_to_archived'];
       }
 
-      $this->getNextTransitions($next_state, $entity, $next_transitions);
+      $this->getNextTransitions($upcoming_state, $entity, $next_transitions);
     }
 
     return $next_transitions;

@@ -92,6 +92,26 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
 }
 
 /**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Make sure that the up next state is selected in the widget.
+ */
+function oe_editorial_corporate_workflow_form_content_moderation_entity_moderation_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $node = \Drupal::routeMatch()->getParameter('node');
+  /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
+  $moderation_info = \Drupal::service('content_moderation.moderation_information');
+  /** @var \Drupal\workflows\WorkflowInterface $workflow */
+  $workflow = $moderation_info->getWorkflowForEntity($node);
+
+  if (count($form['new_state']['#options']) > 1) {
+    $transition = end($workflow->getTypePlugin()->getTransitionsForState($node->moderation_state->value));
+    if (in_array($transition->to()->id(), array_keys($form['new_state']['#options']))) {
+      $form['new_state']['#default_value'] = $transition->to()->id();
+    }
+  }
+}
+
+/**
  * Helper function to determine if the last revision is published.
  *
  * @param \Drupal\node\NodeInterface $node

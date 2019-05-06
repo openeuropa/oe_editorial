@@ -10,7 +10,7 @@ use Drupal\Core\DependencyInjection\ServiceModifierInterface;
 /**
  * Service provider.
  */
-class CorporateWorkflowServiceProvider implements ServiceModifierInterface {
+class OeEditorialCorporateWorkflowServiceProvider implements ServiceModifierInterface {
 
   /**
    * {@inheritdoc}
