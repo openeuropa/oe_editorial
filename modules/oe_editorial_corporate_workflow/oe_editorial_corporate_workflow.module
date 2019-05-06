@@ -97,6 +97,10 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
  * Make sure that the up next state is selected in the widget.
  */
 function oe_editorial_corporate_workflow_form_content_moderation_entity_moderation_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if (empty($form['new_state']['#options'])) {
+    return;
+  }
+
   $node = \Drupal::routeMatch()->getParameter('node');
   /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
   $moderation_info = \Drupal::service('content_moderation.moderation_information');
@@ -104,7 +108,8 @@ function oe_editorial_corporate_workflow_form_content_moderation_entity_moderati
   $workflow = $moderation_info->getWorkflowForEntity($node);
 
   if (count($form['new_state']['#options']) > 1) {
-    $transition = end($workflow->getTypePlugin()->getTransitionsForState($node->moderation_state->value));
+    $upcoming_transitions = $workflow->getTypePlugin()->getTransitionsForState($node->moderation_state->value);
+    $transition = end($upcoming_transitions);
     if (in_array($transition->to()->id(), array_keys($form['new_state']['#options']))) {
       $form['new_state']['#default_value'] = $transition->to()->id();
     }
