@@ -1,10 +1,18 @@
 # Change Log
 
+## [0.2.0](https://github.com/openeuropa/oe_editorial/tree/0.2.0) (2019-05-06)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/0.1.1...0.2.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-1813: Upgrade to 8.7 [\#22](https://github.com/openeuropa/oe_editorial/pull/22) ([upchuk](https://github.com/upchuk))
+
 ## [0.1.1](https://github.com/openeuropa/oe_editorial/tree/0.1.1) (2019-04-26)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/0.1.0...0.1.1)
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for release 0.1.1. [\#21](https://github.com/openeuropa/oe_editorial/pull/21) ([ademarco](https://github.com/ademarco))
 - Fixing the menu local task alter moderation check. [\#20](https://github.com/openeuropa/oe_editorial/pull/20) ([upchuk](https://github.com/upchuk))
 
 ## [0.1.0](https://github.com/openeuropa/oe_editorial/tree/0.1.0) (2019-04-25)
