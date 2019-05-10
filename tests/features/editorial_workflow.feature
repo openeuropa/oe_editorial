@@ -6,6 +6,7 @@ Feature: Corporate editorial workflow
   Scenario: As an Author user, I can create a Draft demo content and I can send it for Needs Review.
     Given I am logged in as a user with the "Author" role
     When I visit "the demo content creation page"
+    # The moderation state selection is not visible on edit forms.
     Then I should not see "Save as"
     When I fill in "Title" with "Workflow demo"
     And I press "Save"
@@ -150,7 +151,7 @@ Feature: Corporate editorial workflow
     # Confirmation page.
     Then I should see "Are you sure you want to revert to the revision"
 
-  Scenario: As a user with combined roles I can publish a node directly can move to Archived via the Edit form.
+  Scenario: As a user with combined roles I can publish a node directly and after I can move it to Archived via the Edit form.
     Given I am logged in as a user with the "Author, Reviewer, Validator" roles
     And I visit "the demo content creation page"
     And I fill in "Title" with "Workflow demo"

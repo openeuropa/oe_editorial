@@ -51,11 +51,9 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
    * Get the next transition in the workflow chain based on the actual state.
    *
    * This only works in one direction: next in the chain and never back.
-   *
    * The chain ends whenever one of the following conditions are met:
-   *
-   * * the next transition is to a state equal to the current entity state
-   * * the next transition is to the Expired state while the current entity
+   * - the next transition is to a state equal to the current entity state
+   * - the next transition is to the Expired state while the current entity
    * state is Archived. This is because the two are on the same level in the
    * chain.
    *
