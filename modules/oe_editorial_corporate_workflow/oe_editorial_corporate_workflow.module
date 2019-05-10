@@ -54,7 +54,7 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() for the Node form.
  */
 function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   /** @var \Drupal\node\NodeInterface $node */
@@ -65,42 +65,47 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
     return;
   }
 
-  // Enforce Draft state in forms.
-  if (!empty($form['moderation_state']['widget'][0]['state']['#options'])) {
-    /** @var \Drupal\workflows\WorkflowInterface $workflow */
-    $workflow = $moderation_info->getWorkflowForEntity($entity);
-    $options = [
-      'draft' => $workflow->getTypePlugin()->getState('draft')->label(),
-    ];
-    // Remove access because Draft is the only option.
-    $form['moderation_state']['widget'][0]['state']['#access'] = FALSE;
-    $form['moderation_state']['widget'][0]['state']['#default_value'] = 'draft';
-
-    // Exceptions for 'Published' state.
-    if (_oe_editorial_corporate_workflow_is_last_revision_published($entity)) {
-      // 'Expired' and 'Archived' are only available through 'Edit form'
-      // and they always present together.
-      if (isset($form['moderation_state']['widget'][0]['state']['#options']['expired'])) {
-        $options['expired'] = $form['moderation_state']['widget'][0]['state']['#options']['expired'];
-        $options['archived'] = $form['moderation_state']['widget'][0]['state']['#options']['archived'];
-        $form['moderation_state']['widget'][0]['state']['#access'] = TRUE;
-      }
-    }
-
-    $form['moderation_state']['widget'][0]['state']['#options'] = $options;
+  $form_options = &$form['moderation_state']['widget'][0]['state']['#options'];
+  if (empty($form_options)) {
+    return;
   }
+
+  // Enforce Draft state in forms.
+  /** @var \Drupal\workflows\WorkflowInterface $workflow */
+  $workflow = $moderation_info->getWorkflowForEntity($entity);
+  $options = [
+    'draft' => $workflow->getTypePlugin()->getState('draft')->label(),
+  ];
+
+  // Remove access because Draft is the only option.
+  $form['moderation_state']['widget'][0]['state']['#access'] = FALSE;
+  $form['moderation_state']['widget'][0]['state']['#default_value'] = 'draft';
+
+  // However, if the node is in Published state.
+  if (_oe_editorial_corporate_workflow_is_last_revision_published($entity)) {
+    // 'Expired' and 'Archived' are only available through 'Edit form'
+    // and they always show up together.
+    if (isset($form_options['expired'])) {
+      $options['expired'] = $form_options['expired'];
+      $options['archived'] = $form_options['archived'];
+      $form['moderation_state']['widget'][0]['state']['#access'] = TRUE;
+    }
+  }
+
+  $form_options = $options;
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_FORM_ID_alter() of the content moderation block form.
  *
- * Make sure that the up next state is selected in the widget.
+ * Make sure next state is selected in the widget.
  */
 function oe_editorial_corporate_workflow_form_content_moderation_entity_moderation_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (empty($form['new_state']['#options'])) {
     return;
   }
 
+  /** @var \Drupal\node\NodeInterface $node */
   $node = \Drupal::routeMatch()->getParameter('node');
   /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
   $moderation_info = \Drupal::service('content_moderation.moderation_information');
@@ -126,6 +131,11 @@ function oe_editorial_corporate_workflow_form_content_moderation_entity_moderati
  *   True if the node is published.
  */
 function _oe_editorial_corporate_workflow_is_last_revision_published(NodeInterface $node): bool {
+  // We bail out if the node is new (has no ID).
+  if ($node->isNew()) {
+    return FALSE;
+  }
+
   /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
   $moderation_info = \Drupal::service('content_moderation.moderation_information');
   $storage = \Drupal::entityTypeManager()->getStorage($node->getEntityTypeId());

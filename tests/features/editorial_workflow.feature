@@ -61,8 +61,8 @@ Feature: Corporate editorial workflow
       | Needs Review |
       | Validated    |
       | Published    |
-      | Expired      |
       | Archived     |
+      | Expired      |
     When I select "Published" from "Change to"
     And I press "Apply"
     Then I should not see the link "New draft"
@@ -157,8 +157,8 @@ Feature: Corporate editorial workflow
       | Request Validation |
       | Validated          |
       | Published          |
-      | Expired            |
       | Archived           |
+      | Expired            |
     # Node is in published state.
     When I select "Published" from "Change to"
     And I press "Apply"
