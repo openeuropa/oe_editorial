@@ -124,29 +124,33 @@ Feature: Corporate editorial workflow
     And I click Revisions
     Then I should see "Revisions for Workflow demo"
 
-  Scenario: As a user with combined roles I can edit and publish a node and I can revert revisions.
+  Scenario: As a user with combined roles I can edit and use all transitions and I can revert revisions.
     Given I am logged in as a user with the "Author, Reviewer, Validator" roles
     And I visit "the demo content creation page"
     And I fill in "Title" with "Workflow demo"
     And I press "Save"
-    When I select "Needs Review" from "Change to"
+    # Needs Review is the selected item.
     And I press "Apply"
     Then I should see the link "Edit draft"
-    When I select "Request Validation" from "Change to"
+    And the current workflow state should be "Needs Review"
+    # Request Validation is the selected item
     And I press "Apply"
     Then I should see the link "Edit draft"
-    When I select "Validated" from "Change to"
+    And the current workflow state should be "Request Validation"
+    # Validated is the selected item.
     And I press "Apply"
     Then I should see the link "Edit draft"
-    # Node is in published state.
-    And I select "Published" from "Change to"
+    And the current workflow state should be "Validated"
+    # Published is the selected state.
     And I press "Apply"
+    Then I should not see the link "Edit draft"
+    And I should see the link "View published"
     When I click Revisions
     And I click Revert
     # Confirmation page.
     Then I should see "Are you sure you want to revert to the revision"
 
-  Scenario: As a user with combined roles I can edit and publish a node directly.
+  Scenario: As a user with combined roles I can publish a node directly can move to Archived via the Edit form.
     Given I am logged in as a user with the "Author, Reviewer, Validator" roles
     And I visit "the demo content creation page"
     And I fill in "Title" with "Workflow demo"
@@ -163,7 +167,23 @@ Feature: Corporate editorial workflow
     When I select "Published" from "Change to"
     And I press "Apply"
     Then I should not see "Edit draft"
-    And I should see "New draft"
+    And I should see "View published"
+    # Move the node into Archived state that is unpublished as well.
+    When I click "New draft"
+    Then I should have the following options for the "Change to" select:
+      | Draft    |
+      | Expired  |
+      | Archived |
+    When I select "Archived" from "Change to"
+    And I press "Save"
+    Then I should not see "View published"
+    And the current workflow state should be "Archived"
+    And I should have the following options for the "Change to" select:
+      | Draft              |
+      | Needs Review       |
+      | Request Validation |
+      | Validated          |
+      | Published          |
 
   Scenario: As a Author and Validator user, I can move published content to Archived or Expired.
     Given users:
@@ -180,6 +200,14 @@ Feature: Corporate editorial workflow
       | Draft    |
       | Expired  |
       | Archived |
+    When I select "Archived" from "Change to"
+    And I press "Save"
+    Then I should not see "View published"
+    And the current workflow state should be "Archived"
+    # As an Author and Validator I can't skip Reviewer transitions.
+    And I should have the following options for the "Change to" select:
+      | Draft              |
+      | Needs Review       |
 
   Scenario: As an Author, when node has only published revision I see "New draft"
   and when a node has new draft after the published revision I see "Edit draft" on the node tabs.
