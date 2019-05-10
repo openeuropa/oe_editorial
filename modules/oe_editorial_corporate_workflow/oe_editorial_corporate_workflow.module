@@ -54,7 +54,9 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
 }
 
 /**
- * Implements hook_form_FORM_ID_alter() for the Node form.
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * For the Node form.
  */
 function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   /** @var \Drupal\node\NodeInterface $node */
@@ -96,9 +98,10 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
 }
 
 /**
- * Implements hook_form_FORM_ID_alter() of the content moderation block form.
+ * Implements hook_form_FORM_ID_alter().
  *
- * Make sure next state is selected in the widget.
+ * For the content moderation block form to make sure next state is selected
+ * in the widget.
  */
 function oe_editorial_corporate_workflow_form_content_moderation_entity_moderation_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   if (empty($form['new_state']['#options'])) {

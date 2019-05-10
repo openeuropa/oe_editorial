@@ -65,12 +65,12 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
    *   The entity under moderation.
    * @param array $next_transitions
    *   The next available transitions in the chain that we keep track of by
-   * recursion.
+   *   recursion.
    *
    * @return array
    *   The next available transitions in the chain.
    */
-  protected function getNextTransitions(StateInterface $current_state, ContentEntityInterface $entity, &$next_transitions = []): array {
+  protected function getNextTransitions(StateInterface $current_state, ContentEntityInterface $entity, array &$next_transitions = []): array {
     $transitions = $current_state->getTransitions();
     if (empty($next_transitions)) {
       $next_transitions = $transitions;
