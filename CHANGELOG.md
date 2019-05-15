@@ -1,10 +1,18 @@
 # Change Log
 
-## [0.2.0](https://github.com/openeuropa/oe_editorial/tree/0.2.0) (2019-05-06)
+## [1.0.0-beta1](https://github.com/openeuropa/oe_editorial/tree/1.0.0-beta1) (2019-05-15)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/0.2.0...1.0.0-beta1)
+
+**Closed issues:**
+
+- Create release 1.0.0-beta1 [\#25](https://github.com/openeuropa/oe_editorial/issues/25)
+
+## [0.2.0](https://github.com/openeuropa/oe_editorial/tree/0.2.0) (2019-05-07)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/0.1.1...0.2.0)
 
 **Merged pull requests:**
 
+- OPENEUROPA-1813: Create release 0.2.0. [\#24](https://github.com/openeuropa/oe_editorial/pull/24) ([voidtek](https://github.com/voidtek))
 - OPENEUROPA-1813: Upgrade to 8.7 [\#22](https://github.com/openeuropa/oe_editorial/pull/22) ([upchuk](https://github.com/upchuk))
 
 ## [0.1.1](https://github.com/openeuropa/oe_editorial/tree/0.1.1) (2019-04-26)
