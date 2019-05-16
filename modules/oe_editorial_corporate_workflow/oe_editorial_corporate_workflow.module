@@ -21,7 +21,9 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
 
   /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
   $moderation_info = \Drupal::service('content_moderation.moderation_information');
-  if (!$moderation_info->isModeratedEntity($node)) {
+  /** @var \Drupal\workflows\WorkflowInterface $workflow */
+  $workflow = $moderation_info->getWorkflowForEntity($node);
+  if (!$workflow || $workflow->id() !== 'oe_corporate_workflow') {
     return;
   }
 
@@ -61,9 +63,14 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
 function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   /** @var \Drupal\node\NodeInterface $node */
   $entity = $form_state->getFormObject()->getEntity();
+  if (!$entity instanceof NodeInterface) {
+    return;
+  }
   /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
   $moderation_info = \Drupal::service('content_moderation.moderation_information');
-  if ($entity instanceof NodeInterface && !$moderation_info->isModeratedEntity($entity)) {
+  /** @var \Drupal\workflows\WorkflowInterface $workflow */
+  $workflow = $moderation_info->getWorkflowForEntity($entity);
+  if (!$workflow || $workflow->id() !== 'oe_corporate_workflow') {
     return;
   }
 
