@@ -81,28 +81,19 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
     $next_transition = end($transitions);
     $next_state = $next_transition->to();
 
+    // Add the next transition to the list of available transitions.
+    $next_transitions[$next_transition->id()] = $next_transition;
+
     if ($next_state->id() === 'expired') {
       // The transition to Expired is already included in the recursion below so
       // we just need to include the transition to Archived as well in the list
       // of possible next transitions.
       $next_transitions['published_to_archived'] = $transitions['published_to_archived'];
 
-      if ($entity->moderation_state->value === 'archived') {
-        // If the current state is either Archived or Expired, it means we
-        // reached the end of the chain and return the transitions.
-        return $next_transitions;
-      }
-    }
-
-    if ($next_state->id() === $entity->moderation_state->value) {
-      // If the next state is the same as the current state, it means we reached
-      // the end of the chain and caught up with the current state again. In
-      // this case we return the next transitions.
+      // If the current state is either Expired, it means we
+      // reached the end of the chain and return the transitions.
       return $next_transitions;
     }
-
-    // Add the next transition to the list of available transitions.
-    $next_transitions[$next_transition->id()] = $next_transition;
 
     // If the next state is not the same as the current state, then we recurse
     // to retrieve the next transitions in the chain until we reach the
