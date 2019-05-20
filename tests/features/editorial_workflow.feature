@@ -169,6 +169,13 @@ Feature: Corporate editorial workflow
     And I press "Apply"
     Then I should not see "Edit draft"
     And I should see "View published"
+    # The revisions are created for intermediary states when shortcuts are used.
+    And the node "Workflow demo" should have "5" number of revisions with the following states:
+      | Draft              |
+      | Needs Review       |
+      | Request Validation |
+      | Validated          |
+      | Published          |
     # Move the node into Archived state that is unpublished as well.
     When I click "New draft"
     Then I should have the following options for the "Change to" select:
@@ -185,6 +192,7 @@ Feature: Corporate editorial workflow
       | Request Validation |
       | Validated          |
       | Published          |
+      | Expired            |
 
   Scenario: As a Author and Validator user, I can move published content to Archived or Expired.
     Given users:
@@ -207,8 +215,8 @@ Feature: Corporate editorial workflow
     And the current workflow state should be "Archived"
     # As an Author and Validator I can't skip Reviewer transitions.
     And I should have the following options for the "Change to" select:
-      | Draft              |
-      | Needs Review       |
+      | Draft        |
+      | Needs Review |
 
   Scenario: As an Author, when node has only published revision I see "New draft"
   and when a node has new draft after the published revision I see "Edit draft" on the node tabs.

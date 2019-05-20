@@ -4,10 +4,12 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_editorial\Behat;
 
+use Behat\Behat\Tester\Exception\PendingException;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Element\NodeElement;
 use Behat\Gherkin\Node\TableNode;
+use Drupal\node\NodeInterface;
 use PHPUnit\Framework\Assert;
 
 /**
@@ -89,6 +91,75 @@ class FeatureContext extends RawDrupalContext {
     if ($element->getTagName() !== $type) {
       throw new ExpectationException("The element is not a '$type'' field.", $this->getSession());
     }
+  }
+
+  /**
+   * Checks the given node with title has the number of revisions and states.
+   *
+   * // phpcs:disable
+   * @Then the node :title should have :number number of revisions with the following states:
+   * | state 1 |
+   * | state 2 |
+   * |   ...   |
+   * // phpcs:enable
+   */
+  public function theNodeShouldHaveNumberForRevisionsWithTheFollowingStates(string $title, int $number, TableNode $options) {
+    $node = $this->getNodeByTitle($title);
+    /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
+    $storage = \Drupal::entityTypeManager()->getStorage($node->getEntityTypeId());
+    $rids = $storage->revisionIds($node);
+
+    if (count($rids) !== $number) {
+      throw new ExpectationException('The number of revision doesn\'t match. Expected: ' . count($rids), $this->getSession());
+    }
+
+    // Retrieve the options table from the test scenario and flatten it.
+    $expected_states = $options->getRows();
+    array_walk($expected_states, function (&$value) {
+      $value = reset($value);
+    });
+
+    /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
+    $moderation_info = \Drupal::service('content_moderation.moderation_information');
+    /** @var \Drupal\workflows\WorkflowInterface $workflow */
+    $workflow = $moderation_info->getWorkflowForEntity($node);
+    /** @var \Drupal\workflows\WorkflowTypeInterface $workflow_plugin */
+    $workflow_plugin = $workflow->getTypePlugin();
+
+    // Retrieve the states from all the revisions and flatten it.
+    $revision_states = [];
+    foreach ($rids as $rid) {
+      $revision = $storage->loadRevision($rid);
+      $revision_states[] = $workflow_plugin->getState($revision->moderation_state->value)->label();
+    }
+
+    Assert::assertEquals($expected_states, $revision_states);
+  }
+
+  /**
+   * Retrieves a node by its title.
+   *
+   * @param string $title
+   *   The node title.
+   *
+   * @return \Drupal\node\NodeInterface
+   *   The node entity.
+   */
+  protected function getNodeByTitle(string $title): NodeInterface {
+    $storage = \Drupal::entityTypeManager()->getStorage('node');
+    $nodes = $storage->loadByProperties([
+      'title' => $title,
+    ]);
+
+    if (!$nodes) {
+      throw new \Exception("Could not find node with title '$title'.");
+    }
+
+    if (count($nodes) > 1) {
+      throw new \Exception("Multiple nodes with title '$title' found.");
+    }
+
+    return reset($nodes);
   }
 
 }
