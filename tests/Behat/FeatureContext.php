@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_editorial\Behat;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Element\NodeElement;
