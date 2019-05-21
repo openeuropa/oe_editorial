@@ -5,9 +5,9 @@
  * OpenEuropa Editorial Corporate Workflow install.
  */
 
-use Drupal\user\Entity\Role;
-
 declare(strict_types = 1);
+
+use Drupal\user\Entity\Role;
 
 /**
  * Add missing permission for Validator.
