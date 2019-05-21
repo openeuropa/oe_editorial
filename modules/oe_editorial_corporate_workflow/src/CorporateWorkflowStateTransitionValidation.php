@@ -24,6 +24,10 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
   public function getValidTransitions(ContentEntityInterface $entity, AccountInterface $user): array {
     $valid_transitions = [];
     $workflow = $this->moderationInfo->getWorkflowForEntity($entity);
+    if ($workflow->id() !== 'oe_corporate_workflow') {
+      return parent::getValidTransitions($entity, $user);
+    }
+
     $current_state = $entity->moderation_state->value ? $workflow->getTypePlugin()->getState($entity->moderation_state->value) : $workflow->getTypePlugin()->getInitialState($entity);
     $next_transitions = $this->getNextTransitions($current_state, $entity);
 
@@ -51,11 +55,7 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
    * Get the next transition in the workflow chain based on the actual state.
    *
    * This only works in one direction: next in the chain and never back.
-   * The chain ends whenever one of the following conditions are met:
-   * - the next transition is to a state equal to the current entity state
-   * - the next transition is to the Expired state while the current entity
-   * state is Archived. This is because the two are on the same level in the
-   * chain.
+   * The chain ends whenever we reach the end of the chain (Expired).
    *
    * @param \Drupal\workflows\StateInterface $current_state
    *   The actual state.
@@ -85,19 +85,18 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
     $next_transitions[$next_transition->id()] = $next_transition;
 
     if ($next_state->id() === 'expired') {
-      // The transition to Expired is already included in the recursion below so
-      // we just need to include the transition to Archived as well in the list
-      // of possible next transitions.
+      // The transition to Expired is already included above so we just need to
+      // include the transition to Archived as well in the list of possible next
+      // transitions.
       $next_transitions['published_to_archived'] = $transitions['published_to_archived'];
 
-      // If the current state is either Expired, it means we
-      // reached the end of the chain and return the transitions.
+      // At this point we reached the end of the chain so we return the
+      // transitions.
       return $next_transitions;
     }
 
-    // If the next state is not the same as the current state, then we recurse
-    // to retrieve the next transitions in the chain until we reach the
-    // starting point again. See above the possible end points.
+    // If we haven't reached the end of the chain, then we recurse to retrieve
+    // the next transitions in the chain until we reach the end.
     return $this->getNextTransitions($next_state, $entity, $next_transitions);
   }
 

@@ -139,7 +139,8 @@ function oe_editorial_corporate_workflow_form_content_moderation_entity_moderati
 }
 
 /**
- * Submit call to handle revisions when shortcuts are used on moderation form.
+ * Submit callback to handle revisions when shortcuts are used on the moderation
+ * form.
  *
  * We need to make sure that intermediary states and revisions are saved so that
  * related events are executed at every step.
