@@ -7,11 +7,8 @@
 
 declare(strict_types = 1);
 
-use Drupal\Core\Entity\ContentEntityInterface;
-use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
-use Drupal\workflows\WorkflowTypeInterface;
 
 /**
  * Implements hook_menu_local_tasks_alter().
@@ -152,72 +149,9 @@ function oe_editorial_corporate_workflow_form_content_moderation_entity_moderati
  *   The form state.
  */
 function _oe_editorial_corporate_workflow_moderation_submit(array &$form, FormStateInterface &$form_state): void {
-  /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
-  $entity = $form_state->get('entity');
-  /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
-  $moderation_info = \Drupal::service('content_moderation.moderation_information');
-  /** @var \Drupal\workflows\WorkflowInterface $workflow */
-  $workflow = $moderation_info->getWorkflowForEntity($entity);
-  /** @var \Drupal\workflows\WorkflowTypeInterface $workflow_plugin */
-  $workflow_plugin = $workflow->getTypePlugin();
-
-  // We start the saving from the current state of the entity and we proceed
-  // until the target state that was selected from the moderation form.
-  $current_state = $entity->get('moderation_state')->value;
-  $target_state = $form_state->getValue('new_state');
-
-  _oe_editorial_corporate_workflow_do_transition_revisions($current_state, $target_state, $workflow_plugin, $entity, $form_state);
-}
-
-/**
- * Helper function to do state transitions and revisions to the target state.
- *
- * States between the current and target should not be skipped with their
- * revisions. This function ensures that the workflow steps are executed
- * through the chain until the selected target state and stops before.
- *
- * @param string $current_state
- *   The current state of the entity.
- * @param string $target_state
- *   The target state selected from the moderation form.
- * @param \Drupal\workflows\WorkflowTypeInterface $workflow_plugin
- *   The workflow type plugin.
- * @param \Drupal\Core\Entity\ContentEntityInterface $entity
- *   The actual entity that we are saving revisions for.
- * @param \Drupal\Core\Form\FormStateInterface $form_state
- *   The form state of the form we are submitting.
- */
-function _oe_editorial_corporate_workflow_do_transition_revisions($current_state, $target_state, WorkflowTypeInterface $workflow_plugin, ContentEntityInterface $entity, FormStateInterface $form_state): void {
-  // We need to stop before the last transition, since the following
-  // form submit will make that transition.
-  if ($workflow_plugin->hasTransitionFromStateToState($current_state, $target_state)) {
-    return;
-  }
-
-  // Take next transition in the chain.
-  $transitions = $workflow_plugin->getTransitionsForState($current_state);
-  /** @var \Drupal\workflows\TransitionInterface $next_transition */
-  $next_transition = end($transitions);
-
-  // Create a new revision for the transition change and save the entity.
-  /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
-  $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
-  $entity = $storage->createRevision($entity, $entity->isDefaultRevision());
-  // Set the next state id.
-  $entity->set('moderation_state', $next_transition->to()->id());
-
-  // Ensure that we are carrying over the revision log message.
-  if ($entity instanceof RevisionLogInterface) {
-    $entity->setRevisionCreationTime(\Drupal::time()->getRequestTime());
-    $entity->setRevisionLogMessage($form_state->getValue('revision_log'));
-    $entity->setRevisionUserId(\Drupal::currentUser()->id());
-  }
-  $entity->save();
-
-  // We need to repeat this operation until we reach the target state.
-  // Once we see that the target state is the next the following form submit
-  // will do the last entity save.
-  _oe_editorial_corporate_workflow_do_transition_revisions($entity->get('moderation_state')->value, $target_state, $workflow_plugin, $entity, $form_state);
+  /** @var \Drupal\oe_editorial_corporate_workflow\Services\ShortcutTransitionHandler $shortcut_handler */
+  $shortcut_handler = \Drupal::service('oe_editorial_corporate_workflow.shortcut_transition_handler');
+  $shortcut_handler->handleShortcutTransitions($form, $form_state);
 }
 
 /**
