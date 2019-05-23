@@ -3,5 +3,5 @@ services:
     class: Drupal\oe_editorial_corporate_workflow\CorporateWorkflowInstaller
     arguments: ['@config.factory', '@entity_type.manager']
   oe_editorial_corporate_workflow.shortcut_transition_handler:
-    class: Drupal\oe_editorial_corporate_workflow\Services\ShortcutTransitionHandler
+    class: Drupal\oe_editorial_corporate_workflow\Services\ShortcutRevisionHandler
     arguments: ['@content_moderation.moderation_information', '@current_user', '@entity_type.manager', '@datetime.time']

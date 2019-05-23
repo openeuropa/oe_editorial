@@ -6,17 +6,17 @@ namespace Drupal\oe_editorial_corporate_workflow\Services;
 
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\content_moderation\ModerationInformationInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\workflows\WorkflowTypeInterface;
 
 /**
  * Handler for creating state transition revisions when shortcuts are used.
  */
-class ShortcutTransitionHandler implements ShortcutTransitionHandlerInterface {
+class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
 
   /**
    * The moderation information service.
@@ -33,7 +33,7 @@ class ShortcutTransitionHandler implements ShortcutTransitionHandlerInterface {
   protected $currentUser;
 
   /**
-   * Entity type manager to get entity storage.
+   * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
@@ -47,7 +47,7 @@ class ShortcutTransitionHandler implements ShortcutTransitionHandlerInterface {
   protected $time;
 
   /**
-   * Constructs a new StateTransitionValidation.
+   * Constructs a new ShortcutRevisionHandler.
    *
    * @param \Drupal\content_moderation\ModerationInformationInterface $moderation_info
    *   The moderation information service.
@@ -68,9 +68,7 @@ class ShortcutTransitionHandler implements ShortcutTransitionHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function handleShortcutTransitions(array $form, FormStateInterface $form_state): void {
-    /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
-    $entity = $form_state->get('entity');
+  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL): void {
     /** @var \Drupal\workflows\WorkflowInterface $workflow */
     $workflow = $this->moderationInfo->getWorkflowForEntity($entity);
     /** @var \Drupal\workflows\WorkflowTypeInterface $workflow_plugin */
@@ -79,17 +77,11 @@ class ShortcutTransitionHandler implements ShortcutTransitionHandlerInterface {
     // We start the saving from the current state of the entity and we proceed
     // until the target state that was selected from the moderation form.
     $current_state = $entity->get('moderation_state')->value;
-    $target_state = $form_state->getValue('new_state');
-
-    $this->saveTransitionRevisions($current_state, $target_state, $workflow_plugin, $entity, $form_state);
+    $this->saveTransitionRevisions($current_state, $target_state, $workflow_plugin, $entity, $revision_message);
   }
 
   /**
-   * Function to save state transitions and revisions to the target state.
-   *
-   * States between the current and target should not be skipped with their
-   * revisions. This function ensures that the workflow steps are executed
-   * through the chain until the selected target state and stops before.
+   * Recursively saves the revisions between two states.
    *
    * @param string $current_state
    *   The current state of the entity.
@@ -99,12 +91,12 @@ class ShortcutTransitionHandler implements ShortcutTransitionHandlerInterface {
    *   The workflow type plugin.
    * @param \Drupal\Core\Entity\RevisionableInterface $entity
    *   The actual entity that we are saving revisions for.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   The form state of the form we are submitting.
+   * @param string $revision_message
+   *   The revision log message.
    */
-  protected function saveTransitionRevisions($current_state, $target_state, WorkflowTypeInterface $workflow_plugin, RevisionableInterface $entity, FormStateInterface $form_state): void {
-    // We need to stop before the last transition, since the following
-    // form submit will make that transition.
+  protected function saveTransitionRevisions($current_state, $target_state, WorkflowTypeInterface $workflow_plugin, RevisionableInterface $entity, $revision_message): void {
+    // We need to stop before the last transition because the creation of that
+    // revision is handled by core.
     if ($workflow_plugin->hasTransitionFromStateToState($current_state, $target_state)) {
       return;
     }
@@ -124,15 +116,15 @@ class ShortcutTransitionHandler implements ShortcutTransitionHandlerInterface {
     // Ensure that we are carrying over the revision log message.
     if ($entity instanceof RevisionLogInterface) {
       $entity->setRevisionCreationTime($this->time->getRequestTime());
-      $entity->setRevisionLogMessage($form_state->getValue('revision_log'));
+      if ($revision_message) {
+        $entity->setRevisionLogMessage($revision_message);
+      }
       $entity->setRevisionUserId($this->currentUser->id());
     }
     $entity->save();
 
     // We need to repeat this operation until we reach the target state.
-    // Once we see that the target state is the next the following form submit
-    // will do the last entity save.
-    $this->saveTransitionRevisions($entity->get('moderation_state')->value, $target_state, $workflow_plugin, $entity, $form_state);
+    $this->saveTransitionRevisions($entity->get('moderation_state')->value, $target_state, $workflow_plugin, $entity, $revision_message);
   }
 
 }
