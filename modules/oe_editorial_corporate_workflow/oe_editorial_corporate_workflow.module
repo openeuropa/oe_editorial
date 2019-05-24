@@ -115,7 +115,7 @@ function oe_editorial_corporate_workflow_form_content_moderation_entity_moderati
   }
 
   /** @var \Drupal\node\NodeInterface $node */
-  $node = \Drupal::routeMatch()->getParameter('node');
+  $node = $form_state->get('entity');
   /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
   $moderation_info = \Drupal::service('content_moderation.moderation_information');
   /** @var \Drupal\workflows\WorkflowInterface $workflow */
