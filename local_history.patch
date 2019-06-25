@@ -1,0 +1,215 @@
+Index: modules/oe_editorial_entity_version/src/EditorialEntityVersionInstaller.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- modules/oe_editorial_entity_version/src/EditorialEntityVersionInstaller.php	(date 1561467259000)
++++ modules/oe_editorial_entity_version/src/EditorialEntityVersionInstaller.php	(date 1561467259000)
+@@ -0,0 +1,87 @@
++<?php
++
++declare(strict_types = 1);
++
++namespace Drupal\oe_editorial_entity_version;
++
++use Drupal\Core\Config\ConfigFactoryInterface;
++use Drupal\Core\Entity\EntityTypeManagerInterface;
++use Drupal\field\Entity\FieldConfig;
++
++/**
++ * Handles the installation of the entity version for editorial workflows.
++ */
++class EditorialEntityVersionInstaller {
++
++  /**
++   * The config factory.
++   *
++   * @var \Drupal\Core\Config\ConfigFactoryInterface
++   */
++  protected $configFactory;
++
++  /**
++   * The field config.
++   *
++   * @var \Drupal\field\Entity\FieldConfig
++   */
++  protected $fieldConfig;
++
++  /**
++   * The field storage config.
++   *
++   * @var \Drupal\field\Entity\FieldStorageConfig
++   */
++  protected $fieldStorageConfig;
++
++  /**
++   * EditorialEntityVersionInstaller constructor.
++   *
++   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
++   *   The config factory.
++   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
++   *   The entity type manager.
++   */
++  public function __construct(ConfigFactoryInterface $configFactory, EntityTypeManagerInterface $entityTypeManager) {
++    $this->configFactory = $configFactory;
++    $this->fieldStorageConfig = $entityTypeManager->getStorage('field_config');
++  }
++
++  /**
++   * Assign entity version field to the bundles of the given workflow.
++   *
++   * @param string $workflow_id
++   *   The machine name of the workflow.
++   * @param array $default_value
++   *   The default value of the entity version field.
++   */
++  public function addEntityVersionFieldToWorkflowBundles(string $workflow_id, array $default_value = []): void {
++    // Get bundles associated with the corporate workflow and assign the
++    // entity version field to them.
++    $workflow_name = 'workflows.workflow.' . $workflow_id;
++    $corporate_workflow = $this->configFactory->getEditable($workflow_name);
++    $bundles = $corporate_workflow->get('type_settings.entity_types.node');
++
++    if (empty($bundles)) {
++      return;
++    }
++
++    $this->fieldStorageConfig::create([
++      'field_name' => 'version',
++      'entity_type' => 'node',
++      'type' => 'entity_version',
++    ])->save();
++
++    foreach ($bundles as $bundle) {
++      FieldConfig::create([
++        'entity_type' => 'node',
++        'field_name' => 'version',
++        'bundle' => $bundle,
++        'label' => 'Version',
++        'cardinality' => 1,
++        'translatable' => FALSE,
++        'default_value' => $default_value,
++      ])->save();
++    }
++  }
++}
+\ No newline at end of file
+Index: modules/oe_editorial_entity_version/oe_editorial_entity_version.services.yml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- modules/oe_editorial_entity_version/oe_editorial_entity_version.services.yml	(date 1561466876000)
++++ modules/oe_editorial_entity_version/oe_editorial_entity_version.services.yml	(date 1561466876000)
+@@ -0,0 +1,4 @@
++services:
++  oe_editorial_entity_version.entity_version_installer:
++    class: Drupal\oe_editorial_entity_version\EditorialEntityVersionInstaller
++    arguments: ['@config.factory', '@config.', '@?']
+Index: modules/oe_editorial_entity_version/oe_editorial_entity_version.install
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- modules/oe_editorial_entity_version/oe_editorial_entity_version.install	(date 1561466876000)
++++ modules/oe_editorial_entity_version/oe_editorial_entity_version.install	(date 1561466876000)
+@@ -78,5 +78,3 @@
+     ])->save();
+   }
+ }
+-
+-
+Index: modules/oe_editorial_entity_version/oe_editorial_entity_version.post_update.php
+===================================================================
+--- modules/oe_editorial_entity_version/oe_editorial_entity_version.post_update.php	(date 0)
++++ modules/oe_editorial_entity_version/oe_editorial_entity_version.post_update.php	(date 0)
+@@ -1,89 +0,0 @@
+-<?php
+-
+-/**
+- * @file
+- * Post update functions for Editorial Entity Version..
+- */
+-
+-declare(strict_types = 1);
+-
+-use Drupal\field\Entity\FieldConfig;
+-use Drupal\field\Entity\FieldStorageConfig;
+-
+-/**
+- * Assign the entity version field to bundles with the corporate workflow.
+- */
+-function oe_editorial_entity_version_post_update_add_version_field(): void {
+-  // Get bundles associated with the corporate workflow and assign the
+-  // entity version field to them.
+-  $corporate_workflow = \Drupal::configFactory()->getEditable('workflows.workflow.oe_corporate_workflow');
+-  $bundles = $corporate_workflow->get('type_settings.entity_types.node');
+-
+-  if (empty($bundles)) {
+-    return;
+-  }
+-
+-  if (!FieldStorageConfig::loadByName('node', 'version')){
+-    FieldStorageConfig::create([
+-      'field_name' => 'version',
+-      'entity_type' => 'node',
+-      'type' => 'entity_version',
+-    ])->save();
+-  }
+-
+-  foreach ($bundles as $bundle) {
+-    if (FieldConfig::loadByName('node', $bundle, 'version')) {
+-      continue;
+-    }
+-
+-    FieldConfig::create([
+-      'entity_type' => 'node',
+-      'field_name' => 'version',
+-      'bundle' => $bundle,
+-      'label' => 'Version',
+-      'cardinality' => 1,
+-      'translatable' => FALSE,
+-      'default_value' => [
+-        'major' => 0,
+-        'minor' => 1,
+-        'patch' => 0,
+-      ]
+-    ])->save();
+-  }
+-}
+-
+-/**
+- * Configure the entity version number rules for corporate workflow.
+- */
+-function oe_editorial_entity_version_post_update_configure_corporate workflow(): void {
+-  // Apply entity version number rules for the corporate workflow.
+-  $corporate_workflow = \Drupal::configFactory()->getEditable('workflows.workflow.oe_corporate_workflow');
+-  $corporate_workflow->set('third_party_settings', [
+-    'entity_version_workflows' => [
+-      'create_new_draft' => [
+-        'minor' => 'increase',
+-      ],
+-      'needs_review_to_draft' => [
+-        'minor' => 'increase',
+-      ],
+-      'request_validation_to_draft' => [
+-        'minor' => 'increase',
+-      ],
+-      'validated_to_draft' => [
+-        'minor' => 'increase',
+-      ],
+-      'published_to_draft' => [
+-        'minor' => 'increase',
+-      ],
+-      'archived_to_draft' => [
+-        'minor' => 'increase',
+-      ],
+-      'request_validation_to_validated' => [
+-        'major' => 'increase',
+-        'minor' => 'reset',
+-      ],
+-    ],
+-  ])->save();
+-}
+-
+-

@@ -24,7 +24,8 @@
         "openeuropa/task-runner": "~1.0-beta4",
         "phpunit/phpunit": "~6.0",
         "symfony/browser-kit": "~4.2.1",
-        "squizlabs/php_codesniffer": "~3.3.2"
+        "squizlabs/php_codesniffer": "~3.3.2",
+        "openeuropa/entity_version": "dev-OPENEUROPA-1912"
     },
     "scripts": {
         "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
@@ -35,6 +36,10 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
+        },
+        "openeuropa/entity_version": {
+            "type": "vcs",
+            "url": "https://github.com/openeuropa/entity_version.git"
         }
     },
     "autoload": {

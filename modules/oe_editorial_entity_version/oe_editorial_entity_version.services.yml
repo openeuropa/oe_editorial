@@ -1,0 +1,4 @@
+services:
+  oe_editorial_entity_version.entity_version_installer:
+    class: Drupal\oe_editorial_entity_version\EditorialEntityVersionInstaller
+    arguments: ['@config.factory', '@entity_type.manager']

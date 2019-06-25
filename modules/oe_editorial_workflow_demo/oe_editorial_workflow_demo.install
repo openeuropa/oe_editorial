@@ -12,6 +12,7 @@ declare(strict_types = 1);
  */
 function oe_editorial_workflow_demo_install(): void {
   \Drupal::service('oe_editorial_corporate_workflow.workflow_installer')->installWorkflow('oe_workflow_demo');
+  \Drupal::service('oe_editorial_entity_version.entity_version_installer')->addEntityVersionFieldToWorkflowBundles('oe_corporate_workflow');
 }
 
 /**
