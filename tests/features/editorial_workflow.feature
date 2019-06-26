@@ -261,3 +261,11 @@ Feature: Corporate editorial workflow
     And I press "Apply"
     Then I should see "View published"
     And I should not see "View draft"
+
+  Scenario: Entity version field changes based on the configured transitions.
+    Given users:
+      | name        | roles                                   |
+      | author_user | Author, Reviewer, Validator, Translator |
+    And "oe_workflow_demo" content:
+      | title         | moderation_state | author      |
+      | Workflow node | draft            | author_user |

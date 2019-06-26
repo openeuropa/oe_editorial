@@ -76,7 +76,7 @@ class EditorialEntityVersionInstaller {
     }
 
     foreach ($bundles as $bundle) {
-      if ($this->fieldConfig->load('node' . $bundle . 'version')) {
+      if ($this->fieldConfig->load('node.' . $bundle . '.version')) {
         continue;
       }
       $this->fieldConfig->create([
@@ -86,7 +86,7 @@ class EditorialEntityVersionInstaller {
         'label' => 'Version',
         'cardinality' => 1,
         'translatable' => FALSE,
-        'default_value' => $default_value,
+        'default_value' => [$default_value],
       ])->save();
     }
   }
