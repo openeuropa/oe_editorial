@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\oe_editorial_corporate_workflow\Services;
 
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\RevisionableInterface;
 
 /**
  * Provides an interface for shortcut revision handlers.
@@ -27,7 +28,10 @@ interface ShortcutRevisionHandlerInterface {
    *   The entity.
    * @param string $revision_message
    *   The revision log message.
+   *
+   * @return \Drupal\Core\Entity\RevisionableInterface
+   *   Return the entity with the latest revisions.
    */
-  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL);
+  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL): RevisionableInterface;
 
 }

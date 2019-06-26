@@ -86,7 +86,7 @@ class EditorialEntityVersionInstaller {
         'label' => 'Version',
         'cardinality' => 1,
         'translatable' => FALSE,
-        'default_value' => [$default_value],
+        'default_value' => empty($default_value) ? $default_value : [$default_value],
       ])->save();
     }
   }

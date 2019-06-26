@@ -68,7 +68,7 @@ class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL): void {
+  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL): RevisionableInterface {
     /** @var \Drupal\workflows\WorkflowInterface $workflow */
     $workflow = $this->moderationInfo->getWorkflowForEntity($entity);
     /** @var \Drupal\workflows\WorkflowTypeInterface $workflow_plugin */
@@ -77,7 +77,8 @@ class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
     // We start the saving from the current state of the entity and we proceed
     // until the target state that was selected from the moderation form.
     $current_state = $entity->get('moderation_state')->value;
-    $this->saveTransitionRevisions($current_state, $target_state, $workflow_plugin, $entity, $revision_message);
+
+    return $this->saveTransitionRevisions($current_state, $target_state, $workflow_plugin, $entity, $revision_message);
   }
 
   /**
@@ -93,12 +94,15 @@ class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
    *   The actual entity that we are saving revisions for.
    * @param string $revision_message
    *   The revision log message.
+   *
+   * @return \Drupal\Core\Entity\RevisionableInterface
+   *   Return the revisioned entity.
    */
-  protected function saveTransitionRevisions($current_state, $target_state, WorkflowTypeInterface $workflow_plugin, RevisionableInterface $entity, $revision_message): void {
+  protected function saveTransitionRevisions($current_state, $target_state, WorkflowTypeInterface $workflow_plugin, RevisionableInterface $entity, $revision_message): RevisionableInterface {
     // We need to stop before the last transition because the creation of that
     // revision is handled by core.
     if ($workflow_plugin->hasTransitionFromStateToState($current_state, $target_state)) {
-      return;
+      return $entity;
     }
 
     // Take next transition in the chain.
@@ -124,7 +128,7 @@ class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
     $entity->save();
 
     // We need to repeat this operation until we reach the target state.
-    $this->saveTransitionRevisions($entity->get('moderation_state')->value, $target_state, $workflow_plugin, $entity, $revision_message);
+    return $this->saveTransitionRevisions($entity->get('moderation_state')->value, $target_state, $workflow_plugin, $entity, $revision_message);
   }
 
 }
