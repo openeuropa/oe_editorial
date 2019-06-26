@@ -36,10 +36,6 @@
         "drupal": {
             "type": "composer",
             "url": "https://packages.drupal.org/8"
-        },
-        "openeuropa/entity_version": {
-            "type": "vcs",
-            "url": "https://github.com/openeuropa/entity_version.git"
         }
     },
     "autoload": {
