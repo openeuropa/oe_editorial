@@ -141,7 +141,7 @@ class FeatureContext extends RawDrupalContext {
    * @param string $title
    *   The node title.
    *
-   * @return \Drupal\node\NodeInterface
+   * @return \Drupal\Core\Entity\EntityInterface
    *   The node entity.
    */
   protected function getNodeByTitle(string $title): NodeInterface {
@@ -158,7 +158,38 @@ class FeatureContext extends RawDrupalContext {
       throw new \Exception("Multiple nodes with title '$title' found.");
     }
 
-    return reset($nodes);
+    $node = reset($nodes);
+
+    // Load the latest revision.
+    $entity_type = $node->getEntityType();
+    $results = $storage->getQuery()
+      ->condition($entity_type->getKey('id'), $node->id())
+      ->allRevisions()
+      ->execute();
+    $results = array_keys($results);
+    $revision_id = end($results);
+
+    return $storage->loadRevision($revision_id);
+  }
+
+  /**
+   * Checks the given node with title has the specified version numbers.
+   *
+   * // phpcs:disable
+   * @Then the node :title should have the following version:
+   * | major | number 1 |
+   * | minor | number 2 |
+   * | patch | number 3 |
+   * // phpcs:enable
+   */
+  public function theNodeShouldHaveTheFollowingVersion(string $title, TableNode $options) {
+    $node = $this->getNodeByTitle($title);
+    $node_version = [
+      'major' => $node->get('version')->major,
+      'minor' => $node->get('version')->minor,
+      'patch' => $node->get('version')->patch,
+    ];
+    Assert::assertEquals($options->getRowsHash(), $node_version);
   }
 
 }
