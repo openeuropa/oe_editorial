@@ -45,19 +45,6 @@ function oe_editorial_entity_version_post_update_configure_workflow(): void {
     'minor' => 1,
     'patch' => 0,
   ];
-  \Drupal::service('oe_editorial_entity_version.entity_version_installer')
-    ->addEntityVersionFieldToWorkflowBundles('oe_corporate_workflow', $default_values);
-}
-
-/**
- * Adds the version field to bundles associated with the corporate workflow.
- */
-function oe_editorial_entity_version_post_update_add_version_field(): void {
-  $default_values = [
-    'major' => 0,
-    'minor' => 1,
-    'patch' => 0,
-  ];
-  \Drupal::service('oe_editorial_entity_version.entity_version_installer')
+  \Drupal::service('entity_version_workflows.entity_version_installer')
     ->addEntityVersionFieldToWorkflowBundles('oe_corporate_workflow', $default_values);
 }

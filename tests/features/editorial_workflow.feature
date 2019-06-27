@@ -311,7 +311,7 @@ Feature: Corporate editorial workflow
       | major | 1 |
       | minor | 0 |
       | patch | 0 |
-    # Set to Published nad back to Draft.
+    # Set to Published and back to Draft.
     When I select "Published" from "Change to"
     And I press "Apply"
     And I click "New draft"

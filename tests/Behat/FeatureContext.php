@@ -158,18 +158,7 @@ class FeatureContext extends RawDrupalContext {
       throw new \Exception("Multiple nodes with title '$title' found.");
     }
 
-    $node = reset($nodes);
-
-    // Load the latest revision.
-    $entity_type = $node->getEntityType();
-    $results = $storage->getQuery()
-      ->condition($entity_type->getKey('id'), $node->id())
-      ->allRevisions()
-      ->execute();
-    $results = array_keys($results);
-    $revision_id = end($results);
-
-    return $storage->loadRevision($revision_id);
+    return reset($nodes);
   }
 
   /**
@@ -183,13 +172,35 @@ class FeatureContext extends RawDrupalContext {
    * // phpcs:enable
    */
   public function theNodeShouldHaveTheFollowingVersion(string $title, TableNode $options) {
-    $node = $this->getNodeByTitle($title);
-    $node_version = [
+    $storage = \Drupal::entityTypeManager()->getStorage('node');
+    $nodes = $storage->loadByProperties([
+      'title' => $title,
+    ]);
+    if (!$nodes) {
+      throw new \Exception("Could not find node with title '$title'.");
+    }
+
+    if (count($nodes) > 1) {
+      throw new \Exception("Multiple nodes with title '$title' found.");
+    }
+
+    // Load the latest revision.
+    $node = reset($nodes);
+    $entity_type = $node->getEntityType();
+    $results = $storage->getQuery()
+      ->condition($entity_type->getKey('id'), $node->id())
+      ->latestRevision()
+      ->execute();
+    $results = array_keys($results);
+    $revision_id = end($results);
+
+    $node = $storage->loadRevision($revision_id);
+    $node_version_value = [
       'major' => $node->get('version')->major,
       'minor' => $node->get('version')->minor,
       'patch' => $node->get('version')->patch,
     ];
-    Assert::assertEquals($options->getRowsHash(), $node_version);
+    Assert::assertEquals($options->getRowsHash(), $node_version_value);
   }
 
 }

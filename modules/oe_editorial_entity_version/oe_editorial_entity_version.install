@@ -50,6 +50,6 @@ function oe_editorial_entity_version_install(): void {
     'minor' => 1,
     'patch' => 0,
   ];
-  \Drupal::service('oe_editorial_entity_version.entity_version_installer')
+  \Drupal::service('entity_version_workflows.entity_version_installer')
     ->addEntityVersionFieldToWorkflowBundles('oe_corporate_workflow', $default_values);
 }

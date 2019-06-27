@@ -7,6 +7,7 @@ namespace Drupal\oe_editorial_corporate_workflow\Services;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
@@ -68,7 +69,7 @@ class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL): RevisionableInterface {
+  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL): EntityInterface {
     /** @var \Drupal\workflows\WorkflowInterface $workflow */
     $workflow = $this->moderationInfo->getWorkflowForEntity($entity);
     /** @var \Drupal\workflows\WorkflowTypeInterface $workflow_plugin */
@@ -90,15 +91,15 @@ class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
    *   The target state selected from the moderation form.
    * @param \Drupal\workflows\WorkflowTypeInterface $workflow_plugin
    *   The workflow type plugin.
-   * @param \Drupal\Core\Entity\RevisionableInterface $entity
+   * @param \Drupal\Core\Entity\EntityInterface $entity
    *   The actual entity that we are saving revisions for.
    * @param string $revision_message
    *   The revision log message.
    *
-   * @return \Drupal\Core\Entity\RevisionableInterface
+   * @return \Drupal\Core\Entity\EntityInterface
    *   Return the revisioned entity.
    */
-  protected function saveTransitionRevisions($current_state, $target_state, WorkflowTypeInterface $workflow_plugin, RevisionableInterface $entity, $revision_message): RevisionableInterface {
+  protected function saveTransitionRevisions($current_state, $target_state, WorkflowTypeInterface $workflow_plugin, RevisionableInterface $entity, $revision_message): EntityInterface {
     // We need to stop before the last transition because the creation of that
     // revision is handled by core.
     if ($workflow_plugin->hasTransitionFromStateToState($current_state, $target_state)) {

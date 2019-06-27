@@ -151,10 +151,13 @@ function oe_editorial_corporate_workflow_form_content_moderation_entity_moderati
 function _oe_editorial_corporate_workflow_moderation_submit(array &$form, FormStateInterface &$form_state): void {
   /** @var \Drupal\oe_editorial_corporate_workflow\Services\ShortcutRevisionHandler $shortcut_handler */
   $shortcut_handler = \Drupal::service('oe_editorial_corporate_workflow.shortcut_transition_handler');
-  $latest_entity = $shortcut_handler->createShortcutRevisions($form_state->getValue('new_state'), $form_state->get('entity'), $form_state->getValue('revision_log'));
+  $latest_revision = $shortcut_handler->createShortcutRevisions($form_state->getValue('new_state'), $form_state->get('entity'), $form_state->getValue('revision_log'));
 
-  // Make sure we pass along the updated entity.
-  $form_state->set('entity', $latest_entity);
+  // When using the shortcut, we are creating revisions for all of the
+  // transitions we are skipping. The last transition in the chain is handled
+  // by core so we need to make sure that its submit handler receives the latest
+  // revision that we created. Otherwise it may use a revision with stale data.
+  $form_state->set('entity', $latest_revision);
 }
 
 /**
