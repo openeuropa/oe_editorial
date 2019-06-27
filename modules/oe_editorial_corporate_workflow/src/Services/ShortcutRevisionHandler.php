@@ -9,7 +9,6 @@ use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\workflows\WorkflowTypeInterface;
@@ -99,7 +98,7 @@ class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
    * @return \Drupal\Core\Entity\EntityInterface
    *   Return the revisioned entity.
    */
-  protected function saveTransitionRevisions($current_state, $target_state, WorkflowTypeInterface $workflow_plugin, RevisionableInterface $entity, $revision_message): EntityInterface {
+  protected function saveTransitionRevisions($current_state, $target_state, WorkflowTypeInterface $workflow_plugin, EntityInterface $entity, $revision_message): EntityInterface {
     // We need to stop before the last transition because the creation of that
     // revision is handled by core.
     if ($workflow_plugin->hasTransitionFromStateToState($current_state, $target_state)) {
