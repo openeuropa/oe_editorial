@@ -20,21 +20,6 @@ function oe_editorial_entity_version_post_update_configure_workflow(): void {
       'create_new_draft' => [
         'minor' => 'increase',
       ],
-      'needs_review_to_draft' => [
-        'minor' => 'increase',
-      ],
-      'request_validation_to_draft' => [
-        'minor' => 'increase',
-      ],
-      'validated_to_draft' => [
-        'minor' => 'increase',
-      ],
-      'published_to_draft' => [
-        'minor' => 'increase',
-      ],
-      'archived_to_draft' => [
-        'minor' => 'increase',
-      ],
       'request_validation_to_validated' => [
         'major' => 'increase',
         'minor' => 'reset',

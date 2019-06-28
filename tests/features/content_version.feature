@@ -28,24 +28,6 @@ Feature: Content version
       | major | 0 |
       | minor | 3 |
       | patch | 0 |
-    # Set to Needs Review and then back to Draft.
-    When I select "Needs Review" from "Change to"
-    And I press "Apply"
-    And I select "Draft" from "Change to"
-    And I press "Apply"
-    Then the node "Workflow node" should have the following version:
-      | major | 0 |
-      | minor | 4 |
-      | patch | 0 |
-    # Set to Request validation and then back to Draft.
-    When I select "Request Validation" from "Change to"
-    And I press "Apply"
-    And I select "Draft" from "Change to"
-    And I press "Apply"
-    Then the node "Workflow node" should have the following version:
-      | major | 0 |
-      | minor | 5 |
-      | patch | 0 |
     # Set to validated.
     When I select "Validated" from "Change to"
     And I press "Apply"
