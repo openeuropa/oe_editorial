@@ -186,15 +186,11 @@ class FeatureContext extends RawDrupalContext {
 
     // Load the latest revision.
     $node = reset($nodes);
-    $entity_type = $node->getEntityType();
-    $results = $storage->getQuery()
-      ->condition($entity_type->getKey('id'), $node->id())
-      ->latestRevision()
-      ->execute();
-    $results = array_keys($results);
-    $revision_id = end($results);
 
-    $node = $storage->loadRevision($revision_id);
+    /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
+    $moderation_info = \Drupal::service('content_moderation.moderation_information');
+    $entity_type = $node->getEntityType();
+    $node = $moderation_info->getLatestRevision($entity_type->id(), $node->id());
     $node_version_value = [
       'major' => $node->get('version')->major,
       'minor' => $node->get('version')->minor,
