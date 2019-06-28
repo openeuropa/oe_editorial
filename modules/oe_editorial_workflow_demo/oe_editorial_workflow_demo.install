@@ -11,14 +11,28 @@ declare(strict_types = 1);
  * Implements hook_install().
  */
 function oe_editorial_workflow_demo_install(): void {
+  // If we are installing from config, we bail out.
+  if (\Drupal::isConfigSyncing() === TRUE) {
+    return;
+  }
+
   \Drupal::service('oe_editorial_corporate_workflow.workflow_installer')->installWorkflow('oe_workflow_demo');
 
   // Add entity version field to corporate workflow bundles.
   /** @var \Drupal\workflows\WorkflowInterface $corporate_workflow */
-  $corporate_workflow = $corporate_workflow = \Drupal::configFactory()->get('workflows.workflow.oe_corporate_workflow');
-  $bundles = $corporate_workflow->get('type_settings.entity_types.node');
-  \Drupal::service('entity_version.entity_version_installer')
-    ->addEntityVersionFieldToBundles($bundles);
+  $corporate_workflow = \Drupal::entityTypeManager()->getStorage('workflow')->load('oe_corporate_workflow');
+  $bundles = $corporate_workflow->get('type_settings')['entity_types']['node'];
+  if (!$bundles) {
+    return;
+  }
+
+  $default_values = [
+    'major' => 0,
+    'minor' => 1,
+    'patch' => 0,
+  ];
+
+  \Drupal::service('entity_version.entity_version_installer')->install('node', $bundles, $default_values);
 }
 
 /**

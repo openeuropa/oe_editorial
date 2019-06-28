@@ -22,6 +22,8 @@ interface ShortcutRevisionHandlerInterface {
    * that would have otherwise been created had we not used the shortcuts
    * to skip transitions.
    *
+   * The method returns the latest revision that was saved.
+   *
    * @param string $target_state
    *   The desired workflow state.
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
