@@ -25,7 +25,7 @@
         "phpunit/phpunit": "~6.0",
         "symfony/browser-kit": "~4.2.1",
         "squizlabs/php_codesniffer": "~3.3.2",
-        "openeuropa/entity_version": "dev-OPENEUROPA-1915"
+        "openeuropa/entity_version": "~0.1.1"
     },
     "scripts": {
         "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
