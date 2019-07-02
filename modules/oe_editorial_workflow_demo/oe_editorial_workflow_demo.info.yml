@@ -5,7 +5,7 @@ type: module
 core: 8.x
 
 dependencies:
-  - oe_editorial_corporate_workflow:oe_editorial_corporate_workflow
+  - oe_editorial_entity_version:oe_editorial_entity_version
 
 config_devel:
   install:

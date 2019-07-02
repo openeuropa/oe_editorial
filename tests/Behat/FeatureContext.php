@@ -141,7 +141,7 @@ class FeatureContext extends RawDrupalContext {
    * @param string $title
    *   The node title.
    *
-   * @return \Drupal\node\NodeInterface
+   * @return \Drupal\Core\Entity\EntityInterface
    *   The node entity.
    */
   protected function getNodeByTitle(string $title): NodeInterface {
@@ -159,6 +159,44 @@ class FeatureContext extends RawDrupalContext {
     }
 
     return reset($nodes);
+  }
+
+  /**
+   * Checks the given node with title has the specified version numbers.
+   *
+   * // phpcs:disable
+   * @Then the node :title should have the following version:
+   * | major | number 1 |
+   * | minor | number 2 |
+   * | patch | number 3 |
+   * // phpcs:enable
+   */
+  public function theNodeShouldHaveTheFollowingVersion(string $title, TableNode $options) {
+    $storage = \Drupal::entityTypeManager()->getStorage('node');
+    $nodes = $storage->loadByProperties([
+      'title' => $title,
+    ]);
+    if (!$nodes) {
+      throw new \Exception("Could not find node with title '$title'.");
+    }
+
+    if (count($nodes) > 1) {
+      throw new \Exception("Multiple nodes with title '$title' found.");
+    }
+
+    // Load the latest revision.
+    $node = reset($nodes);
+
+    /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
+    $moderation_info = \Drupal::service('content_moderation.moderation_information');
+    $entity_type = $node->getEntityType();
+    $node = $moderation_info->getLatestRevision($entity_type->id(), $node->id());
+    $node_version_value = [
+      'major' => $node->get('version')->major,
+      'minor' => $node->get('version')->minor,
+      'patch' => $node->get('version')->patch,
+    ];
+    Assert::assertEquals($options->getRowsHash(), $node_version_value);
   }
 
 }
