@@ -1,10 +1,18 @@
 # Change Log
 
+## [1.0.0-beta3](https://github.com/openeuropa/oe_editorial/tree/1.0.0-beta3) (2019-07-02)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.0.0-beta2...1.0.0-beta3)
+
+**Merged pull requests:**
+
+- OPENEUROPA-1915: Integrate entity\_versions module in oe\_editorial [\#30](https://github.com/openeuropa/oe_editorial/pull/30) ([nagyad](https://github.com/nagyad))
+
 ## [1.0.0-beta2](https://github.com/openeuropa/oe_editorial/tree/1.0.0-beta2) (2019-06-25)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.0.0-beta1...1.0.0-beta2)
 
 **Merged pull requests:**
 
+- Update CHANGELOG.md for release 1.0.0-beta2. [\#29](https://github.com/openeuropa/oe_editorial/pull/29) ([ademarco](https://github.com/ademarco))
 - OPENEUROPA-1897: Use ci image. [\#27](https://github.com/openeuropa/oe_editorial/pull/27) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - OPENEUROPA-1770: Shortcuts on workflow block on node view page [\#23](https://github.com/openeuropa/oe_editorial/pull/23) ([nagyad](https://github.com/nagyad))
 
