@@ -1,10 +1,18 @@
 # Change Log
 
+## [1.0.0-beta4](https://github.com/openeuropa/oe_editorial/tree/1.0.0-beta4) (2019-07-10)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.0.0-beta3...1.0.0-beta4)
+
+**Merged pull requests:**
+
+- OPENEUROPA-2037: Integrate the new config setting entity version. [\#34](https://github.com/openeuropa/oe_editorial/pull/34) ([nagyad](https://github.com/nagyad))
+
 ## [1.0.0-beta3](https://github.com/openeuropa/oe_editorial/tree/1.0.0-beta3) (2019-07-02)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.0.0-beta2...1.0.0-beta3)
 
 **Merged pull requests:**
 
+- Release 1.0.0-beta3 [\#33](https://github.com/openeuropa/oe_editorial/pull/33) ([nagyad](https://github.com/nagyad))
 - OPENEUROPA-1915: Integrate entity\_versions module in oe\_editorial [\#30](https://github.com/openeuropa/oe_editorial/pull/30) ([nagyad](https://github.com/nagyad))
 
 ## [1.0.0-beta2](https://github.com/openeuropa/oe_editorial/tree/1.0.0-beta2) (2019-06-25)
