@@ -199,4 +199,33 @@ class FeatureContext extends RawDrupalContext {
     Assert::assertEquals($options->getRowsHash(), $node_version_value);
   }
 
+  /**
+   * Check link to target.
+   *
+   * @param string $link
+   *   Link identifier.
+   * @param string $path
+   *   Target path of the link.
+   *
+   * @throws \Exception
+   *   Throws an exception if the link is not found or if the target is wrong.
+   *
+   * @Then I should see the link :link point to :path
+   */
+  public function assertLinkTarget(string $link, $path) {
+    $target_url = $this->locatePath($path);
+    $parts = parse_url($target_url);
+    $expected_path = empty($parts['path']) ? '/' : $parts['path'];
+    $page = $this->getSession()->getPage();
+    $result = $page->findLink($link);
+    if (empty($result)) {
+      throw new \Exception("No link '{$link}' on the page");
+    }
+
+    $href = $result->getAttribute('href');
+    if ($expected_path != $href) {
+      throw new \Exception("The link '{$link}' points to '{$href}'");
+    }
+  }
+
 }

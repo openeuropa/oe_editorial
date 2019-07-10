@@ -12,6 +12,7 @@ default:
             pages:
               demo content creation: 'node/add/oe_workflow_demo'
               content administration: 'admin/content'
+              plain text help: 'filter/tips/plain_text'
   extensions:
     Drupal\MinkExtension:
       goutte: ~

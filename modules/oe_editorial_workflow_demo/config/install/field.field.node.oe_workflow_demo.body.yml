@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.body
+    - node.type.oe_workflow_demo
+  module:
+    - text
+id: node.oe_workflow_demo.body
+field_name: body
+entity_type: node
+bundle: oe_workflow_demo
+label: body
+description: ''
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings:
+  display_summary: false
+field_type: text_with_summary
