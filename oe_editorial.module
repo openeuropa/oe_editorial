@@ -15,7 +15,7 @@ use Drupal\Core\Url;
  */
 function oe_editorial_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
   // We add an after build method so we can alter the Url of the help link.
-  if ($element['#type'] == 'text_format') {
+  if ($element['#type'] === 'text_format') {
     $element['#after_build'][] = '_oe_editorial_alter_textarea_help';
   }
 }
