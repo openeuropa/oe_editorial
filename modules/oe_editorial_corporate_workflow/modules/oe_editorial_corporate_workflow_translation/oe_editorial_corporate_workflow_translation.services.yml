@@ -1,0 +1,11 @@
+services:
+  oe_editorial_corporate_workflow_translation.translation_access_subscriber:
+    class: Drupal\oe_editorial_corporate_workflow_translation\EventSubscriber\TranslationAccessSubscriber
+    arguments: ['@content_moderation.moderation_information', '@entity_type.manager']
+    tags:
+      - { name: event_subscriber }
+  oe_editorial_corporate_workflow_translation.entity_source_subscriber:
+    class: Drupal\oe_editorial_corporate_workflow_translation\EventSubscriber\CorporateWorkflowEntitySourceSubscriber
+    arguments: ['@entity_type.manager', '@content_moderation.moderation_information']
+    tags:
+      - { name: event_subscriber }

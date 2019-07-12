@@ -6,8 +6,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "drupal/core": "^8.7",
-        "php": "^7.1"
+        "php": "^7.1",
+        "drupal/core": "^8.7"
     },
     "require-dev": {
         "composer/installers": "~1.5",
@@ -25,7 +25,8 @@
         "phpunit/phpunit": "~6.0",
         "symfony/browser-kit": "~4.2.1",
         "squizlabs/php_codesniffer": "~3.3.2",
-        "openeuropa/entity_version": "~1.0.0-beta1"
+        "openeuropa/entity_version": "~1.0.0-beta1",
+        "openeuropa/oe_translation": "dev-OPENEUROPA-2053"
     },
     "scripts": {
         "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",

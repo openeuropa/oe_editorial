@@ -6,7 +6,12 @@ core: 8.x
 
 dependencies:
   - oe_editorial_entity_version:oe_editorial_entity_version
+  - drupal:content_translation
+  - drupal:language
 
 config_devel:
   install:
     - node.type.oe_workflow_demo
+    - language.content_settings.node.oe_workflow_demo.yml
+    - language.entity.fr.yml
+    - language.entity.it.yml
