@@ -180,5 +180,9 @@ function _oe_editorial_corporate_workflow_is_last_revision_published(NodeInterfa
   $storage = \Drupal::entityTypeManager()->getStorage($node->getEntityTypeId());
   $latest_revision_id = $storage->getLatestTranslationAffectedRevisionId($node->id(), $node->language()->getId());
 
+  if (!$moderation_info->getWorkflowForEntity($node)) {
+    return $node->isPublished();
+  }
+
   return $latest_revision_id !== NULL && !$moderation_info->hasPendingRevision($node) && $moderation_info->isDefaultRevisionPublished($node);
 }
