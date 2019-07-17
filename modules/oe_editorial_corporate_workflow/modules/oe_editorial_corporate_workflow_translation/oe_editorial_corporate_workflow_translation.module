@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * @file
+ * OpenEuropa Editorial Corporate Workflow Translation module file.
+ */
+
+declare(strict_types = 1);
+
+use Drupal\Core\Entity\EntityInterface;
+
+/**
+ * Implements hook_ENTITY_TYPE_presave().
+ */
+function oe_editorial_corporate_workflow_translation_node_presave(EntityInterface $entity) {
+  // Whenever we save a translation, we need to ensure that we maintain its
+  // status the same as the source. This is the default behaviour for "synced"
+  // translations. Later, we will introduce the "un-synced" translations by
+  // which we will keep the translations unpublished even if the source language
+  // is published.
+  if (!$entity->isDefaultTranslation()) {
+    // If we are saving a translation entity directly, look at the source
+    // translation for the correct status.
+    $source = $entity->getUntranslated();
+    if ($source->get('status')->value !== $entity->get('status')->value) {
+      $entity->set('status', $source->get('status'));
+    }
+
+    return;
+  }
+
+  // Otherwise, loop through all the translations and set the status based on
+  // the source.
+  $languages = $entity->getTranslationLanguages(FALSE);
+  foreach ($languages as $language) {
+    $translation = $entity->getTranslation($language->getId());
+    if ($translation->get('status')->value !== $entity->get('status')->value) {
+      $translation->set('status', $entity->get('status'));
+    }
+  }
+
+  // @todo, when introducing the "un-synced" translations, we need to apply
+  // a check to determine whether the entity status stays synced.
+}
