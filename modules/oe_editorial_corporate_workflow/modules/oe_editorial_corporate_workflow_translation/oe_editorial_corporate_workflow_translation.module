@@ -7,13 +7,14 @@
 
 declare(strict_types = 1);
 
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
  * Implements hook_ENTITY_TYPE_presave().
  */
-function oe_editorial_corporate_workflow_translation_node_presave(EntityInterface $entity) {
+function oe_editorial_corporate_workflow_translation_node_presave(EntityInterface $entity): void {
   // Whenever we save a translation, we need to ensure that we maintain its
   // status the same as the source. This is the default behaviour for "synced"
   // translations. Later, we will introduce the "un-synced" translations by
@@ -24,7 +25,7 @@ function oe_editorial_corporate_workflow_translation_node_presave(EntityInterfac
     // translation for the correct status.
     $source = $entity->getUntranslated();
     if ($source->get('status')->value !== $entity->get('status')->value) {
-      $entity->set('status', $source->get('status'));
+      $entity->set('status', $source->get('status')->value);
     }
 
     return;
@@ -47,7 +48,7 @@ function oe_editorial_corporate_workflow_translation_node_presave(EntityInterfac
 /**
  * Implements hook_ENTITY_TYPE_view_alter() for the Node entity.
  */
-function oe_editorial_corporate_workflow_translation_node_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
+function oe_editorial_corporate_workflow_translation_node_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display): void {
   // If we are rendering a translation, we should hide the content moderation
   // block because the workflow needs to be controlled from the source entity.
   if ($entity->isDefaultTranslation()) {
@@ -56,5 +57,79 @@ function oe_editorial_corporate_workflow_translation_node_view_alter(array &$bui
 
   if (isset($build['content_moderation_control'])) {
     $build['content_moderation_control']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_revision_create() for the Node entity.
+ *
+ * This hook replicates to an extent a chunk of the responsibility of
+ * ContentEntityStorageBase::create().
+ *
+ * The purpose is to ensure that whenever we create a new revision of a content
+ * entity that is translatable, for each translation language we carry over
+ * the translation values from the revision based on which we make the new
+ * revision.
+ *
+ * By default, if the entity has a previous revision that is marked as
+ * default (such as published), any new revision on the entity which is not
+ * default will carry over translations from that last default revision instead
+ * of the actual revision based on which the new one is created. For us this is
+ * not good because we use TMGMT to hydrate specific revisions with translations
+ * regardless of whether they are default or not. So for example, if revision 5
+ * is not published but has a translation, when we make revision 6 to publish
+ * it, we carry over the translation values from revision 5 and not from any
+ * previous ones which might have been marked as default (previous published
+ * versions).
+ *
+ * @see CorporateWorkflowTranslationRevisionTest::testTranslationRevisions()
+ */
+function oe_editorial_corporate_workflow_translation_node_revision_create(ContentEntityInterface $revision, ContentEntityInterface $entity, $original_keep_untranslatable_fields): void {
+  if (!$entity->isNew() && !$entity->isDefaultRevision() && $entity->isTranslatable() && $entity->getTranslationLanguages(FALSE)) {
+    // Create a new revision from the entity so that we can get the correct
+    // translation field values from. Other than that, we are working with the
+    // $revision that was created in the storage handler as the latter also
+    // did extra things on it which we need to keep.
+    $new_revision = clone $entity;
+    $active_langcode = $entity->language()->getId();
+
+    /** @var \Drupal\Core\Entity\ContentEntityTypeInterface $entity_type */
+    $entity_type = $entity->getEntityType();
+
+    // A list of known revision metadata fields which should be skipped from
+    // the comparision.
+    $skipped_field_names = [
+      $entity_type->getKey('revision'),
+      $entity_type->getKey('revision_translation_affected'),
+    ];
+    $skipped_field_names = array_merge($skipped_field_names, array_values($entity_type->getRevisionMetadataKeys()));
+    $skipped_field_names = array_flip($skipped_field_names);
+
+    if (!isset($keep_untranslatable_fields)) {
+      $keep_untranslatable_fields = $entity->isDefaultTranslation() && $entity->isDefaultTranslationAffectedOnly();
+    }
+
+    /** @var \Drupal\Core\Entity\ContentEntityInterface $default_revision */
+    $default_revision = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId())->load($entity->id());
+    $translation_languages = $default_revision->getTranslationLanguages();
+    foreach ($translation_languages as $langcode => $language) {
+      if ($langcode == $active_langcode) {
+        continue;
+      }
+
+      $revision_translation = $revision->hasTranslation($langcode) ? $revision->getTranslation($langcode) : $revision->addTranslation($langcode);
+      $new_revision_translation = $new_revision->hasTranslation($langcode) ? $new_revision->getTranslation($langcode) : $new_revision->addTranslation($langcode);
+
+      /** @var \Drupal\Core\Field\FieldItemListInterface[] $sync_items */
+      $sync_items = array_diff_key(
+        $keep_untranslatable_fields ? $new_revision_translation->getTranslatableFields() : $new_revision_translation->getFields(),
+        $skipped_field_names
+      );
+      foreach ($sync_items as $field_name => $items) {
+        $revision_translation->set($field_name, $items->getValue());
+      }
+    }
+
+    $revision->original = clone $revision;
   }
 }

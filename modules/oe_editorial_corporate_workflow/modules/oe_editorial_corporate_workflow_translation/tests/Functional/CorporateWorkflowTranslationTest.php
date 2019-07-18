@@ -170,9 +170,9 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
   }
 
   /**
-   * Tests the creation of new translations.
+   * Tests the creation of new translations using the workflow.
    */
-  public function testTranslationCreation(): void {
+  public function testModeratedTranslationCreation(): void {
     /** @var \Drupal\node\NodeStorageInterface $node_storage */
     $node_storage = $this->entityTypeManager->getStorage('node');
 
@@ -295,6 +295,107 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
       if ($revision->isPublished() && (int) $revision->get('version')->major === 1) {
         $this->assertEquals('My node FR', $revision->getTranslation('fr')->label());
         break;
+      }
+    }
+  }
+
+  /**
+   * Tests that revision translations are carried over from latest revision.
+   *
+   * The test focuses on ensuring that when a new revision is created by the
+   * storage based on another one, the new one inherits the translated values
+   * from the one its based on and NOT from the latest default revision as core
+   * would have it.
+   *
+   * @see oe_editorial_corporate_workflow_translation_node_revision_create()
+   */
+  public function testTranslationRevisions(): void {
+    /** @var \Drupal\node\NodeStorageInterface $node_storage */
+    $node_storage = $this->entityTypeManager->getStorage('node');
+
+    // Create a validated node directly and translate it.
+    /** @var \Drupal\node\NodeInterface $node */
+    $node = $node_storage->create([
+      'type' => 'page',
+      'title' => 'My node',
+      'moderation_state' => 'draft',
+    ]);
+    $node->save();
+    $this->moderateNode($node, 'validated');
+    $this->drupalGet(Url::fromRoute('oe_translation.permission_translator.create_local_task', [
+      'entity' => $node->id(),
+      'source' => 'en',
+      'target' => 'fr',
+      'entity_type' => 'node',
+    ]));
+    $this->assertSession()->elementContains('css', '#edit-title0value-translation', 'My node');
+    $values = [
+      'title|0|value[translation]' => 'My node FR',
+    ];
+    // It should be the first local task item created so we use the ID 1.
+    $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 1]);
+    $this->drupalPostForm($url, $values, t('Save and complete translation'));
+
+    // Publish the node and check that the translation is available in the
+    // published revision.
+    $node_storage->resetCache();
+    $node = $node_storage->load($node->id());
+    $this->moderateNode($node, 'published');
+    $revision_ids = $node_storage->revisionIds($node);
+
+    $node_storage->resetCache();
+    /** @var \Drupal\node\NodeInterface[] $revisions */
+    $revisions = $node_storage->loadMultipleRevisions($revision_ids);
+    // Since we translated the node while it was validated, both revisions
+    // should contain the same translation.
+    foreach ($revisions as $revision) {
+      if ($revision->isPublished() || $revision->get('moderation_state')->value === 'validated') {
+        $this->assertTrue($revision->hasTranslation('fr'), 'The revision does not have a translation');
+        $this->assertEquals('My node FR', $revision->getTranslation('fr')->label(), 'The revision does not have a correct translation');
+      }
+    }
+
+    // Start a new draft from the latest published node and validate it.
+    $node->set('title', 'My node 2');
+    $node->set('moderation_state', 'draft');
+    $node->save();
+
+    $this->moderateNode($node, 'validated');
+    $this->drupalGet(Url::fromRoute('oe_translation.permission_translator.create_local_task', [
+      'entity' => $node->id(),
+      'source' => 'en',
+      'target' => 'fr',
+      'entity_type' => 'node',
+    ]));
+
+    // The default translation value comes from the previous version
+    // translation.
+    $this->assertSession()->elementContains('css', '#edit-title0value-translation', 'My node FR');
+    $values = [
+      'title|0|value[translation]' => 'My node FR 2',
+    ];
+    // It should be the second local task item created so we use the ID 2.
+    $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 2]);
+    $this->drupalPostForm($url, $values, t('Save and complete translation'));
+
+    // Publish the node and check that the published versions have the correct
+    // translations.
+    $node_storage->resetCache();
+    $node = $node_storage->loadRevision($node_storage->getLatestRevisionId($node->id()));
+    $this->moderateNode($node, 'published');
+    $revision_ids = $node_storage->revisionIds($node);
+
+    /** @var \Drupal\node\NodeInterface[] $revisions */
+    $revisions = $node_storage->loadMultipleRevisions($revision_ids);
+    foreach ($revisions as $revision) {
+      if ($revision->isPublished() && (int) $revision->get('version')->major === 1) {
+        $this->assertEquals('My node FR', $revision->getTranslation('fr')->label());
+        continue;
+      }
+
+      if ($revision->isPublished() && (int) $revision->get('version')->major === 2) {
+        $this->assertEquals('My node FR 2', $revision->getTranslation('fr')->label());
+        continue;
       }
     }
   }
