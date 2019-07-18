@@ -7,6 +7,7 @@
 
 declare(strict_types = 1);
 
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 
 /**
@@ -35,10 +36,25 @@ function oe_editorial_corporate_workflow_translation_node_presave(EntityInterfac
   foreach ($languages as $language) {
     $translation = $entity->getTranslation($language->getId());
     if ($translation->get('status')->value !== $entity->get('status')->value) {
-      $translation->set('status', $entity->get('status'));
+      $translation->set('status', $entity->get('status')->value);
     }
   }
 
   // @todo, when introducing the "un-synced" translations, we need to apply
   // a check to determine whether the entity status stays synced.
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view_alter() for the Node entity.
+ */
+function oe_editorial_corporate_workflow_translation_node_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
+  // If we are rendering a translation, we should hide the content moderation
+  // block because the workflow needs to be controlled from the source entity.
+  if ($entity->isDefaultTranslation()) {
+    return;
+  }
+
+  if (isset($build['content_moderation_control'])) {
+    $build['content_moderation_control']['#access'] = FALSE;
+  }
 }
