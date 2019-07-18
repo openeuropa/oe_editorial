@@ -31,17 +31,17 @@ function oe_editorial_field_widget_form_alter(&$element, FormStateInterface $for
  * After build callback to alter the Url of the help link on text areas.
  */
 function _oe_editorial_alter_textarea_help($form_element, FormStateInterface $form_state) {
-  if (isset($form_element['format']) && isset($form_element['#allowed_formats'])) {
-    foreach ($form_element['#allowed_formats'] as $allowed_format) {
+  if (isset($form_element['format']['format'])) {
+    foreach ($form_element['format']['format']['#options'] as $allowed_format_id => $allowed_format_name) {
       // We add one link for each of the available format types.
-      $form_element['format']['help'][$allowed_format] = [
+      $form_element['format']['help'][$allowed_format_id] = [
         '#type' => 'link',
-        '#title' => t('About text formats'),
-        '#url' => Url::fromRoute('filter.tips', ['filter_format' => $allowed_format]),
+        '#title' => t('About the :format_name format', [':format_name' => $allowed_format_name]),
+        '#url' => Url::fromRoute('filter.tips', ['filter_format' => $allowed_format_id]),
         '#attributes' => [
           'class' => [
             'filter-help-item',
-            'filter-help-' . $allowed_format,
+            'filter-help-' . $allowed_format_id,
           ],
           'target' => '_blank',
         ],
