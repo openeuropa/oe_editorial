@@ -18,7 +18,11 @@ function oe_editorial_field_widget_form_alter(&$element, FormStateInterface $for
   $field_definition = $context['items']->getFieldDefinition();
 
   // We add an after build method so we can alter the Url of the help link.
-  if (in_array($field_definition->getType(), _allowed_formats_field_types())) {
+  if (in_array($field_definition->getType(), [
+    'text',
+    'text_long',
+    'text_with_summary',
+  ])) {
     $element['#after_build'][] = '_oe_editorial_alter_textarea_help';
   }
 }
