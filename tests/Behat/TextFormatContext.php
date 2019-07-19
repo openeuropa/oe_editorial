@@ -11,19 +11,19 @@ use Drupal\filter\Entity\FilterFormat;
 use Drupal\user\Entity\Role;
 
 /**
- * Defines step definitions for testing the Content Lock feature.
+ * Defines step definitions for testing text formats.
  */
 class TextFormatContext extends RawDrupalContext {
 
   /**
-   * The IDs of the existing text formats.
+   * The IDs of text formats created during tests.
    *
    * @var array
    */
   protected $newTextFormats = [];
 
   /**
-   * Deletes text formats created through the scenario..
+   * Deletes text formats created through the scenario.
    *
    * @param \Behat\Behat\Hook\Scope\AfterScenarioScope $scope
    *   The scenario scope.
