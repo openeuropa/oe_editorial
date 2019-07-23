@@ -183,7 +183,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
       'moderation_state' => 'draft',
     ]);
     $node->save();
-    $this->moderateNode($node, 'validated');
+    $node = $this->moderateNode($node, 'validated');
 
     // At this point, we expect to have 4 revisions of the node.
     $revision_ids = $node_storage->revisionIds($node);
@@ -205,7 +205,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     $this->assertCount(1, $job_items);
 
     // Publish the node before finalizing the translation.
-    $this->moderateNode($node, 'published');
+    $node = $this->moderateNode($node, 'published');
     $revision_ids = $node_storage->revisionIds($node);
     $this->assertCount(5, $revision_ids);
 
@@ -237,7 +237,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     $node->save();
     $revision_ids = $node_storage->revisionIds($node);
     $this->assertCount(6, $revision_ids);
-    $this->moderateNode($node, 'validated');
+    $node = $this->moderateNode($node, 'validated');
     $revision_ids = $node_storage->revisionIds($node);
     $this->assertCount(9, $revision_ids);
     // Assert that the latest revision that was just validated is the correct
@@ -321,7 +321,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
       'moderation_state' => 'draft',
     ]);
     $node->save();
-    $this->moderateNode($node, 'validated');
+    $node = $this->moderateNode($node, 'validated');
     $this->drupalGet(Url::fromRoute('oe_translation.permission_translator.create_local_task', [
       'entity' => $node->id(),
       'source' => 'en',
@@ -336,11 +336,10 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 1]);
     $this->drupalPostForm($url, $values, t('Save and complete translation'));
 
+    $node = $node_storage->load($node->id());
     // Publish the node and check that the translation is available in the
     // published revision.
-    $node_storage->resetCache();
-    $node = $node_storage->load($node->id());
-    $this->moderateNode($node, 'published');
+    $node = $this->moderateNode($node, 'published');
     $revision_ids = $node_storage->revisionIds($node);
 
     $node_storage->resetCache();
@@ -360,7 +359,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     $node->set('moderation_state', 'draft');
     $node->save();
 
-    $this->moderateNode($node, 'validated');
+    $node = $this->moderateNode($node, 'validated');
     $this->drupalGet(Url::fromRoute('oe_translation.permission_translator.create_local_task', [
       'entity' => $node->id(),
       'source' => 'en',
@@ -380,9 +379,8 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
 
     // Publish the node and check that the published versions have the correct
     // translations.
-    $node_storage->resetCache();
-    $node = $node_storage->loadRevision($node_storage->getLatestRevisionId($node->id()));
-    $this->moderateNode($node, 'published');
+    $node = $node_storage->load($node->id());
+    $node = $this->moderateNode($node, 'published');
     $revision_ids = $node_storage->revisionIds($node);
 
     /** @var \Drupal\node\NodeInterface[] $revisions */
@@ -407,8 +405,11 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
    *   The node.
    * @param string $target_state
    *   The target moderation state,.
+   *
+   * @return \Drupal\node\NodeInterface
+   *   The latest node revision.
    */
-  protected function moderateNode(NodeInterface $node, string $target_state): void {
+  protected function moderateNode(NodeInterface $node, string $target_state): NodeInterface {
     $states = [
       'draft',
       'needs_review',
@@ -419,17 +420,21 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
 
     $current_state = $node->get('moderation_state')->value;
     if ($current_state === $target_state) {
-      return;
+      return $node;
     }
 
     $pos = array_search($current_state, $states);
     foreach (array_slice($states, $pos + 1) as $new_state) {
-      $node->set('moderation_state', $new_state);
-      $node->save();
+      $node = isset($revision) ? $revision : $node;
+      $revision = $this->entityTypeManager->getStorage('node')->createRevision($node);
+      $revision->set('moderation_state', $new_state);
+      $revision->save();
       if ($new_state === $target_state) {
-        break;
+        return $revision;
       }
     }
+
+    return isset($revision) ? $revision : $node;
   }
 
 }
