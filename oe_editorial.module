@@ -11,47 +11,47 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
- * Implements hook_field_widget_form_alter().
+ * Implements hook_element_info_alter().
+ *
+ * Add a custom process method to the TextFormat form element.
  */
-function oe_editorial_field_widget_form_alter(&$element, FormStateInterface $form_state, $context) {
-  /** @var \Drupal\Core\Field\FieldDefinitionInterface $field_definition */
-  $field_definition = $context['items']->getFieldDefinition();
-
-  // We add an after build method so we can alter the Url of the help link.
-  if (in_array($field_definition->getType(), [
-    'text',
-    'text_long',
-    'text_with_summary',
-  ])) {
-    $element['#after_build'][] = '_oe_editorial_alter_textarea_help';
+function oe_editorial_element_info_alter(array &$types) {
+  if (isset($types['text_format'])) {
+    $types['text_format']['#process'][] = "_oe_editorial_alter_text_format_help";
   }
 }
 
 /**
  * After build callback to alter the Url of the help link on text areas.
  */
-function _oe_editorial_alter_textarea_help($form_element, FormStateInterface $form_state) {
-  if (!isset($form_element['format']['format'])) {
-    return $form_element;
-  }
-  foreach ($form_element['format']['format']['#options'] as $allowed_format_id => $allowed_format_name) {
-    // We add one link for each of the available format types.
-    $form_element['format']['help'][$allowed_format_id] = [
-      '#type' => 'link',
-      '#title' => t('About the :format_name format', [':format_name' => $allowed_format_name]),
-      '#url' => Url::fromRoute('filter.tips', ['filter_format' => $allowed_format_id]),
-      '#attributes' => [
-        'class' => [
-          'filter-help-item',
-          'filter-help-' . $allowed_format_id,
-        ],
-        'target' => '_blank',
-      ],
-    ];
-  }
-  // Remove the default static link.
-  unset($form_element['format']['help']['about']);
-  $form_element['format']['help']['#attached']['library'][] = 'oe_editorial/help';
+function _oe_editorial_alter_text_format_help(&$element, FormStateInterface $form_state, &$complete_form) {
 
-  return $form_element;
+  // Replace the format help links with custom ones that point to
+  // the appropriate help page.
+  if (isset($element['format']['format'])) {
+    foreach ($element['format']['format']['#options'] as $allowed_format_id => $allowed_format_name) {
+      // We add one link for each of the available format types.
+      $element['format']['help'][$allowed_format_id] = [
+        '#type' => 'link',
+        '#title' => t('About the :format_name format', [':format_name' => $allowed_format_name]),
+        '#url' => Url::fromRoute('filter.tips', ['filter_format' => $allowed_format_id]),
+        '#attributes' => [
+          'class' => [
+            'filter-help-item',
+            'filter-help-' . $allowed_format_id,
+          ],
+          'target' => '_blank',
+        ],
+      ];
+    }
+    // Remove the default static link.
+    unset($element['format']['help']['about']);
+    $element['format']['help']['#attached']['library'][] = 'oe_editorial/help';
+  }
+
+  // Remove the guidelines area.
+  if (isset($element['format']['guidelines'])) {
+    unset($element['format']['guidelines']);
+  }
+  return $element;
 }
