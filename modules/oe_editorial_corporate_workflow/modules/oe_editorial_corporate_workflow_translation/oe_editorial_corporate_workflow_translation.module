@@ -85,51 +85,53 @@ function oe_editorial_corporate_workflow_translation_node_view_alter(array &$bui
  * @see CorporateWorkflowTranslationRevisionTest::testTranslationRevisions()
  */
 function oe_editorial_corporate_workflow_translation_node_revision_create(ContentEntityInterface $revision, ContentEntityInterface $entity, $original_keep_untranslatable_fields): void {
-  if (!$entity->isNew() && !$entity->isDefaultRevision() && $entity->isTranslatable() && $entity->getTranslationLanguages(FALSE)) {
-    // Create a new revision from the entity so that we can get the correct
-    // translation field values from. Other than that, we are working with the
-    // $revision that was created in the storage handler as the latter also
-    // did extra things on it which we need to keep.
-    $new_revision = clone $entity;
-    $active_langcode = $entity->language()->getId();
-
-    /** @var \Drupal\Core\Entity\ContentEntityTypeInterface $entity_type */
-    $entity_type = $entity->getEntityType();
-
-    // A list of known revision metadata fields which should be skipped from
-    // the comparision.
-    $skipped_field_names = [
-      $entity_type->getKey('revision'),
-      $entity_type->getKey('revision_translation_affected'),
-    ];
-    $skipped_field_names = array_merge($skipped_field_names, array_values($entity_type->getRevisionMetadataKeys()));
-    $skipped_field_names = array_flip($skipped_field_names);
-
-    if (!isset($keep_untranslatable_fields)) {
-      $keep_untranslatable_fields = $entity->isDefaultTranslation() && $entity->isDefaultTranslationAffectedOnly();
-    }
-
-    /** @var \Drupal\Core\Entity\ContentEntityInterface $default_revision */
-    $default_revision = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId())->load($entity->id());
-    $translation_languages = $default_revision->getTranslationLanguages();
-    foreach ($translation_languages as $langcode => $language) {
-      if ($langcode == $active_langcode) {
-        continue;
-      }
-
-      $revision_translation = $revision->hasTranslation($langcode) ? $revision->getTranslation($langcode) : $revision->addTranslation($langcode);
-      $new_revision_translation = $new_revision->hasTranslation($langcode) ? $new_revision->getTranslation($langcode) : $new_revision->addTranslation($langcode);
-
-      /** @var \Drupal\Core\Field\FieldItemListInterface[] $sync_items */
-      $sync_items = array_diff_key(
-        $keep_untranslatable_fields ? $new_revision_translation->getTranslatableFields() : $new_revision_translation->getFields(),
-        $skipped_field_names
-      );
-      foreach ($sync_items as $field_name => $items) {
-        $revision_translation->set($field_name, $items->getValue());
-      }
-    }
-
-    $revision->original = clone $revision;
+  if ($entity->isNew() || $entity->isDefaultRevision() || !$entity->isTranslatable() || !$entity->getTranslationLanguages(FALSE)) {
+    return;
   }
+
+  // Create a new revision from the entity so that we can get the correct
+  // translation field values from. Other than that, we are working with the
+  // $revision that was created in the storage handler as the latter also
+  // did extra things on it which we need to keep.
+  $new_revision = clone $entity;
+  $active_langcode = $entity->language()->getId();
+
+  /** @var \Drupal\Core\Entity\ContentEntityTypeInterface $entity_type */
+  $entity_type = $entity->getEntityType();
+
+  // A list of known revision metadata fields which should be skipped from
+  // the comparision.
+  $skipped_field_names = [
+    $entity_type->getKey('revision'),
+    $entity_type->getKey('revision_translation_affected'),
+  ];
+  $skipped_field_names = array_merge($skipped_field_names, array_values($entity_type->getRevisionMetadataKeys()));
+  $skipped_field_names = array_flip($skipped_field_names);
+
+  if (!isset($keep_untranslatable_fields)) {
+    $keep_untranslatable_fields = $entity->isDefaultTranslation() && $entity->isDefaultTranslationAffectedOnly();
+  }
+
+  /** @var \Drupal\Core\Entity\ContentEntityInterface $default_revision */
+  $default_revision = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId())->load($entity->id());
+  $translation_languages = $default_revision->getTranslationLanguages();
+  foreach ($translation_languages as $langcode => $language) {
+    if ($langcode == $active_langcode) {
+      continue;
+    }
+
+    $revision_translation = $revision->hasTranslation($langcode) ? $revision->getTranslation($langcode) : $revision->addTranslation($langcode);
+    $new_revision_translation = $new_revision->hasTranslation($langcode) ? $new_revision->getTranslation($langcode) : $new_revision->addTranslation($langcode);
+
+    /** @var \Drupal\Core\Field\FieldItemListInterface[] $sync_items */
+    $sync_items = array_diff_key(
+      $keep_untranslatable_fields ? $new_revision_translation->getTranslatableFields() : $new_revision_translation->getFields(),
+      $skipped_field_names
+    );
+    foreach ($sync_items as $field_name => $items) {
+      $revision_translation->set($field_name, $items->getValue());
+    }
+  }
+
+  $revision->original = clone $revision;
 }

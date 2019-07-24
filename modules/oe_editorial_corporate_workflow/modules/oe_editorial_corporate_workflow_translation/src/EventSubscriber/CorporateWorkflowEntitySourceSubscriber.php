@@ -73,7 +73,7 @@ class CorporateWorkflowEntitySourceSubscriber implements EventSubscriberInterfac
 
     /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
     $entity = $this->entityTypeManager->getStorage($job_item->getItemType())->loadRevision($job_item->get('item_rid')->value);
-    // If the entity was deleted, do thing.
+    // If the entity was deleted, do nothing.
     if (!$entity instanceof ContentEntityInterface) {
       return;
     }
