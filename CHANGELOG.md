@@ -1,10 +1,22 @@
 # Change Log
 
+## [1.0.0](https://github.com/openeuropa/oe_editorial/tree/1.0.0) (2019-07-24)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.0.0-beta4...1.0.0)
+
+**Closed issues:**
+
+- Fatal error when no workflow is selected [\#32](https://github.com/openeuropa/oe_editorial/issues/32)
+
+**Merged pull requests:**
+
+- OPENEUROPA-2053: Corporate workflow translation. [\#38](https://github.com/openeuropa/oe_editorial/pull/38) ([upchuk](https://github.com/upchuk))
+
 ## [1.0.0-beta4](https://github.com/openeuropa/oe_editorial/tree/1.0.0-beta4) (2019-07-10)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.0.0-beta3...1.0.0-beta4)
 
 **Merged pull requests:**
 
+- Release 1.0.0-beta4: Update changelog. [\#35](https://github.com/openeuropa/oe_editorial/pull/35) ([nagyad](https://github.com/nagyad))
 - OPENEUROPA-2037: Integrate the new config setting entity version. [\#34](https://github.com/openeuropa/oe_editorial/pull/34) ([nagyad](https://github.com/nagyad))
 
 ## [1.0.0-beta3](https://github.com/openeuropa/oe_editorial/tree/1.0.0-beta3) (2019-07-02)
