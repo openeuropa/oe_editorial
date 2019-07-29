@@ -9,6 +9,8 @@ default:
         - Drupal\Tests\oe_editorial\Behat\ContentLockContext
         - Drupal\Tests\oe_editorial\Behat\FeatureContext
         - OpenEuropa\Behat\TransformationContext:
+            elements:
+              guidelines: 'div.filter-guidelines'
             pages:
               demo content creation: 'node/add/oe_workflow_demo'
               content administration: 'admin/content'

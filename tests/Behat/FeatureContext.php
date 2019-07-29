@@ -19,12 +19,11 @@ class FeatureContext extends RawDrupalContext {
   /**
    * Checks that the given select field has the options listed in the table.
    *
-   * // phpcs:disable
-   * @Then I should have the following options for the :select select:
    * | option 1 |
    * | option 2 |
    * |   ...    |
-   * // phpcs:enable
+   *
+   * @Then I should have the following options for the :select select:
    */
   public function assertSelectOptions(string $select, TableNode $options): void {
     // Retrieve the specified field.
@@ -95,12 +94,11 @@ class FeatureContext extends RawDrupalContext {
   /**
    * Checks the given node with title has the number of revisions and states.
    *
-   * // phpcs:disable
-   * @Then the node :title should have :number number of revisions with the following states:
    * | state 1 |
    * | state 2 |
    * |   ...   |
-   * // phpcs:enable
+   *
+   * @Then the node :title should have :number number of revisions with the following states:
    */
   public function theNodeShouldHaveNumberForRevisionsWithTheFollowingStates(string $title, int $number, TableNode $options) {
     $node = $this->getNodeByTitle($title);
@@ -164,12 +162,11 @@ class FeatureContext extends RawDrupalContext {
   /**
    * Checks the given node with title has the specified version numbers.
    *
-   * // phpcs:disable
-   * @Then the node :title should have the following version:
    * | major | number 1 |
    * | minor | number 2 |
    * | patch | number 3 |
-   * // phpcs:enable
+   *
+   * @Then the node :title should have the following version:
    */
   public function theNodeShouldHaveTheFollowingVersion(string $title, TableNode $options) {
     $storage = \Drupal::entityTypeManager()->getStorage('node');

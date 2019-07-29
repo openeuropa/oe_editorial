@@ -30,7 +30,7 @@ class TextFormatContext extends RawDrupalContext {
    *
    * @afterScenario @cleanup-formats
    */
-  public function cleanupCreatedUrlAliases(AfterScenarioScope $scope): void {
+  public function cleanupCreatedTextFormats(AfterScenarioScope $scope): void {
     $basic_roles = [
       'anonymous',
       'authenticated',
@@ -49,12 +49,11 @@ class TextFormatContext extends RawDrupalContext {
   /**
    * Checks the given node with title has the specified version numbers.
    *
-   * // phpcs:disable
-   * @Then the following text formats are available:
    * | id   | title   |
    * | id 1 | title 1 |
    * | id 2 | title 2 |
-   * // phpcs:enable
+   *
+   * @Then the following text formats are available:
    */
   public function textFormatsAreAvailable(TableNode $formats) {
     $basic_roles = [
