@@ -4,7 +4,7 @@ Feature: Text format help
   When I edit content
   The text format help link should take me to the relevant text format help page
 
-  @javascript @cleanup-formats
+  @javascript
   Scenario: Text format help links point to the proper help page.
     Given I am logged in as a user with the "Author" role
     And the following text formats are available:

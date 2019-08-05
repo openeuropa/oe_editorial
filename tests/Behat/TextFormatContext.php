@@ -20,7 +20,7 @@ class TextFormatContext extends RawDrupalContext {
    *
    * @var array
    */
-  protected $newTextFormats = [];
+  protected $textFormats = [];
 
   /**
    * Deletes text formats created through the scenario.
@@ -28,14 +28,14 @@ class TextFormatContext extends RawDrupalContext {
    * @param \Behat\Behat\Hook\Scope\AfterScenarioScope $scope
    *   The scenario scope.
    *
-   * @afterScenario @cleanup-formats
+   * @afterScenario
    */
   public function cleanupCreatedTextFormats(AfterScenarioScope $scope): void {
     $basic_roles = [
       'anonymous',
       'authenticated',
     ];
-    foreach ($this->newTextFormats as $text_format_id) {
+    foreach ($this->textFormats as $text_format_id) {
       foreach ($basic_roles as $role) {
         $role_object = Role::load($role);
         $role_object->revokePermission('use text format ' . $text_format_id);
@@ -66,7 +66,7 @@ class TextFormatContext extends RawDrupalContext {
         'format' => $format['id'],
       ]);
       $filter_format->save();
-      $this->newTextFormats[] = $format['id'];
+      $this->textFormats[] = $format['id'];
 
       foreach ($basic_roles as $role) {
         $role_object = Role::load($role);
