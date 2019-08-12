@@ -1,5 +1,13 @@
 # Change Log
 
+## [1.1.0](https://github.com/openeuropa/oe_editorial/tree/1.1.0) (2019-08-12)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.0.0...1.1.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-2076: Use entity_version from drupal repo. [\#40](https://github.com/openeuropa/oe_editorial/pull/40) ([nagyad](https://github.com/nagyad))
+- OPENEUROPA-2041: Change url of textarea help link. [\#36](https://github.com/openeuropa/oe_editorial/pull/36) ([imanoleguskiza](https://github.com/imanoleguskiza))
+
 ## [1.0.0](https://github.com/openeuropa/oe_editorial/tree/1.0.0) (2019-07-24)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.0.0-beta4...1.0.0)
 
@@ -9,6 +17,7 @@
 
 **Merged pull requests:**
 
+- Release 1.0.0: Update changelog. [\#39](https://github.com/openeuropa/oe_editorial/pull/39) ([dxvargas](https://github.com/dxvargas))
 - OPENEUROPA-2053: Corporate workflow translation. [\#38](https://github.com/openeuropa/oe_editorial/pull/38) ([upchuk](https://github.com/upchuk))
 
 ## [1.0.0-beta4](https://github.com/openeuropa/oe_editorial/tree/1.0.0-beta4) (2019-07-10)
