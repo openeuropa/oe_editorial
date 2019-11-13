@@ -235,8 +235,8 @@ Feature: Corporate editorial workflow
 
   Scenario: Permission to delete content is not given to any editorial role.
     Given users:
-      | name        | roles                                   |
-      | author_user | Author, Reviewer, Validator, Translator |
+      | name        | roles                                          |
+      | author_user | Author, Reviewer, Validator, Translate content |
     And "oe_workflow_demo" content:
       | title         | moderation_state | author      |
       | Workflow node | draft            | author_user |

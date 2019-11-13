@@ -18,3 +18,14 @@ function oe_editorial_corporate_workflow_post_update_set_validator_permission(ar
     ->grantPermission('use oe_corporate_workflow transition validated_to_draft')
     ->save();
 }
+
+/**
+ * Adapts translator role name.
+ */
+function oe_editorial_corporate_workflow_post_update_00001(): void {
+  \Drupal::entityTypeManager()
+    ->getStorage('user_role')
+    ->load('oe_translator')
+    ->set('label', 'Translate content')
+    ->save();
+}
