@@ -1,11 +1,22 @@
 # Change Log
 
+## [1.1.1](https://github.com/openeuropa/oe_editorial/tree/1.1.1) (2019-12-02)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.1.0...1.1.1)
+
+**Merged pull requests:**
+
+- OPENEUROPA-2454: Update translator name. [\#45](https://github.com/openeuropa/oe_editorial/pull/45) ([22Alexandra](https://github.com/22Alexandra))
+- OPENEUROPA-2258: Undo use of PHP 7.2. [\#44](https://github.com/openeuropa/oe_editorial/pull/44) ([dxvargas](https://github.com/dxvargas))
+- OPENEUROPA-2464: Use PHP 7.1 in docker-compose. [\#43](https://github.com/openeuropa/oe_editorial/pull/43) ([dxvargas](https://github.com/dxvargas))
+- OPENEUROPA-2258: Use PHP 7.2 in drone and docker image. [\#42](https://github.com/openeuropa/oe_editorial/pull/42) ([dxvargas](https://github.com/dxvargas))
+
 ## [1.1.0](https://github.com/openeuropa/oe_editorial/tree/1.1.0) (2019-08-12)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.0.0...1.1.0)
 
 **Merged pull requests:**
 
-- OPENEUROPA-2076: Use entity_version from drupal repo. [\#40](https://github.com/openeuropa/oe_editorial/pull/40) ([nagyad](https://github.com/nagyad))
+- Release-1.1.0 [\#41](https://github.com/openeuropa/oe_editorial/pull/41) ([nagyad](https://github.com/nagyad))
+-  OPENEUROPA-2076: Use entity\_version from drupal repo. [\#40](https://github.com/openeuropa/oe_editorial/pull/40) ([nagyad](https://github.com/nagyad))
 - OPENEUROPA-2041: Change url of textarea help link. [\#36](https://github.com/openeuropa/oe_editorial/pull/36) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [1.0.0](https://github.com/openeuropa/oe_editorial/tree/1.0.0) (2019-07-24)
