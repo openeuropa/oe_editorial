@@ -11,19 +11,16 @@ declare(strict_types = 1);
  * Implements hook_install().
  */
 function oe_editorial_corporate_workflow_translation_install() {
-  // The OpenEuropa Translation module ships with a "Translator" role which has
-  // the necessary permissions to perform translations. We need to take those
-  // permissions and assign them to the Translator role provided by the
-  // Editorial component and delete the role.
-  /** @var \Drupal\user\RoleInterface $translator */
-  $translator = \Drupal::entityTypeManager()->getStorage('user_role')->load('translator');
+  // Make sure that the oe_translator role has the necessary permissions for
+  // content moderation.
+  $permissions = [
+    'use oe_corporate_workflow transition validated_to_published',
+  ];
   /** @var \Drupal\user\RoleInterface $oe_translator */
-  $oe_translator = \Drupal::entityTypeManager()->getStorage('user_role')->load('oe_translator');
-  if ($translator && $oe_translator) {
-    foreach ($translator->getPermissions() as $permission) {
+  if ($oe_translator = \Drupal::entityTypeManager()->getStorage('user_role')->load('oe_translator')) {
+    foreach ($permissions as $permission) {
       $oe_translator->grantPermission($permission);
     }
     $oe_translator->save();
-    $translator->delete();
   }
 }
