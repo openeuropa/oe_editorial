@@ -15,6 +15,9 @@ function oe_editorial_corporate_workflow_translation_install() {
   // content moderation.
   $permissions = [
     'use oe_corporate_workflow transition validated_to_published',
+    'view any unpublished content',
+    'view all revisions',
+    'view latest version',
   ];
   /** @var \Drupal\user\RoleInterface $oe_translator */
   if ($oe_translator = \Drupal::entityTypeManager()->getStorage('user_role')->load('oe_translator')) {
