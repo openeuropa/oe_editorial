@@ -6,7 +6,7 @@ Feature: Content version
   Scenario: The version field value changes based on the configured transitions.
     Given users:
       | name        | roles                                          |
-      | author_user | Author, Reviewer, Validator, Translate content |
+      | author_user | Author, Reviewer, Validator |
     And "oe_workflow_demo" content:
       # When the node is created, it already gets the version 0.1.0 as default.
       | title         | moderation_state | author      |
