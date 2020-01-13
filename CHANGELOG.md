@@ -1,10 +1,18 @@
 # Change Log
 
+## [1.2.0](https://github.com/openeuropa/oe_editorial/tree/1.2.0) (2020-01-13)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.1.1...1.2.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-2503: Align the translator role between components. [\#47](https://github.com/openeuropa/oe_editorial/pull/47) ([nagyad](https://github.com/nagyad))
+
 ## [1.1.1](https://github.com/openeuropa/oe_editorial/tree/1.1.1) (2019-12-02)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.1.0...1.1.1)
 
 **Merged pull requests:**
 
+- Release-1.1.1: Update changelog. [\#46](https://github.com/openeuropa/oe_editorial/pull/46) ([nagyad](https://github.com/nagyad))
 - OPENEUROPA-2454: Update translator name. [\#45](https://github.com/openeuropa/oe_editorial/pull/45) ([22Alexandra](https://github.com/22Alexandra))
 - OPENEUROPA-2258: Undo use of PHP 7.2. [\#44](https://github.com/openeuropa/oe_editorial/pull/44) ([dxvargas](https://github.com/dxvargas))
 - OPENEUROPA-2464: Use PHP 7.1 in docker-compose. [\#43](https://github.com/openeuropa/oe_editorial/pull/43) ([dxvargas](https://github.com/dxvargas))
