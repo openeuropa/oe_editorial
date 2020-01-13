@@ -25,7 +25,10 @@
         "phpunit/phpunit": "~6.0",
         "symfony/browser-kit": "~4.2.1",
         "squizlabs/php_codesniffer": "~3.3.2",
-        "openeuropa/oe_translation": "~0.2.1"
+        "openeuropa/oe_translation": "~0.3"
+    },
+    "conflict": {
+        "openeuropa/oe_translation": "<0.3.0"
     },
     "scripts": {
         "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
@@ -62,9 +65,6 @@
                 "https://www.drupal.org/project/content_lock/issues/2919019": "https://www.drupal.org/files/issues/content_lock-caching-invalidation-2919019-3.patch",
                 "https://www.drupal.org/project/content_lock/issues/2956625": "https://www.drupal.org/files/issues/2018-03-28/error-on-locked-content-by-deleted-user-2956625.2.patch",
                 "https://www.drupal.org/project/content_lock/issues/2949198": "https://www.drupal.org/files/issues/content_lock-unlocking-already-locked-2949198-9.patch"
-            },
-            "openeuropa/oe_translation": {
-                "latest-master": "https://github.com/openeuropa/oe_translation/compare/0.2.1...master.diff"
             }
         }
     },
