@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_editorial_corporate_workflow_translation\Functional;
 
-use Drupal\Core\Config\FileStorage;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
 use Drupal\Tests\BrowserTestBase;
@@ -82,27 +81,6 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     $this->user = $this->drupalCreateUser($role->getPermissions());
 
     $this->drupalLogin($this->user);
-  }
-
-  /**
-   * Tests that the Translator roles get merged.
-   *
-   * Checks that the translator role shipped by the OpenEuropa Editorial
-   * component inherits the permissions of the one shipped by the OpenEuropa
-   * Translation one and the latter is deleted.
-   */
-  public function testRoleMerge(): void {
-    $storage = new FileStorage(drupal_get_path('module', 'oe_translation') . '/config/install');
-    $values = $storage->read('user.role.translator');
-    $permissions = $values['permissions'];
-
-    /** @var \Drupal\user\RoleInterface $role */
-    $role = $this->entityTypeManager->getStorage('user_role')->load('oe_translator');
-    foreach ($permissions as $permission) {
-      $this->assertTrue($role->hasPermission($permission), 'The OE Translator role is missing a permission');
-    }
-
-    $this->assertEmpty($this->entityTypeManager->getStorage('user_role')->load($values['id']));
   }
 
   /**

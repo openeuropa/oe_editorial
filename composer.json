@@ -25,7 +25,10 @@
         "phpunit/phpunit": "~6.0",
         "symfony/browser-kit": "~4.2.1",
         "squizlabs/php_codesniffer": "~3.3.2",
-        "openeuropa/oe_translation": "~0.1"
+        "openeuropa/oe_translation": "~0.3"
+    },
+    "conflict": {
+        "openeuropa/oe_translation": "<0.3.0"
     },
     "scripts": {
         "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
