@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\oe_editorial_corporate_workflow_translation\EventSubscriber;
+namespace Drupal\oe_editorial_corporate_workflow_translation_poetry\EventSubscriber;
 
 use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;

@@ -9,8 +9,3 @@ services:
     arguments: ['@entity_type.manager', '@content_moderation.moderation_information']
     tags:
       - { name: event_subscriber }
-  oe_editorial_corporate_workflow_translation.poetry_request_type_subscriber:
-    class: Drupal\oe_editorial_corporate_workflow_translation\EventSubscriber\PoetryRequestTypeSubscriber
-    arguments: ['@content_moderation.moderation_information', '@entity_type.manager']
-    tags:
-      - { name: event_subscriber }
