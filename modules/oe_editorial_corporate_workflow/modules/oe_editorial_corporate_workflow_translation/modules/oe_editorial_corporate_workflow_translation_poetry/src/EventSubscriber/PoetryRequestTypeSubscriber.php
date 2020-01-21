@@ -36,7 +36,7 @@ class PoetryRequestTypeSubscriber implements EventSubscriberInterface {
   protected $entityTypeManager;
 
   /**
-   * TranslationAccessSubscriber constructor.
+   * PoetryRequestTypeSubscriber constructor.
    *
    * @param \Drupal\content_moderation\ModerationInformationInterface $moderationInformation
    *   The moderation info.
@@ -92,7 +92,7 @@ class PoetryRequestTypeSubscriber implements EventSubscriberInterface {
       // updates.
       $message = $this->t('No translation requests to DGT can be made until a new version of the content has been created.');
       $request_type = new PoetryRequestType(PoetryRequestType::NEW);
-      $request_type->setMessage($message);
+      $request_type->setMessage($message->__toString());
       $event->setRequestType($request_type);
     }
   }
