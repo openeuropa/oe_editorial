@@ -6,8 +6,9 @@ namespace Drupal\oe_editorial_corporate_workflow_translation_poetry\EventSubscri
 
 use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\oe_translation_poetry\Event\PoetryRequestTypeEvent;
-use Drupal\oe_translation_poetry\Plugin\tmgmt\Translator\PoetryTranslator;
+use Drupal\oe_translation_poetry\PoetryRequestType;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
@@ -17,6 +18,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * and we only allow the update if there is actually a change in the content.
  */
 class PoetryRequestTypeSubscriber implements EventSubscriberInterface {
+
+  use StringTranslationTrait;
 
   /**
    * The moderation info.
@@ -61,7 +64,7 @@ class PoetryRequestTypeSubscriber implements EventSubscriberInterface {
    *   The event.
    */
   public function getRequestType(PoetryRequestTypeEvent $event) {
-    if ($event->getRequestType() === PoetryTranslator::POETRY_REQUEST_NEW) {
+    if ($event->getRequestType()->getType() === PoetryRequestType::NEW) {
       // If it's already a request for a new translation, we are fine with that.
       return;
     }
@@ -87,7 +90,10 @@ class PoetryRequestTypeSubscriber implements EventSubscriberInterface {
     if ($current_major <= $original_major) {
       // If the version of the current entity is not higher, we don't allow
       // updates.
-      $event->setRequestType(PoetryTranslator::POETRY_REQUEST_NEW);
+      $message = $this->t('No translation requests to DGT can be made until a new version of the content has been created.');
+      $request_type = new PoetryRequestType(PoetryRequestType::NEW);
+      $request_type->setMessage($message);
+      $event->setRequestType($request_type);
     }
   }
 
