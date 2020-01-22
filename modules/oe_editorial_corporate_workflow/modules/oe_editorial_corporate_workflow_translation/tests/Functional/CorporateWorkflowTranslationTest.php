@@ -286,6 +286,8 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
    * would have it.
    *
    * @see oe_editorial_corporate_workflow_translation_node_revision_create()
+   *
+   * @SuppressWarnings(PHPMD.CyclomaticComplexity)
    */
   public function testTranslationRevisions(): void {
     /** @var \Drupal\node\NodeStorageInterface $node_storage */
@@ -356,8 +358,10 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     $this->drupalPostForm($url, $values, t('Save and complete translation'));
 
     // Publish the node and check that the published versions have the correct
-    // translations.
-    $node = $node_storage->load($node->id());
+    // translations. Since we have previously published revisions, we need to
+    // use the latest revision to transition to the publised state.
+    $revision_id = $node_storage->getLatestRevisionId($node->id());
+    $node = $node_storage->loadRevision($revision_id);
     $node = $this->moderateNode($node, 'published');
     $revision_ids = $node_storage->revisionIds($node);
 
@@ -373,6 +377,44 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
         $this->assertEquals('My node FR 2', $revision->getTranslation('fr')->label());
         continue;
       }
+    }
+
+    // Test that if the default revision of the content
+    // has less translations than the revision where we make a new revision
+    // from, the new revision will include all the translations from the
+    // previous revision not only the ones from the default revision.
+    // Start a new draft from the latest published node and validate it.
+    $node = $node_storage->load($node->id());
+    $node->set('title', 'My node 3');
+    $node->set('moderation_state', 'draft');
+    $node->save();
+
+    $node = $this->moderateNode($node, 'validated');
+    // Create some more translations.
+    $task_id = 3;
+    foreach (['fr', 'it', 'ro'] as $langcode) {
+      $this->drupalGet(Url::fromRoute('oe_translation.permission_translator.create_local_task', [
+        'entity' => $node->id(),
+        'source' => 'en',
+        'target' => $langcode,
+        'entity_type' => 'node',
+      ]));
+
+      $values = [
+        'title|0|value[translation]' => "My node $langcode 3",
+      ];
+      $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => $task_id]);
+      $task_id++;
+      $this->drupalPostForm($url, $values, t('Save and complete translation'));
+    }
+
+    // Publish the content and assert that the new published version has
+    // translations in 4 languages.
+    $revision_id = $node_storage->getLatestRevisionId($node->id());
+    $node = $node_storage->loadRevision($revision_id);
+    $node = $this->moderateNode($node, 'published');
+    foreach (['fr', 'it', 'ro'] as $langcode) {
+      $this->assertTrue($node->hasTranslation($langcode), 'Translation missing in ' . $langcode);
     }
   }
 
