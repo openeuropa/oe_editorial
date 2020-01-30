@@ -1,10 +1,18 @@
 # Change Log
 
+## [1.3.0](https://github.com/openeuropa/oe_editorial/tree/1.3.0) (2020-01-30)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.2.0...1.3.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-2252: Poetry translation update. [\#49](https://github.com/openeuropa/oe_editorial/pull/49) ([upchuk](https://github.com/upchuk))
+
 ## [1.2.0](https://github.com/openeuropa/oe_editorial/tree/1.2.0) (2020-01-13)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.1.1...1.2.0)
 
 **Merged pull requests:**
 
+- OPENEUROPA-0000: Update changelog for release. [\#50](https://github.com/openeuropa/oe_editorial/pull/50) ([hernani](https://github.com/hernani))
 - OPENEUROPA-2503: Align the translator role between components. [\#47](https://github.com/openeuropa/oe_editorial/pull/47) ([nagyad](https://github.com/nagyad))
 
 ## [1.1.1](https://github.com/openeuropa/oe_editorial/tree/1.1.1) (2019-12-02)
