@@ -1,0 +1,6 @@
+services:
+  oe_editorial_corporate_workflow_translation_poetry.poetry_request_type_subscriber:
+    class: Drupal\oe_editorial_corporate_workflow_translation_poetry\EventSubscriber\PoetryRequestTypeSubscriber
+    arguments: ['@content_moderation.moderation_information', '@entity_type.manager']
+    tags:
+      - { name: event_subscriber }

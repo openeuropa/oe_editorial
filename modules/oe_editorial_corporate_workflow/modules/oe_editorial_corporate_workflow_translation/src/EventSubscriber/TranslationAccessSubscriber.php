@@ -7,6 +7,7 @@ namespace Drupal\oe_editorial_corporate_workflow_translation\EventSubscriber;
 use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\oe_translation\Event\TranslationAccessEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -14,6 +15,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Determines access to create new translations based on the corporate workflow.
  */
 class TranslationAccessSubscriber implements EventSubscriberInterface {
+
+  use StringTranslationTrait;
 
   /**
    * The moderation info.
@@ -76,7 +79,7 @@ class TranslationAccessSubscriber implements EventSubscriberInterface {
     // Content can only be translated when reaching the validated state.
     $state = $entity->get('moderation_state')->value;
     if (!in_array($state, ['validated', 'published'])) {
-      $event->setAccess(AccessResult::forbidden());
+      $event->setAccess(AccessResult::forbidden()->setReason($this->t('No translation requests can be made until a new version of the content has been created.')));
       return;
     }
   }

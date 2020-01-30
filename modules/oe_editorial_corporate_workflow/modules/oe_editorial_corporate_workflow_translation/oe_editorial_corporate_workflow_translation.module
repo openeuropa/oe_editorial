@@ -112,14 +112,20 @@ function oe_editorial_corporate_workflow_translation_node_revision_create(Conten
     $keep_untranslatable_fields = $entity->isDefaultTranslation() && $entity->isDefaultTranslationAffectedOnly();
   }
 
-  /** @var \Drupal\Core\Entity\ContentEntityInterface $default_revision */
-  $default_revision = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId())->load($entity->id());
-  $translation_languages = $default_revision->getTranslationLanguages();
+  // We use the entity to get the translation languages because it may contain
+  // additional translations that need to be added. The storage handler, on the
+  // other hand, uses the latest published revision to determine which are the
+  // translation languages that need to be copied over into. Which is not good
+  // for use because we may have extra translations on the newer revisions.
+  $translation_languages = $entity->getTranslationLanguages();
   foreach ($translation_languages as $langcode => $language) {
     if ($langcode == $active_langcode) {
       continue;
     }
 
+    // FYI, the revision processed in the storage handler will maybe be missing
+    // some translations (those that were not also available in the latest
+    // default revision).
     $revision_translation = $revision->hasTranslation($langcode) ? $revision->getTranslation($langcode) : $revision->addTranslation($langcode);
     $new_revision_translation = $new_revision->hasTranslation($langcode) ? $new_revision->getTranslation($langcode) : $new_revision->addTranslation($langcode);
 

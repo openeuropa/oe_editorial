@@ -15,3 +15,4 @@ config_devel:
     - language.content_settings.node.oe_workflow_demo.yml
     - language.entity.fr.yml
     - language.entity.it.yml
+    - language.entity.ro.yml
