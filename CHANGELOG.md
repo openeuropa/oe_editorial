@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.2.1](https://github.com/openeuropa/oe_editorial/tree/1.2.1) (2020-01-31)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.2.0...1.2.1)
+
+**Merged pull requests:**
+
+- OPENEUROPA-0000: Fixing update path of role label. [\#55](https://github.com/openeuropa/oe_editorial/pull/55) ([nagyad](https://github.com/nagyad))
+
 ## [1.2.0](https://github.com/openeuropa/oe_editorial/tree/1.2.0) (2020-01-13)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.1.1...1.2.0)
 
