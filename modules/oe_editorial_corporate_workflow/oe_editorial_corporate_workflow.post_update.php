@@ -8,6 +8,7 @@
 declare(strict_types = 1);
 
 use Drupal\user\Entity\Role;
+use Drupal\user\RoleInterface;
 
 /**
  * Add missing permission for Validator.
@@ -23,9 +24,13 @@ function oe_editorial_corporate_workflow_post_update_set_validator_permission(ar
  * Adapts translator role name.
  */
 function oe_editorial_corporate_workflow_post_update_00001(): void {
-  \Drupal::entityTypeManager()
+  $role = \Drupal::entityTypeManager()
     ->getStorage('user_role')
-    ->load('oe_translator')
-    ->set('label', 'Translate content')
-    ->save();
+    ->load('oe_translator');
+
+  if (!$role instanceof RoleInterface) {
+    return;
+  }
+
+  $role->set('label', 'Translate content')->save();
 }
