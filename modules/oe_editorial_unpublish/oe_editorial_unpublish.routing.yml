@@ -6,7 +6,7 @@ entity.node.unpublish:
         type: entity:node
     _admin_route: TRUE
   defaults:
-    _form: '\Drupal\oe_editorial_corporate_workflow_unpublish\Form\NodeUnpublishForm'
+    _form: '\Drupal\oe_editorial_unpublish\Form\NodeUnpublishForm'
     _title: 'Unpublish'
   requirements:
-    _custom_access: '\Drupal\oe_editorial_corporate_workflow_unpublish\Form\NodeUnpublishForm::access'
+    _custom_access: '\Drupal\oe_editorial_unpublish\Form\NodeUnpublishForm::access'

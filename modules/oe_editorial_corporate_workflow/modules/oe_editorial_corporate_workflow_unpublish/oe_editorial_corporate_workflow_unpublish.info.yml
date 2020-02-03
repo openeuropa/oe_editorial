@@ -1,8 +1,0 @@
-name: OpenEuropa Editorial Corporate Workflow Unpublish
-description: Adds a shortcut to unpublish content for users with the appropriate permissions.
-package: OpenEuropa
-type: module
-core: 8.x
-
-dependencies:
-  - oe_editorial_corporate_workflow:oe_editorial_corporate_workflow

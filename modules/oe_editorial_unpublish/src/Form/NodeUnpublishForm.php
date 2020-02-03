@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\oe_editorial_corporate_workflow_unpublish\Form;
+namespace Drupal\oe_editorial_unpublish\Form;
 
 use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Access\AccessResult;
@@ -77,7 +77,7 @@ class NodeUnpublishForm extends ConfirmFormBase {
     $this->node = $node;
     $form = parent::buildForm($form, $form_state);
     $workflow = $this->moderationInfo->getWorkflowForEntity($node);
-    $unpublished_states = $this->getWorkflowUnpublishedStates($workflow->getTypePlugin());
+    $unpublished_states = $this->getUnpublishedStates($workflow->getTypePlugin(), $node);
 
     $form['unpublish_state'] = [
       '#type' => 'select',
@@ -113,22 +113,22 @@ class NodeUnpublishForm extends ConfirmFormBase {
    */
   public function access(AccountInterface $account, NodeInterface $node) {
 
-    $workflow = $this->moderationInfo->getWorkflowForEntity($node);
-    $workflow_type = $workflow->getTypePlugin();
-    if (!$workflow || $workflow->id() !== 'oe_corporate_workflow') {
+    if (!$this->moderationInfo->isModeratedEntity($node)) {
       // If the content is not using the corporate workflow, we deny access.
-      return AccessResult::forbidden($this->t('Content does not use the OpenEuropa corporate workflow.'))->addCacheableDependency($node)->addCacheableDependency($workflow);
+      return AccessResult::forbidden($this->t('Content does not have content moderation enabled.'))->addCacheableDependency($node);
     }
 
     $storage = $this->entityTypeManager->getStorage($node->getEntityTypeId());
     $latest_revision_id = $storage->getLatestTranslationAffectedRevisionId($node->id(), $node->language()->getId());
     if ($latest_revision_id === NULL || $this->moderationInfo->hasPendingRevision($node) || !$this->moderationInfo->isDefaultRevisionPublished($node)) {
       // If the content's latest revision is not published we deny the access.
-      return AccessResult::forbidden($this->t('The last revision of the content is not published.'))->addCacheableDependency($node)->addCacheableDependency($workflow);
+      return AccessResult::forbidden($this->t('The last revision of the content is not published.'))->addCacheableDependency($node);
     }
 
     // Check if the user has a permission to transition to an unpublished state.
-    $unpublished_states = $this->getWorkflowUnpublishedStates($workflow->getTypePlugin());
+    $workflow = $this->moderationInfo->getWorkflowForEntity($node);
+    $workflow_type = $workflow->getTypePlugin();
+    $unpublished_states = $this->getUnpublishedStates($workflow->getTypePlugin(), $node);
     foreach (array_keys($unpublished_states) as $state_id) {
       $transition_id = $workflow_type->getTransitionFromStateToState($node->moderation_state->value, $state_id);
       if ($account->hasPermission('use oe_corporate_workflow transition ' . $transition_id->id())) {
@@ -162,23 +162,34 @@ class NodeUnpublishForm extends ConfirmFormBase {
   }
 
   /**
-   * Returns the states from a workflow type that are available to unpublish.
+   * Returns the states that are available to unpublish.
    *
-   * @param \Drupal\workflows\WorkflowTypeInterface $type
-   *   The workflow type.
+   * @param \Drupal\workflows\WorkflowTypeInterface $worklow_type
+   *   The workflow type plugin.
+   * @param \Drupal\node\NodeInterface $node
+   *   The node that is beind unpublished.
    *
    * @return array
    *   An array of states keyed by the state id.
    */
-  protected function getWorkflowUnpublishedStates(WorkflowTypeInterface $type) {
-    $available_states = $type->getStates();
-    $unpublished_states = [];
+  protected function getUnpublishedStates(WorkflowTypeInterface $worklow_type, NodeInterface $node) {
+    // Gather a list of unpublishable_states.
+    $available_states = $worklow_type->getStates();
+    $unpublishable_states = [];
     foreach ($available_states as $state) {
       if (!$state->isPublishedState() && $state->isDefaultRevisionState()) {
-        $unpublished_states[$state->id()] = $state->label();
+        $unpublishable_states[$state->id()] = $state->label();
       }
     }
-    return $unpublished_states;
+
+    // Gather a list of states to which the node can transition to.
+    $current_state = $node->moderation_state->value;
+    $available_transitions = $worklow_type->getTransitionsForState($current_state);
+    $transitionable_states = [];
+    foreach ($available_transitions as $transition) {
+      $transitionable_states[$transition->to()->id()] = $transition->to()->id();
+    }
+    return array_intersect_key($unpublishable_states, $transitionable_states);
   }
 
 }

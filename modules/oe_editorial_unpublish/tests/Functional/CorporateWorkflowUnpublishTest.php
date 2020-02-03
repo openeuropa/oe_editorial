@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\Tests\oe_editorial_corporate_workflow_unpublish\Functional;
+namespace Drupal\Tests\oe_editorial_unpublish\Functional;
 
 use Drupal\Core\Url;
 use Drupal\Tests\BrowserTestBase;
@@ -10,7 +10,7 @@ use Drupal\Tests\BrowserTestBase;
 /**
  * Tests the unpublishing form for nodes.
  */
-class CorporateWorkflowUnpublishTest extends BrowserTestBase {
+class EditorialUnpublishTest extends BrowserTestBase {
 
   /**
    * The entity type manager.
@@ -43,7 +43,7 @@ class CorporateWorkflowUnpublishTest extends BrowserTestBase {
     'content_moderation',
     'oe_editorial',
     'oe_editorial_corporate_workflow',
-    'oe_editorial_corporate_workflow_unpublish',
+    'oe_editorial_unpublish',
     'oe_editorial_workflow_demo',
   ];
 
