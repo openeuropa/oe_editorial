@@ -1,0 +1,5 @@
+entity.node.unpublish:
+  route_name: entity.node.unpublish
+  base_route: entity.node.canonical
+  title: Unpublish
+  weight: 11
