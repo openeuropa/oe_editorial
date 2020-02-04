@@ -1,15 +1,8 @@
-name: 'Content lock test'
+name: 'OpenEuropa Editorial Unpublish Test'
 type: module
-description: 'Provides test classes.'
-# core: 8.x
+description: 'Helper module to test the Editorial Unpublish module.'
 package: Testing
-# version: VERSION
-dependencies:
-  - content_lock:content_lock
-  - entity_test:entity_test
+core: 8.x
 
-# Information added by Drupal.org packaging script on 2018-03-06
-version: '8.x-1.0-alpha8'
-core: '8.x'
-project: 'content_lock'
-datestamp: 1520356085
+dependencies:
+  - oe_editorial_unpublish:oe_editorial_unpublish
