@@ -117,4 +117,32 @@ class EditorialUnpublishTest extends BrowserTestBase {
     $this->assertEqual($node->moderation_state->value, $unpublish_state);
   }
 
+  /**
+   * Tests modules can alter the list of unpublishable states.
+   */
+  public function testUnpublishStatesEvent(): void {
+    // Publish the node so we can access the form.
+    $this->node->moderation_state->value = 'published';
+    $this->node->save();
+
+    $unpublish_url = Url::fromRoute('entity.node.unpublish', [
+      'node' => $this->node->id(),
+    ]);
+    $this->drupalGet($unpublish_url);
+
+    // Assert the select only contains the default values.
+    $this->assertSession()->selectExists('Select the state to unpublish this node');
+    $this->assertSession()->optionExists('Select the state to unpublish this node', 'Archived');
+    $this->assertSession()->optionExists('Select the state to unpublish this node', 'Expired');
+    $this->assertSession()->optionNotExists('Select the state to unpublish this node', 'Test');
+
+    // Enable the test module and assert the select contains an extra value.
+    $this->container->get('module_installer')->install(['oe_editorial_unpublish_test']);
+    $this->drupalGet($unpublish_url);
+    $this->assertSession()->selectExists('Select the state to unpublish this node');
+    $this->assertSession()->optionExists('Select the state to unpublish this node', 'Archived');
+    $this->assertSession()->optionExists('Select the state to unpublish this node', 'Expired');
+    $this->assertSession()->optionExists('Select the state to unpublish this node', 'Test');
+  }
+
 }

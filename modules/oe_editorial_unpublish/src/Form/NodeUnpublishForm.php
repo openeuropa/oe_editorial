@@ -27,7 +27,7 @@ class NodeUnpublishForm extends ConfirmFormBase {
   /**
    * The entity type manager service.
    *
-   * @var \Drupal\Component\Datetime\TimeInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
@@ -41,7 +41,7 @@ class NodeUnpublishForm extends ConfirmFormBase {
   /**
    * The moderation information service.
    *
-   * @var \Drupal\Component\Datetime\TimeInterface
+   * @var \Drupal\content_moderation\ModerationInformationInterface
    */
   protected $moderationInfo;
 
@@ -94,6 +94,9 @@ class NodeUnpublishForm extends ConfirmFormBase {
     $form = parent::buildForm($form, $form_state);
     $workflow = $this->moderationInfo->getWorkflowForEntity($node);
     $unpublished_states = $this->getUnpublishableStates($workflow->getTypePlugin(), $node);
+    $unpublished_states = array_map(function ($state) {
+      return $state->label();
+    }, $unpublished_states);
 
     $form['unpublish_state'] = [
       '#type' => 'select',
