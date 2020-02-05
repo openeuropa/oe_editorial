@@ -147,14 +147,12 @@ class NodeUnpublishForm extends ConfirmFormBase {
     // Check if the user has a permission to transition to an unpublished state.
     $workflow = $this->moderationInfo->getWorkflowForEntity($node);
     $workflow_type = $workflow->getTypePlugin();
-    $unpublished_states = $this->getUnpublishableStates($workflow_type, $node);
-    foreach (array_keys($unpublished_states) as $state_id) {
-      $transition_id = $workflow_type->getTransitionFromStateToState($node->moderation_state->value, $state_id);
-      if ($account->hasPermission('use oe_corporate_workflow transition ' . $transition_id->id())) {
-        return AccessResult::allowed()->addCacheableDependency($node)->addCacheableDependency($workflow)->addCacheableDependency($account);
-      }
+    $unpublished_states = $this->getUnpublishableStates($workflow_type, $node, $account);
+    if (empty($unpublished_states)) {
+      return AccessResult::forbidden($this->t('The user does not have a permission to unpublish the node.'))->addCacheableDependency($node)->addCacheableDependency($workflow)->addCacheableDependency($account);
     }
-    return AccessResult::forbidden($this->t('The user does not have a permission to unpublish the node.'))->addCacheableDependency($node)->addCacheableDependency($workflow)->addCacheableDependency($account);
+
+    return AccessResult::allowed()->addCacheableDependency($node)->addCacheableDependency($workflow)->addCacheableDependency($account);
   }
 
   /**
@@ -183,17 +181,20 @@ class NodeUnpublishForm extends ConfirmFormBase {
   /**
    * Returns the states that are available to unpublish.
    *
-   * @param \Drupal\workflows\WorkflowTypeInterface $worklow_type
+   * @param \Drupal\workflows\WorkflowTypeInterface $workflow_type
    *   The workflow type plugin.
    * @param \Drupal\node\NodeInterface $node
    *   The node that is beind unpublished.
+   * @param \Drupal\core\Session\AccountInterface $account
+   *   A user account to check permissions for, defaults to the current user.
    *
    * @return array
    *   An array of states keyed by the state id.
    */
-  protected function getUnpublishableStates(WorkflowTypeInterface $worklow_type, NodeInterface $node): array {
+  protected function getUnpublishableStates(WorkflowTypeInterface $workflow_type, NodeInterface $node, AccountInterface $account = NULL): array {
+    $account = $account ?? $this->currentUser();
     // Gather a list of unpublishable_states.
-    $available_states = $worklow_type->getStates();
+    $available_states = $workflow_type->getStates();
     $unpublishable_states = [];
     foreach ($available_states as $state) {
       if (!$state->isPublishedState() && $state->isDefaultRevisionState()) {
@@ -203,7 +204,7 @@ class NodeUnpublishForm extends ConfirmFormBase {
 
     // Gather a list of states to which the node can transition to.
     $current_state = $node->moderation_state->value;
-    $available_transitions = $worklow_type->getTransitionsForState($current_state);
+    $available_transitions = $workflow_type->getTransitionsForState($current_state);
     $transitionable_states = [];
     foreach ($available_transitions as $transition) {
       $transitionable_states[$transition->to()->id()] = $transition->to();
@@ -213,8 +214,15 @@ class NodeUnpublishForm extends ConfirmFormBase {
     // Allow other modules to change the list of unpublishable states.
     $event = new UnpublishStatesEvent($node, $unpublishable_states);
     $this->eventDispatcher->dispatch(UnpublishStatesEvent::EVENT_NAME, $event);
+    $unpublishable_states = $event->getStates();
 
-    return $event->getStates();
+    foreach (array_keys($unpublishable_states) as $state_id) {
+      $transition_id = $workflow_type->getTransitionFromStateToState($node->moderation_state->value, $state_id);
+      if (!$account->hasPermission('use oe_corporate_workflow transition ' . $transition_id->id())) {
+        unset($unpublishable_states[$state_id]);
+      }
+    }
+    return $unpublishable_states;
   }
 
 }
