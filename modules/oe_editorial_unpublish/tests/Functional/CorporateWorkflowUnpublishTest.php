@@ -36,14 +36,9 @@ class EditorialUnpublishTest extends BrowserTestBase {
   protected static $modules = [
     'user',
     'node',
-    'field',
-    'text',
     'system',
-    'workflows',
-    'content_moderation',
     'oe_editorial',
     'oe_editorial_corporate_workflow',
-    'oe_editorial_unpublish',
     'oe_editorial_workflow_demo',
   ];
 
