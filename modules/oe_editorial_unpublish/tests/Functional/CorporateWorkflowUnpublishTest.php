@@ -82,10 +82,16 @@ class EditorialUnpublishTest extends BrowserTestBase {
     // when the node is not published.
     $this->assertFalse($unpublish_url->access($this->user));
 
+    // Publish the page.
     $this->node->moderation_state->value = 'published';
     $this->node->save();
 
     // A user with permissions can access the unpublish page.
+    $this->assertTrue($unpublish_url->access($this->user));
+
+    // We can access the unpublish page as long as there is a published version.
+    $this->node->moderation_state->value = 'draft';
+    $this->node->save();
     $this->assertTrue($unpublish_url->access($this->user));
 
     // A user without permissions can not access the unpublish page.
@@ -106,8 +112,11 @@ class EditorialUnpublishTest extends BrowserTestBase {
       'node' => $this->node->id(),
     ]);
     $this->drupalGet($unpublish_url);
+    // Assert we are in the correct page.
+    $this->assertSession()->pageTextContains('Are you sure you want to unpublish the node ' . $this->node->label() . '?');
     // A cancel link is present.
     $this->assertSession()->linkExists('Cancel');
+    // Assert the state select exists.
     $unpublish_state = $this->assertSession()->selectExists('Select the state to unpublish this node')->getValue();
     // Assert the unpublish button is present and using it unpublishes the node.
     $this->assertSession()->buttonExists('Unpublish')->press();

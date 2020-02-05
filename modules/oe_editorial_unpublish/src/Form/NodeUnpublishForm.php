@@ -211,17 +211,17 @@ class NodeUnpublishForm extends ConfirmFormBase {
     }
     $unpublishable_states = array_intersect_key($unpublishable_states, $transitionable_states);
 
-    // Allow other modules to change the list of unpublishable states.
-    $event = new UnpublishStatesEvent($node, $unpublishable_states);
-    $this->eventDispatcher->dispatch(UnpublishStatesEvent::EVENT_NAME, $event);
-    $unpublishable_states = $event->getStates();
-
     foreach (array_keys($unpublishable_states) as $state_id) {
       $transition_id = $workflow_type->getTransitionFromStateToState($node->moderation_state->value, $state_id);
       if (!$account->hasPermission('use oe_corporate_workflow transition ' . $transition_id->id())) {
         unset($unpublishable_states[$state_id]);
       }
     }
+
+    // Allow other modules to change the list of unpublishable states.
+    $event = new UnpublishStatesEvent($node, $unpublishable_states);
+    $this->eventDispatcher->dispatch(UnpublishStatesEvent::EVENT_NAME, $event);
+    $unpublishable_states = $event->getStates();
     return $unpublishable_states;
   }
 
