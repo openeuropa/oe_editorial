@@ -74,7 +74,6 @@ class EditorialUnpublishTest extends BrowserTestBase {
    * Tests access to the unpublishing form.
    */
   public function testUnpublishAccess(): void {
-
     $unpublish_url = Url::fromRoute('entity.node.unpublish', [
       'node' => $this->node->id(),
     ]);

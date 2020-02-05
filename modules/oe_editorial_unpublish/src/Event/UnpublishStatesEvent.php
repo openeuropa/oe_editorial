@@ -23,7 +23,7 @@ class UnpublishStatesEvent extends Event {
   protected $node;
 
   /**
-   * The states available to unpublish into.
+   * The states available for unpublishing.
    *
    * @var \Drupal\workflows\StateInterface
    */
@@ -33,9 +33,9 @@ class UnpublishStatesEvent extends Event {
    * Constructs the object.
    *
    * @param \Drupal\node\NodeInterface $node
-   *   The account of the user logged in.
+   *   The node being checked.
    * @param \Drupal\workflows\StateInterface[] $states
-   *   The account of the user logged in.
+   *   The current list of available states.
    */
   public function __construct(NodeInterface $node, array $states) {
     $this->node = $node;
@@ -43,7 +43,7 @@ class UnpublishStatesEvent extends Event {
   }
 
   /**
-   * Set states available to unpublish into.
+   * Set available states for unpublishing.
    *
    * @param array $states
    *   The available states.
@@ -53,7 +53,7 @@ class UnpublishStatesEvent extends Event {
   }
 
   /**
-   * Get the states available to unpublish into.
+   * Get available states for unpublishing.
    *
    * @return array|\Drupal\workflows\StateInterface
    *   The states available to unpublish into.
@@ -63,7 +63,7 @@ class UnpublishStatesEvent extends Event {
   }
 
   /**
-   * Add a state available to unpublish into.
+   * Add an available state for unpublishing.
    *
    * @param \Drupal\workflows\StateInterface $state
    *   The new available state.
@@ -73,7 +73,7 @@ class UnpublishStatesEvent extends Event {
   }
 
   /**
-   * Add a set of states available to unpublish into.
+   * Add a set of available states for unpublishing.
    *
    * @param array $states
    *   The new available states.

@@ -103,6 +103,7 @@ class NodeUnpublishForm extends ConfirmFormBase {
       '#title' => $this->t('Select the state to unpublish this node'),
       '#options' => $unpublished_states,
     ];
+
     return $form;
   }
 
@@ -131,9 +132,8 @@ class NodeUnpublishForm extends ConfirmFormBase {
    *   The access result.
    */
   public function access(AccountInterface $account, NodeInterface $node): AccessResultInterface {
-
     if (!$this->moderationInfo->isModeratedEntity($node)) {
-      // If the content is not using the corporate workflow, we deny access.
+      // If the content is not using content moderation, we deny access.
       return AccessResult::forbidden($this->t('Content does not have content moderation enabled.'))->addCacheableDependency($node);
     }
 
@@ -147,7 +147,7 @@ class NodeUnpublishForm extends ConfirmFormBase {
     // Check if the user has a permission to transition to an unpublished state.
     $workflow = $this->moderationInfo->getWorkflowForEntity($node);
     $workflow_type = $workflow->getTypePlugin();
-    $unpublished_states = $this->getUnpublishableStates($workflow->getTypePlugin(), $node);
+    $unpublished_states = $this->getUnpublishableStates($workflow_type, $node);
     foreach (array_keys($unpublished_states) as $state_id) {
       $transition_id = $workflow_type->getTransitionFromStateToState($node->moderation_state->value, $state_id);
       if ($account->hasPermission('use oe_corporate_workflow transition ' . $transition_id->id())) {
@@ -213,6 +213,7 @@ class NodeUnpublishForm extends ConfirmFormBase {
     // Allow other modules to change the list of unpublishable states.
     $event = new UnpublishStatesEvent($node, $unpublishable_states);
     $this->eventDispatcher->dispatch(UnpublishStatesEvent::EVENT_NAME, $event);
+
     return $event->getStates();
   }
 
