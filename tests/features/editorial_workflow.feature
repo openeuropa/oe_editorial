@@ -125,7 +125,7 @@ Feature: Corporate editorial workflow
     And I click Revisions
     Then I should see "Revisions for Workflow demo"
 
-  Scenario: As a user with combined roles I can edit and use all transitions and I can revert revisions.
+  Scenario: As a user with combined roles I can edit and use all transitions but I can not revert revisions.
     Given I am logged in as a user with the "Author, Reviewer, Validator" roles
     And I visit "the demo content creation page"
     And I fill in "Title" with "Workflow demo"
@@ -146,10 +146,10 @@ Feature: Corporate editorial workflow
     And I press "Apply"
     Then I should not see the link "Edit draft"
     And I should see the link "View published"
-    When I click Revisions
-    And I click Revert
-    # Confirmation page.
-    Then I should see "Are you sure you want to revert to the revision"
+    # Try to revert or delete revision
+    And I click Revisions
+    And I should not see the link "Revert"
+    And I should not see the link "Delete"
 
   Scenario: As a user with combined roles I can publish a node directly and after I can move it to Archived via the Edit form.
     Given I am logged in as a user with the "Author, Reviewer, Validator" roles

@@ -103,14 +103,6 @@ class CorporateWorkflowInstaller {
         "edit any $content_type content",
         "edit own $content_type content",
       ],
-      'oe_reviewer' => [
-        "delete $content_type revisions",
-        "revert $content_type revisions",
-      ],
-      'oe_validator' => [
-        "delete $content_type revisions",
-        "revert $content_type revisions",
-      ],
     ];
   }
 
