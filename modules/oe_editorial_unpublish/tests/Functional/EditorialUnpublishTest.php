@@ -110,7 +110,6 @@ class EditorialUnpublishTest extends BrowserTestBase {
       'node' => $node_without_moderation->id(),
     ]);
     $this->assertFalse($unpublish_url->access($this->user));
-
   }
 
   /**
