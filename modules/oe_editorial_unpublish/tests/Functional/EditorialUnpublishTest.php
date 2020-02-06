@@ -33,6 +33,9 @@ class EditorialUnpublishTest extends BrowserTestBase {
    */
   protected $user;
 
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = [
     'user',
     'node',
