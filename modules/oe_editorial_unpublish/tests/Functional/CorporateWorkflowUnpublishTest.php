@@ -84,15 +84,33 @@ class EditorialUnpublishTest extends BrowserTestBase {
     // A user with permissions can access the unpublish page.
     $this->assertTrue($unpublish_url->access($this->user));
 
-    // We can access the unpublish page as long as there is a published version.
-    $this->node->moderation_state->value = 'draft';
-    $this->node->save();
-    $this->assertTrue($unpublish_url->access($this->user));
-
     // A user without permissions can not access the unpublish page.
     $this->drupalLogout();
     $this->drupalGet($unpublish_url);
     $this->assertSession()->statusCodeEquals(403);
+
+    // We can't access the unpublish page if the last revision is not published.
+    $this->drupalLogin($this->user);
+    $this->node->moderation_state->value = 'draft';
+    $this->node->save();
+    $this->assertFalse($unpublish_url->access($this->user));
+
+    // Assert we don't have access for not moderated nodes.
+    $entity_type_manager = $this->container->get('entity_type.manager');
+    $entity_type_manager->getStorage('node_type')->create([
+      'name' => 'Page',
+      'type' => 'page',
+    ])->save();
+    $node_without_moderation = $entity_type_manager->getStorage('node')->create([
+      'type' => 'page',
+      'title' => 'My node',
+    ]);
+    $node_without_moderation->save();
+    $unpublish_url = Url::fromRoute('entity.node.unpublish', [
+      'node' => $node_without_moderation->id(),
+    ]);
+    $this->assertFalse($unpublish_url->access($this->user));
+
   }
 
   /**

@@ -90,6 +90,9 @@ class NodeUnpublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, NodeInterface $node = NULL): array {
+    if (!$node) {
+      return $form;
+    }
     $this->node = $node;
     $form = parent::buildForm($form, $form_state);
     $workflow = $this->moderationInfo->getWorkflowForEntity($node);
@@ -117,7 +120,6 @@ class NodeUnpublishForm extends ConfirmFormBase {
       '%label' => $this->node->label(),
     ]));
     $form_state->setRedirectUrl($this->node->toUrl());
-
   }
 
   /**
@@ -144,12 +146,11 @@ class NodeUnpublishForm extends ConfirmFormBase {
       return AccessResult::forbidden($this->t('The last revision of the content is not published.'))->addCacheableDependency($node);
     }
 
-    // Check if the user has a permission to transition to an unpublished state.
     $workflow = $this->moderationInfo->getWorkflowForEntity($node);
     $workflow_type = $workflow->getTypePlugin();
     $unpublished_states = $this->getUnpublishableStates($workflow_type, $node, $account);
     if (empty($unpublished_states)) {
-      return AccessResult::forbidden($this->t('The user does not have a permission to unpublish the node.'))->addCacheableDependency($node)->addCacheableDependency($workflow)->addCacheableDependency($account);
+      return AccessResult::forbidden($this->t('There are no available states to unpublish into.'))->addCacheableDependency($node)->addCacheableDependency($workflow)->addCacheableDependency($account);
     }
 
     return AccessResult::allowed()->addCacheableDependency($node)->addCacheableDependency($workflow)->addCacheableDependency($account);
@@ -211,6 +212,7 @@ class NodeUnpublishForm extends ConfirmFormBase {
     }
     $unpublishable_states = array_intersect_key($unpublishable_states, $transitionable_states);
 
+    // Check if the user has a permission to transition to an unpublished state.
     foreach (array_keys($unpublishable_states) as $state_id) {
       $transition_id = $workflow_type->getTransitionFromStateToState($node->moderation_state->value, $state_id);
       if (!$account->hasPermission('use oe_corporate_workflow transition ' . $transition_id->id())) {
