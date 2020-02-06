@@ -139,9 +139,9 @@ class NodeUnpublishForm extends ConfirmFormBase {
 
     $storage = $this->entityTypeManager->getStorage($node->getEntityTypeId());
     $latest_revision_id = $storage->getLatestTranslationAffectedRevisionId($node->id(), $node->language()->getId());
-    if ($latest_revision_id === NULL || !$this->moderationInfo->isDefaultRevisionPublished($node)) {
-      // The content does not have a published version.
-      return AccessResult::forbidden($this->t('The content does not have a published version.'))->addCacheableDependency($node);
+    if ($latest_revision_id === NULL || $this->moderationInfo->hasPendingRevision($node) || !$this->moderationInfo->isDefaultRevisionPublished($node)) {
+      // If the content's latest revision is not published we deny the access.
+      return AccessResult::forbidden($this->t('The last revision of the content is not published.'))->addCacheableDependency($node);
     }
 
     // Check if the user has a permission to transition to an unpublished state.
