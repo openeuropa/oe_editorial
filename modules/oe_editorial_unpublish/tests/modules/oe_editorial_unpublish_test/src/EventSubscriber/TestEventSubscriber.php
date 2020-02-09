@@ -5,14 +5,13 @@ declare(strict_types = 1);
 namespace Drupal\oe_editorial_unpublish_test\EventSubscriber;
 
 use Drupal\content_moderation\ModerationInformationInterface;
+use Drupal\Core\State\StateInterface;
 use Drupal\oe_editorial_unpublish\Event\UnpublishStatesEvent;
-use Drupal\workflows\State;
+use Drupal\workflows\StateInterface as WorkflowStateInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Listens to unpublish state events and adds a test state to the list.
- *
- * @package Drupal\oe_editorial_unpublish_test\EventSubscriber
+ * Event subscriber that alters the list of the states that unpublish content.
  */
 class TestEventSubscriber implements EventSubscriberInterface {
 
@@ -24,33 +23,48 @@ class TestEventSubscriber implements EventSubscriberInterface {
   protected $moderationInfo;
 
   /**
+   * The state system.
+   *
+   * @var \Drupal\Core\State\StateInterface
+   */
+  protected $state;
+
+  /**
    * TestEventSubscriber constructor.
    *
    * @param \Drupal\content_moderation\ModerationInformationInterface $moderation_info
    *   The moderation information service.
+   * @param \Drupal\Core\State\StateInterface $state
+   *   The state system.
    */
-  public function __construct(ModerationInformationInterface $moderation_info) {
+  public function __construct(ModerationInformationInterface $moderation_info, StateInterface $state) {
     $this->moderationInfo = $moderation_info;
+    $this->state = $state;
   }
 
   /**
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    return [UnpublishStatesEvent::EVENT_NAME => 'addState'];
+    return [UnpublishStatesEvent::EVENT_NAME => 'removeState'];
   }
 
   /**
-   * React to the list of unpublishable states being created.
+   * Removes the "Expired" state from the list.
    *
    * @param \Drupal\oe_editorial_unpublish\Event\UnpublishStatesEvent $event
-   *   Config crud event.
+   *   The event.
    */
-  public function addState(UnpublishStatesEvent $event) {
+  public function removeState(UnpublishStatesEvent $event): void {
+    if ($this->state->get('oe_editorial_unpublish_test_remove_state', FALSE) === FALSE) {
+      return;
+    }
+
     // Create a dummy state and add it to the event list.
-    $workflow = $this->moderationInfo->getWorkflowForEntityTypeAndBundle('node', 'oe_workflow_demo');
-    $state = new State($workflow->getTypePlugin(), 'test', 'Test');
-    $event->addState($state);
+    $states = array_filter($event->getStates(), function (WorkflowStateInterface $state, string $id) {
+      return $id !== 'archived';
+    }, ARRAY_FILTER_USE_BOTH);
+    $event->setStates($states);
   }
 
 }

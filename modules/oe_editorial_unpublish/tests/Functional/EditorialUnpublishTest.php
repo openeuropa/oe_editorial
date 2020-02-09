@@ -43,6 +43,7 @@ class EditorialUnpublishTest extends BrowserTestBase {
     'oe_editorial',
     'oe_editorial_corporate_workflow',
     'oe_editorial_workflow_demo',
+    'oe_editorial_unpublish_test',
   ];
 
   /**
@@ -76,8 +77,8 @@ class EditorialUnpublishTest extends BrowserTestBase {
       'node' => $this->node->id(),
     ]);
 
-    // Assert that we can't access the unpublish page
-    // when the node is not published.
+    // Assert that we can't access the unpublish page when the node is not
+    // published.
     $this->assertFalse($unpublish_url->access($this->user));
 
     // Publish the page.
@@ -98,7 +99,7 @@ class EditorialUnpublishTest extends BrowserTestBase {
     $this->node->save();
     $this->assertFalse($unpublish_url->access($this->user));
 
-    // Assert we don't have access for not moderated nodes.
+    // Assert we don't have access for non-moderated nodes.
     $entity_type_manager = $this->container->get('entity_type.manager');
     $entity_type_manager->getStorage('node_type')->create([
       'name' => 'Page',
@@ -128,14 +129,14 @@ class EditorialUnpublishTest extends BrowserTestBase {
     ]);
     $this->drupalGet($unpublish_url);
     // Assert we are in the correct page.
-    $this->assertSession()->pageTextContains('Are you sure you want to unpublish the node ' . $this->node->label() . '?');
+    $this->assertSession()->pageTextContains('Are you sure you want to unpublish ' . $this->node->label() . '?');
     // A cancel link is present.
     $this->assertSession()->linkExists('Cancel');
     // Assert the state select exists.
-    $unpublish_state = $this->assertSession()->selectExists('Select the state to unpublish this node')->getValue();
-    // Assert the unpublish button is present and using it unpublishes the node.
+    $unpublish_state = $this->assertSession()->selectExists('Select the unpublishing state')->getValue();
+    // Assert the unpublish button is there and using it we unpublish the node.
     $this->assertSession()->buttonExists('Unpublish')->press();
-    $this->assertSession()->pageTextContains('The node My node has been unpublished.');
+    $this->assertSession()->pageTextContains('The content My node has been unpublished.');
     $node = $this->nodeStorage->load($this->node->id());
     $this->assertEqual($node->moderation_state->value, $unpublish_state);
   }
@@ -154,18 +155,16 @@ class EditorialUnpublishTest extends BrowserTestBase {
     $this->drupalGet($unpublish_url);
 
     // Assert the select only contains the default values.
-    $this->assertSession()->selectExists('Select the state to unpublish this node');
-    $this->assertSession()->optionExists('Select the state to unpublish this node', 'Archived');
-    $this->assertSession()->optionExists('Select the state to unpublish this node', 'Expired');
-    $this->assertSession()->optionNotExists('Select the state to unpublish this node', 'Test');
+    $this->assertSession()->selectExists('Select the unpublishing state');
+    $this->assertSession()->optionExists('Select the unpublishing state', 'Archived');
+    $this->assertSession()->optionExists('Select the unpublishing state', 'Expired');
 
-    // Enable the test module and assert the select contains an extra value.
-    $this->container->get('module_installer')->install(['oe_editorial_unpublish_test']);
+    // Trigger the flag to remove one state from the list.
+    $this->container->get('state')->set('oe_editorial_unpublish_test_remove_state', TRUE);
     $this->drupalGet($unpublish_url);
-    $this->assertSession()->selectExists('Select the state to unpublish this node');
-    $this->assertSession()->optionExists('Select the state to unpublish this node', 'Archived');
-    $this->assertSession()->optionExists('Select the state to unpublish this node', 'Expired');
-    $this->assertSession()->optionExists('Select the state to unpublish this node', 'Test');
+    $this->assertSession()->selectExists('Select the unpublishing state');
+    $this->assertSession()->optionNotExists('Select the unpublishing state', 'Archived');
+    $this->assertSession()->optionExists('Select the unpublishing state', 'Expired');
   }
 
 }

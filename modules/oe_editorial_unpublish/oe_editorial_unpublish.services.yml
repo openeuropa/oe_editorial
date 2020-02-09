@@ -1,0 +1,9 @@
+services:
+  oe_editorial_unpublish.unpublishable_entities:
+    class: Drupal\oe_editorial_unpublish\UnpublishableContentEntities
+    arguments: ['@entity_type.manager', '@content_moderation.moderation_information']
+  oe_editorial_unpublish.route_subscriber:
+    class: Drupal\oe_editorial_unpublish\Routing\RouteSubscriber
+    arguments: ['@oe_editorial_unpublish.unpublishable_entities']
+    tags:
+      - { name: event_subscriber }

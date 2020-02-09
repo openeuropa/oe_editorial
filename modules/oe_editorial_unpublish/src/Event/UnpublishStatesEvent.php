@@ -4,48 +4,50 @@ declare(strict_types = 1);
 
 namespace Drupal\oe_editorial_unpublish\Event;
 
-use Drupal\node\NodeInterface;
-use Drupal\workflows\StateInterface;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Event for altering the list of available states to unpublish a node into.
+ * Event for altering the list of available states that unpublish an entity.
  */
 class UnpublishStatesEvent extends Event {
 
-  const EVENT_NAME = 'unpublish_states_event';
-
   /**
-   * The node the states apply to.
-   *
-   * @var \Drupal\node\NodeInterface
+   * The event name.
    */
-  protected $node;
+  const EVENT_NAME = 'oe_editorial_unpublish.unpublish_states_event';
 
   /**
-   * The states available for unpublishing.
+   * The entity being unpublished.
+   *
+   * @var \Drupal\Core\Entity\ContentEntityInterface
+   */
+  protected $entity;
+
+  /**
+   * The available states that unpublish the entity.
    *
    * @var \Drupal\workflows\StateInterface
    */
   protected $states;
 
   /**
-   * Constructs the object.
+   * Constructs an instance of UnpublishStatesEvent.
    *
-   * @param \Drupal\node\NodeInterface $node
-   *   The node being checked.
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The entity being unpublished.
    * @param \Drupal\workflows\StateInterface[] $states
    *   The current list of available states.
    */
-  public function __construct(NodeInterface $node, array $states) {
-    $this->node = $node;
+  public function __construct(ContentEntityInterface $entity, array $states) {
+    $this->entity = $entity;
     $this->states = $states;
   }
 
   /**
    * Set available states for unpublishing.
    *
-   * @param array $states
+   * @param \Drupal\workflows\StateInterface[] $states
    *   The available states.
    */
   public function setStates(array $states): void {
@@ -55,7 +57,7 @@ class UnpublishStatesEvent extends Event {
   /**
    * Get available states for unpublishing.
    *
-   * @return array|\Drupal\workflows\StateInterface
+   * @return \Drupal\workflows\StateInterface[]
    *   The states available to unpublish into.
    */
   public function getStates(): array {
@@ -63,35 +65,13 @@ class UnpublishStatesEvent extends Event {
   }
 
   /**
-   * Add an available state for unpublishing.
+   * Get the entity the states apply to.
    *
-   * @param \Drupal\workflows\StateInterface $state
-   *   The new available state.
+   * @return \Drupal\Core\Entity\ContentEntityInterface
+   *   The entity being unpublished.
    */
-  public function addState(StateInterface $state): void {
-    $this->states[$state->id()] = $state;
-  }
-
-  /**
-   * Add a set of available states for unpublishing.
-   *
-   * @param array $states
-   *   The new available states.
-   */
-  public function addStates(array $states): void {
-    foreach ($states as $state) {
-      $this->addState($state);
-    }
-  }
-
-  /**
-   * Get the node the states apply to.
-   *
-   * @return \Drupal\node\NodeInterface
-   *   The node the states apply to.
-   */
-  public function getNode(): NodeInterface {
-    return $this->node;
+  public function getEntity(): ContentEntityInterface {
+    return $this->entity;
   }
 
 }

@@ -1,5 +1,5 @@
-entity.node.unpublish:
-  route_name: entity.node.unpublish
-  base_route: entity.node.canonical
+oe_editorial_unpublish.entity.unpublish:
+  class: Drupal\oe_editorial_unpublish\Plugin\Menu\UnpublishLocalTask
+  deriver: Drupal\oe_editorial_unpublish\Plugin\Derivative\UnpublishLocalTask
   title: Unpublish
   weight: 11

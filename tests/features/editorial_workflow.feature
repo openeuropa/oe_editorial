@@ -178,12 +178,12 @@ Feature: Corporate editorial workflow
       | Published          |
     # Move the node into Archived state that is unpublished as well.
     When I click "Unpublish"
-    Then I should have the following options for the "Select the state to unpublish this node" select:
+    Then I should have the following options for the "Select the unpublishing state" select:
       | Archived |
       | Expired  |
-    When I select "Archived" from "Select the state to unpublish this node"
+    When I select "Archived" from "Select the unpublishing state"
     And I press "Unpublish"
-    Then I should see "The node Workflow demo has been unpublished."
+    Then I should see "The content Workflow demo has been unpublished."
     And I should not see "View published"
     And the current workflow state should be "Archived"
     And I should have the following options for the "Change to" select:
@@ -205,12 +205,12 @@ Feature: Corporate editorial workflow
     When I visit "the content administration page"
     And I click "Workflow node"
     And I click "Unpublish"
-    Then I should have the following options for the "Select the state to unpublish this node" select:
+    Then I should have the following options for the "Select the unpublishing state" select:
       | Archived |
       | Expired  |
-    When I select "Archived" from "Select the state to unpublish this node"
+    When I select "Archived" from "Select the unpublishing state"
     And I press "Unpublish"
-    Then I should see "The node Workflow node has been unpublished."
+    Then I should see "The content Workflow node has been unpublished."
     And I should not see "View published"
     And the current workflow state should be "Archived"
     # As an Author and Validator I can't skip Reviewer transitions.
