@@ -213,7 +213,7 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
 
     if (!$this->moderationInfo->isDefaultRevisionPublished($entity)) {
       // If the content's default revision is not published we deny the access.
-      return AccessResult::forbidden('The last revision of the content is not published.')->addCacheableDependency($cache);
+      return AccessResult::forbidden('The default revision of the content is not published.')->addCacheableDependency($cache);
     }
 
     $workflow = $this->moderationInfo->getWorkflowForEntity($entity);
