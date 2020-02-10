@@ -141,13 +141,20 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
   public function buildForm(array $form, FormStateInterface $form_state): array {
     // Set the entity on the object so it can be used by parent methods.
     $this->entity = $this->getEntity();
+    if (!$this->entity instanceof ContentEntityInterface) {
+      // We cannot call the parent form builder because that will depend on
+      // the entity being there. Normally this will not happen because the
+      // access callback will prevent this form from being built if the entity
+      // is missing.
+      return $form;
+    }
     $form = parent::buildForm($form, $form_state);
 
     // Set the entity in the form state so we can use it in the submit handler.
     $form_state->set('entity', $this->entity);
 
     $workflow = $this->moderationInfo->getWorkflowForEntity($this->entity);
-    $unpublished_states = $this->getUnpublishableStates($workflow, $this->entity);
+    $unpublished_states = $this->getUnpublishingStates($workflow, $this->entity);
     $unpublished_states = array_map(function (StateInterface $state) {
       return $state->label();
     }, $unpublished_states);
@@ -204,17 +211,15 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
       return AccessResult::forbidden('Content does not have content moderation enabled.')->addCacheableDependency($cache);
     }
 
-    $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
-    $latest_revision_id = $storage->getLatestTranslationAffectedRevisionId($entity->id(), $entity->language()->getId());
-    if ($latest_revision_id === NULL || $this->moderationInfo->hasPendingRevision($entity) || !$this->moderationInfo->isDefaultRevisionPublished($entity)) {
-      // If the content's latest revision is not published we deny the access.
+    if (!$this->moderationInfo->isDefaultRevisionPublished($entity)) {
+      // If the content's default revision is not published we deny the access.
       return AccessResult::forbidden('The last revision of the content is not published.')->addCacheableDependency($cache);
     }
 
     $workflow = $this->moderationInfo->getWorkflowForEntity($entity);
     $cache->addCacheableDependency($workflow);
 
-    $unpublished_states = $this->getUnpublishableStates($workflow, $entity, $account);
+    $unpublished_states = $this->getUnpublishingStates($workflow, $entity, $account);
     if (empty($unpublished_states)) {
       return AccessResult::forbidden('There are no available states to use for unpublishing the content.')->addCacheableDependency($cache);
     }
@@ -229,7 +234,7 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
    *   The route match where to determine the entity from.
    *
    * @return \Drupal\Core\Entity\ContentEntityInterface
-   *   The entity.
+   *   The entity or NULL if none is found.
    */
   protected function getEntity(RouteMatchInterface $route_match = NULL): ?ContentEntityInterface {
     $route_match = $route_match ?? $this->currentRouteMatch;
@@ -255,7 +260,7 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
    * @return array
    *   An array of states keyed by the state id.
    */
-  protected function getUnpublishableStates(WorkflowInterface $workflow, ContentEntityInterface $entity, AccountInterface $account = NULL): array {
+  protected function getUnpublishingStates(WorkflowInterface $workflow, ContentEntityInterface $entity, AccountInterface $account = NULL): array {
     $account = $account ?? $this->currentUser;
     $workflow_type = $workflow->getTypePlugin();
 
@@ -268,8 +273,14 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
       }
     }
 
-    // Gather a list of states to which the entity can transition to.
-    $current_state = $entity->moderation_state->value;
+    // Gather a list of states to which the entity can transition to. For this
+    // we need to load the latest revision and see if a transition can be made
+    // from that.
+    /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
+    $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
+    $latest_revision_id = $storage->getLatestTranslationAffectedRevisionId($entity->id(), $entity->language()->getId());
+    $revision = $storage->loadRevision($latest_revision_id);
+    $current_state = $revision->moderation_state->value;
     $available_transitions = $workflow_type->getTransitionsForState($current_state);
     $transitionable_states = [];
     foreach ($available_transitions as $transition) {
@@ -279,7 +290,7 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
 
     // Check if the user has permission to transition to an unpublishing state.
     foreach (array_keys($unpublishable_states) as $state_id) {
-      $transition_id = $workflow_type->getTransitionFromStateToState($entity->moderation_state->value, $state_id);
+      $transition_id = $workflow_type->getTransitionFromStateToState($current_state, $state_id);
       if (!$account->hasPermission('use ' . $workflow->id() . ' transition ' . $transition_id->id())) {
         unset($unpublishable_states[$state_id]);
       }

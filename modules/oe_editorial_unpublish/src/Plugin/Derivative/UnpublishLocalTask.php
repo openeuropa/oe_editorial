@@ -6,7 +6,7 @@ namespace Drupal\oe_editorial_unpublish\Plugin\Derivative;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
-use Drupal\oe_editorial_unpublish\UnpublishableContentEntities;
+use Drupal\oe_editorial_unpublish\UnpublishableEntitiesInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -26,10 +26,10 @@ class UnpublishLocalTask extends DeriverBase implements ContainerDeriverInterfac
    *
    * @param string $base_plugin_id
    *   The base plugin ID.
-   * @param \Drupal\oe_editorial_unpublish\UnpublishableContentEntities $unpublishableContentEntities
+   * @param \Drupal\oe_editorial_unpublish\UnpublishableEntitiesInterface $unpublishableContentEntities
    *   The unpublishable content entities service.
    */
-  public function __construct(string $base_plugin_id, UnpublishableContentEntities $unpublishableContentEntities) {
+  public function __construct(string $base_plugin_id, UnpublishableEntitiesInterface $unpublishableContentEntities) {
     $this->unpublishableContentEntities = $unpublishableContentEntities;
   }
 
@@ -49,7 +49,7 @@ class UnpublishLocalTask extends DeriverBase implements ContainerDeriverInterfac
   public function getDerivativeDefinitions($base_plugin_definition) {
     $tasks = [];
 
-    $definitions = $this->unpublishableContentEntities->getUnpublishableDefinitions();
+    $definitions = $this->unpublishableContentEntities->getDefinitions();
     foreach ($definitions as $definition) {
       $tasks[$definition->id()] = [
         'route_name' => 'entity.' . $definition->id() . '.unpublish',

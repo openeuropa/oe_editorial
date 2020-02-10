@@ -9,7 +9,7 @@ Unpublishing means moving the content to a state that has been configured in the
 The "Unpublish" task is added automatically for content if the following conditions are met:
 
 * The bundle has content moderation enabled
-* The content's latest revision is published.
+* The content's default revision is published.
 * The current user has the required permissions to transition the content to an unpublished state.
 
 # API

@@ -6,7 +6,7 @@ namespace Drupal\oe_editorial_unpublish\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Drupal\oe_editorial_unpublish\Form\ContentEntityUnpublishForm;
-use Drupal\oe_editorial_unpublish\UnpublishableContentEntities;
+use Drupal\oe_editorial_unpublish\UnpublishableEntitiesInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -25,10 +25,10 @@ class RouteSubscriber extends RouteSubscriberBase {
   /**
    * RouteSubscriber constructor.
    *
-   * @param \Drupal\oe_editorial_unpublish\UnpublishableContentEntities $unpublishableContentEntities
+   * @param \Drupal\oe_editorial_unpublish\UnpublishableEntitiesInterface $unpublishableContentEntities
    *   The unpublishable content entities service.
    */
-  public function __construct(UnpublishableContentEntities $unpublishableContentEntities) {
+  public function __construct(UnpublishableEntitiesInterface $unpublishableContentEntities) {
     $this->unpublishableContentEntities = $unpublishableContentEntities;
   }
 
@@ -36,7 +36,7 @@ class RouteSubscriber extends RouteSubscriberBase {
    * {@inheritdoc}
    */
   protected function alterRoutes(RouteCollection $collection) {
-    $definitions = $this->unpublishableContentEntities->getUnpublishableDefinitions();
+    $definitions = $this->unpublishableContentEntities->getDefinitions();
     if (!$definitions) {
       return;
     }

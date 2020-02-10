@@ -11,7 +11,7 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 /**
  * Determines the content entity types that can be unpublished.
  */
-class UnpublishableContentEntities {
+class UnpublishableContentEntities implements UnpublishableEntitiesInterface {
 
   /**
    * The entity type manager.
@@ -41,12 +41,9 @@ class UnpublishableContentEntities {
   }
 
   /**
-   * Returns the content entity types that can be unpublished.
-   *
-   * @return \Drupal\Core\Entity\ContentEntityTypeInterface[]
-   *   The content entity type definitions.
+   * {@inheritdoc}
    */
-  public function getUnpublishableDefinitions(): array {
+  public function getDefinitions(): array {
     $definitions = $this->entityTypeManager->getDefinitions();
     $unpublishable = [];
 
