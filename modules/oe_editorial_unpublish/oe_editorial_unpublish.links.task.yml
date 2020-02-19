@@ -1,0 +1,5 @@
+oe_editorial_unpublish.entity.unpublish:
+  class: Drupal\oe_editorial_unpublish\Plugin\Menu\UnpublishLocalTask
+  deriver: Drupal\oe_editorial_unpublish\Plugin\Derivative\UnpublishLocalTask
+  title: Unpublish
+  weight: 11

@@ -1,0 +1,8 @@
+name: 'OpenEuropa Editorial Unpublish Test'
+type: module
+description: 'Helper module to test the Editorial Unpublish module.'
+package: Testing
+core: 8.x
+
+dependencies:
+  - oe_editorial_unpublish:oe_editorial_unpublish

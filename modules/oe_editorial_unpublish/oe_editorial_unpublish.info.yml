@@ -1,0 +1,9 @@
+name: OpenEuropa Editorial Unpublish
+description: Adds an "Unpublish" action tab with a confirmation page for moderated content.
+package: OpenEuropa
+type: module
+core: 8.x
+
+dependencies:
+  - content_moderation:content_moderation
+  - oe_editorial:oe_editorial

@@ -7,6 +7,7 @@ core: 8.x
 dependencies:
   - content_moderation:content_moderation
   - oe_editorial:oe_editorial
+  - oe_editorial_unpublish:oe_editorial_unpublish
 
 config_devel:
   install:

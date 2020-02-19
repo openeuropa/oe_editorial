@@ -58,7 +58,7 @@ function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
 /**
  * Implements hook_form_FORM_ID_alter().
  *
- * For the Node form to force Draft state except when the node is published.
+ * Force the Draft state on node forms.
  */
 function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   /** @var \Drupal\node\NodeInterface $node */
@@ -87,18 +87,6 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
   // Remove access because Draft is the only option.
   $form['moderation_state']['widget'][0]['state']['#access'] = FALSE;
   $form['moderation_state']['widget'][0]['state']['#default_value'] = 'draft';
-
-  // However, if the node is in Published state, we might need to append
-  // a few more options.
-  if (_oe_editorial_corporate_workflow_is_last_revision_published($entity)) {
-    // 'Expired' and 'Archived' are only available through 'Edit form'
-    // and they always show up together.
-    if (isset($form_options['expired'])) {
-      $options['expired'] = $form_options['expired'];
-      $options['archived'] = $form_options['archived'];
-      $form['moderation_state']['widget'][0]['state']['#access'] = TRUE;
-    }
-  }
 
   $form_options = $options;
 }
