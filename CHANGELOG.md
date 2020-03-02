@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.3.1](https://github.com/openeuropa/oe_editorial/tree/1.3.1) (2020-03-02)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.3.0...1.3.1)
+
+**Merged pull requests:**
+
+- OPENEUROPA-2754: Remove permissions for reverting/deleting revisions. [\#54](https://github.com/openeuropa/oe_editorial/pull/54) ([sergepavle](https://github.com/sergepavle))
+
 ## [1.3.0](https://github.com/openeuropa/oe_editorial/tree/1.3.0) (2020-01-30)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.2.0...1.3.0)
 
