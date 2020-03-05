@@ -9,7 +9,6 @@ permissions:
   - 'access content overview'
   - 'use oe_corporate_workflow transition request_validation_to_draft'
   - 'use oe_corporate_workflow transition request_validation_to_needs_review'
-  - 'use oe_corporate_workflow transition request_validation_to_request_validation'
   - 'use oe_corporate_workflow transition request_validation_to_validated'
   - 'use oe_corporate_workflow transition validated_to_draft'
   - 'use oe_corporate_workflow transition validated_to_published'
