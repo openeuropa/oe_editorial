@@ -82,7 +82,7 @@ class FeatureContext extends RawDrupalContext {
    * @param string $type
    *   The expected type.
    *
-   * @throws ExpectationException
+   * @throws \Behat\Mink\Exception\ExpectationException
    *   Thrown when the given element is not of the expected type.
    */
   protected function assertElementType(NodeElement $element, string $type): void {
