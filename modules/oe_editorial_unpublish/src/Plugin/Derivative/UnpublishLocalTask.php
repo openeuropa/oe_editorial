@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace Drupal\oe_editorial_unpublish\Plugin\Derivative;
 
 use Drupal\Component\Plugin\Derivative\DeriverBase;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\Discovery\ContainerDeriverInterface;
-use Drupal\oe_editorial_unpublish\UnpublishableEntitiesInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -15,22 +15,22 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class UnpublishLocalTask extends DeriverBase implements ContainerDeriverInterface {
 
   /**
-   * The unpublishable content entities service.
+   * The entity type manager.
    *
-   * @var \Drupal\oe_editorial_unpublish\UnpublishableContentEntities
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $unpublishableContentEntities;
+  protected $entityTypeManager;
 
   /**
-   * UnpublishLocalTask constructor.
+   * Constructs an instance of RouteSubscriber.
    *
    * @param string $base_plugin_id
    *   The base plugin ID.
-   * @param \Drupal\oe_editorial_unpublish\UnpublishableEntitiesInterface $unpublishableContentEntities
-   *   The unpublishable content entities service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
    */
-  public function __construct(string $base_plugin_id, UnpublishableEntitiesInterface $unpublishableContentEntities) {
-    $this->unpublishableContentEntities = $unpublishableContentEntities;
+  public function __construct(string $base_plugin_id, EntityTypeManagerInterface $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -39,7 +39,7 @@ class UnpublishLocalTask extends DeriverBase implements ContainerDeriverInterfac
   public static function create(ContainerInterface $container, $base_plugin_id) {
     return new static(
       $base_plugin_id,
-      $container->get('oe_editorial_unpublish.unpublishable_entities')
+      $container->get('entity_type.manager')
     );
   }
 
@@ -49,8 +49,13 @@ class UnpublishLocalTask extends DeriverBase implements ContainerDeriverInterfac
   public function getDerivativeDefinitions($base_plugin_definition) {
     $tasks = [];
 
-    $definitions = $this->unpublishableContentEntities->getDefinitions();
+    $definitions = $this->entityTypeManager->getDefinitions();
+
     foreach ($definitions as $definition) {
+      if (!$definition->getFormClass('unpublish')) {
+        continue;
+      }
+
       $tasks[$definition->id()] = [
         'route_name' => 'entity.' . $definition->id() . '.unpublish',
         'base_route' => 'entity.' . $definition->id() . '.canonical',
