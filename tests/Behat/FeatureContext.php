@@ -77,12 +77,12 @@ class FeatureContext extends RawDrupalContext {
   /**
    * Checks that the given element is of the given type.
    *
-   * @param \NodeElement $element
+   * @param \Behat\Mink\Element\NodeElement $element
    *   The element to check.
    * @param string $type
    *   The expected type.
    *
-   * @throws \ExpectationException
+   * @throws \Behat\Mink\Exception\ExpectationException
    *   Thrown when the given element is not of the expected type.
    */
   protected function assertElementType(NodeElement $element, string $type): void {
@@ -139,7 +139,7 @@ class FeatureContext extends RawDrupalContext {
    * @param string $title
    *   The node title.
    *
-   * @return \Drupal\Core\Entity\EntityInterface
+   * @return \Drupal\node\NodeInterface
    *   The node entity.
    */
   protected function getNodeByTitle(string $title): NodeInterface {
@@ -162,32 +162,32 @@ class FeatureContext extends RawDrupalContext {
   /**
    * Checks the given node with title has the specified version numbers.
    *
+   * // phpcs:disable
+   * @Then the node :title should have the following version:
    * | major | number 1 |
    * | minor | number 2 |
    * | patch | number 3 |
-   *
-   * @Then the node :title should have the following version:
+   * // phpcs:enable
    */
-  public function theNodeShouldHaveTheFollowingVersion(string $title, TableNode $options) {
+  public function assertNodeHasSpecificVersion(string $title, TableNode $options): void {
+    /** @var \Drupal\node\NodeStorageInterface $storage */
     $storage = \Drupal::entityTypeManager()->getStorage('node');
     $nodes = $storage->loadByProperties([
       'title' => $title,
     ]);
     if (!$nodes) {
-      throw new \Exception("Could not find node with title '$title'.");
+      throw new \Exception(sprintf('Could not find node with title "%s"', $title));
     }
 
     if (count($nodes) > 1) {
-      throw new \Exception("Multiple nodes with title '$title' found.");
+      throw new \Exception(sprintf('Multiple nodes with title "%s" found.', $title));
     }
 
-    // Load the latest revision.
     $node = reset($nodes);
 
-    /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
-    $moderation_info = \Drupal::service('content_moderation.moderation_information');
-    $entity_type = $node->getEntityType();
-    $node = $moderation_info->getLatestRevision($entity_type->id(), $node->id());
+    // Load the latest revision.
+    $storage->resetCache();
+    $node = $storage->loadRevision($storage->getLatestRevisionId($node->id()));
     $node_version_value = [
       'major' => $node->get('version')->major,
       'minor' => $node->get('version')->minor,
