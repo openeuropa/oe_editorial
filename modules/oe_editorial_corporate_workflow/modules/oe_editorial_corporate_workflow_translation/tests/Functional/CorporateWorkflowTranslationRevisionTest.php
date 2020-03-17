@@ -191,10 +191,11 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     // the published version rather than the validated one where it actually
     // got started.
     $values = [
-      'title|0|value[translation]' => 'My node FR',
+      'Translation' => 'My node FR',
     ];
     // It should be the first local task item created so we use the ID 1.
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 1]);
+
     $this->drupalPostForm($url, $values, t('Save and complete translation'));
     $node_storage->resetCache();
     /** @var \Drupal\node\NodeInterface[] $revisions */
@@ -252,7 +253,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     // the published version rather than the validated one where it actually
     // got started.
     $values = [
-      'title|0|value[translation]' => 'My node FR 2',
+      'Translation' => 'My node FR 2',
     ];
     // It should be the second local task item created so we use the ID 2.
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 2]);
@@ -310,7 +311,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     ]));
     $this->assertSession()->elementContains('css', '#edit-title0value-translation', 'My node');
     $values = [
-      'title|0|value[translation]' => 'My node FR',
+      'Translation' => 'My node FR',
     ];
     // It should be the first local task item created so we use the ID 1.
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 1]);
@@ -351,7 +352,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     // translation.
     $this->assertSession()->elementContains('css', '#edit-title0value-translation', 'My node FR');
     $values = [
-      'title|0|value[translation]' => 'My node FR 2',
+      'Translation' => 'My node FR 2',
     ];
     // It should be the second local task item created so we use the ID 2.
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 2]);
@@ -401,7 +402,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
       ]));
 
       $values = [
-        'title|0|value[translation]' => "My node $langcode 3",
+        'Translation' => "My node $langcode 3",
       ];
       $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => $task_id]);
       $task_id++;
