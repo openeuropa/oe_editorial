@@ -22,7 +22,7 @@ class UnpublishLocalTask extends DeriverBase implements ContainerDeriverInterfac
   protected $entityTypeManager;
 
   /**
-   * Constructs an instance of RouteSubscriber.
+   * Constructs an instance of UnpublishLocalTask.
    *
    * @param string $base_plugin_id
    *   The base plugin ID.
