@@ -89,22 +89,10 @@ class EditorialUnpublishTest extends KernelTestBase {
    * Tests access to the unpublishing form.
    */
   public function testUnpublishAccess(): void {
-    $this->container->get('module_installer')->install([
-      'content_translation',
-      'oe_editorial_workflow_demo',
-      'language',
-    ]);
-
     $this->installEntitySchema('user');
 
     $this->installSchema('system', 'sequences');
     $this->installSchema('node', 'node_access');
-
-    $this->installConfig([
-      'content_translation',
-      'language',
-      'oe_editorial_workflow_demo',
-    ]);
 
     $entity_type_manager = $this->container->get('entity_type.manager');
 
