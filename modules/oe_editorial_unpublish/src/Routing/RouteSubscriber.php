@@ -4,9 +4,10 @@ declare(strict_types = 1);
 
 namespace Drupal\oe_editorial_unpublish\Routing;
 
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Drupal\oe_editorial_unpublish\Form\ContentEntityUnpublishForm;
-use Drupal\oe_editorial_unpublish\UnpublishableEntitiesInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -16,50 +17,63 @@ use Symfony\Component\Routing\RouteCollection;
 class RouteSubscriber extends RouteSubscriberBase {
 
   /**
-   * The unpublishable content entities service.
+   * The entity type manager.
    *
-   * @var \Drupal\oe_editorial_unpublish\UnpublishableContentEntities
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $unpublishableContentEntities;
+  protected $entityTypeManager;
 
   /**
-   * RouteSubscriber constructor.
+   * Constructs an instance of RouteSubscriber.
    *
-   * @param \Drupal\oe_editorial_unpublish\UnpublishableEntitiesInterface $unpublishableContentEntities
-   *   The unpublishable content entities service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
    */
-  public function __construct(UnpublishableEntitiesInterface $unpublishableContentEntities) {
-    $this->unpublishableContentEntities = $unpublishableContentEntities;
+  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
+    $this->entityTypeManager = $entityTypeManager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('entity_type.manager')
+    );
   }
 
   /**
    * {@inheritdoc}
    */
   protected function alterRoutes(RouteCollection $collection) {
-    $definitions = $this->unpublishableContentEntities->getDefinitions();
+    $definitions = $this->entityTypeManager->getDefinitions();
     if (!$definitions) {
       return;
     }
 
     foreach ($definitions as $definition) {
+      // We are only interested in the entity types that have the form class
+      // to unpublish content set on it.
+      if (!$definition->getFormClass('unpublish')) {
+        continue;
+      }
+
       $canonical_route = $collection->get('entity.' . $definition->id() . '.canonical');
       $route = new Route(
         // Path.
         $canonical_route->getPath() . '/unpublish',
         // Defaults.
         [
-          '_form' => ContentEntityUnpublishForm::class,
+          '_entity_form' => "{$definition->id()}.unpublish",
           '_title' => 'Unpublish',
         ],
         // Requirements.
         [
-          '_custom_access' => ContentEntityUnpublishForm::class . ':access',
+          '_custom_access' => ContentEntityUnpublishForm::class . '::access',
         ],
         // Options.
         [
           '_admin_route' => TRUE,
-          // Set the entity type so we can determine dynamically the parameter.
-          '_entity_type' => $definition->id(),
           'parameters' => [
             $definition->id() => [
               'type' => 'entity:' . $definition->id(),

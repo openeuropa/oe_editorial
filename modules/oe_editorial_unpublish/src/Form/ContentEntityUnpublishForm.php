@@ -4,13 +4,16 @@ declare(strict_types = 1);
 
 namespace Drupal\oe_editorial_unpublish\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Access\AccessResultInterface;
 use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Entity\ContentEntityConfirmFormBase;
 use Drupal\Core\Entity\ContentEntityInterface;
+use Drupal\Core\Entity\EntityRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Session\AccountInterface;
@@ -26,7 +29,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 /**
  * Provides a form for unpublishing a moderated content entity.
  */
-class ContentEntityUnpublishForm extends ConfirmFormBase {
+class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
 
   /**
    * The entity type manager service.
@@ -73,6 +76,12 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
   /**
    * Constructs a ContentEntityForm object.
    *
+   * @param \Drupal\Core\Entity\EntityRepositoryInterface $entity_repository
+   *   The entity repository service.
+   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
+   *   The entity type bundle service.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The time service.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity repository service.
    * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
@@ -84,7 +93,9 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
    * @param \Drupal\Core\Session\AccountProxyInterface $current_user
    *   The current user.
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, EventDispatcherInterface $event_dispatcher, ModerationInformationInterface $moderation_info, RouteMatchInterface $current_route_match, AccountProxyInterface $current_user) {
+  public function __construct(EntityRepositoryInterface $entity_repository, EntityTypeBundleInfoInterface $entity_type_bundle_info, TimeInterface $time, EntityTypeManagerInterface $entity_type_manager, EventDispatcherInterface $event_dispatcher, ModerationInformationInterface $moderation_info, RouteMatchInterface $current_route_match, AccountProxyInterface $current_user) {
+    parent::__construct($entity_repository, $entity_type_bundle_info, $time);
+
     $this->entityTypeManager = $entity_type_manager;
     $this->eventDispatcher = $event_dispatcher;
     $this->moderationInfo = $moderation_info;
@@ -97,19 +108,15 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('entity.repository'),
+      $container->get('entity_type.bundle.info'),
+      $container->get('datetime.time'),
       $container->get('entity_type.manager'),
       $container->get('event_dispatcher'),
       $container->get('content_moderation.moderation_information'),
       $container->get('current_route_match'),
       $container->get('current_user')
     );
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFormId(): string {
-    return 'entity_unpublish_form';
   }
 
   /**
@@ -139,19 +146,7 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state): array {
-    // Set the entity on the object so it can be used by parent methods.
-    $this->entity = $this->getEntity();
-    if (!$this->entity instanceof ContentEntityInterface) {
-      // We cannot call the parent form builder because that will depend on
-      // the entity being there. Normally this will not happen because the
-      // access callback will prevent this form from being built if the entity
-      // is missing.
-      return $form;
-    }
     $form = parent::buildForm($form, $form_state);
-
-    // Set the entity in the form state so we can use it in the submit handler.
-    $form_state->set('entity', $this->entity);
 
     $workflow = $this->moderationInfo->getWorkflowForEntity($this->entity);
     $unpublished_states = $this->getUnpublishingStates($workflow, $this->entity);
@@ -173,14 +168,12 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
-    /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
-    $entity = $form_state->get('entity');
-    $entity->moderation_state->value = $form_state->getValue('unpublish_state');
-    $entity->save();
+    $this->entity->moderation_state->value = $form_state->getValue('unpublish_state');
+    $this->entity->save();
     $this->messenger()->addStatus($this->t('The content %label has been unpublished.', [
-      '%label' => $entity->label(),
+      '%label' => $this->entity->label(),
     ]));
-    $form_state->setRedirectUrl($entity->toUrl());
+    $form_state->setRedirectUrl($this->entity->toUrl());
   }
 
   /**
@@ -196,14 +189,17 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
    *   The access result.
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch): AccessResultInterface {
-    $entity = $this->getEntity($routeMatch);
+    $entity_form = $routeMatch->getRouteObject()->getDefault('_entity_form');
+    list($entity_type_id, $operation) = explode('.', $entity_form);
+    $entity = $this->getEntityFromRouteMatch($routeMatch, $entity_type_id);
     $cache = new CacheableMetadata();
     $cache->addCacheContexts(['url']);
-    $cache->addCacheContexts(['user.permissions']);
+
     if (!$entity) {
       return AccessResult::forbidden('No entity found in the route.')->addCacheableDependency($cache);
     }
 
+    $cache->addCacheContexts(['user.permissions']);
     $cache->addCacheableDependency($entity);
 
     if (!$this->moderationInfo->isModeratedEntity($entity)) {
@@ -225,26 +221,6 @@ class ContentEntityUnpublishForm extends ConfirmFormBase {
     }
 
     return AccessResult::allowed()->addCacheableDependency($cache);
-  }
-
-  /**
-   * Returns the entity being unpublished.
-   *
-   * @param \Drupal\Core\Routing\RouteMatchInterface|null $route_match
-   *   The route match where to determine the entity from.
-   *
-   * @return \Drupal\Core\Entity\ContentEntityInterface
-   *   The entity or NULL if none is found.
-   */
-  protected function getEntity(RouteMatchInterface $route_match = NULL): ?ContentEntityInterface {
-    $route_match = $route_match ?? $this->currentRouteMatch;
-    $route = $route_match->getRouteObject();
-    if (!$route->hasOption('_entity_type')) {
-      return NULL;
-    }
-
-    $entity_type = $route->getOption('_entity_type');
-    return $route_match->getParameter($entity_type);
   }
 
   /**
