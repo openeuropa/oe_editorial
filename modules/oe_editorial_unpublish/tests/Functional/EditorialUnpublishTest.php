@@ -72,7 +72,7 @@ class EditorialUnpublishTest extends BrowserTestBase {
   /**
    * Tests the unpublishing form.
    */
-  public function testUnpublishForm(): void {
+  public function testBasicUnpublishForm(): void {
     // Publish the node so we can access the form.
     $this->node->moderation_state->value = 'published';
     $this->node->save();
@@ -92,6 +92,47 @@ class EditorialUnpublishTest extends BrowserTestBase {
     $this->assertSession()->pageTextContains('The content My node has been unpublished.');
     $node = $this->nodeStorage->load($this->node->id());
     $this->assertEqual($node->moderation_state->value, $unpublish_state);
+  }
+
+  /**
+   * Tests the unpublishing form for a node that has a new draft.
+   */
+  public function testDraftUnpublishForm(): void {
+    // Publish the node so we can access the form.
+    $this->node->moderation_state->value = 'published';
+    $this->node->save();
+    $published_label = $this->node->label();
+
+    // Create a new draft of the node.
+    $this->node->title = 'My node update';
+    $this->node->moderation_state->value = 'draft';
+    $this->node->save();
+    $draft_label = $this->node->label();
+
+    $unpublish_url = Url::fromRoute('entity.node.unpublish', [
+      'node' => $this->node->id(),
+    ]);
+    $this->drupalGet($unpublish_url);
+    // Assert we are in the correct page.
+    $this->assertSession()->pageTextContains('Are you sure you want to unpublish ' . $this->node->label() . '?');
+    // A cancel link is present.
+    $this->assertSession()->linkExists('Cancel');
+    // Assert the state select exists.
+    $unpublish_state = $this->assertSession()->selectExists('Select the unpublishing state')->getValue();
+    // Assert the unpublish button is there and using it we unpublish the node.
+    $this->assertSession()->buttonExists('Unpublish')->press();
+    $this->assertSession()->pageTextContains('The content My node has been unpublished.');
+    $node = $this->nodeStorage->load($this->node->id());
+    // Assert that the current revision is the same as the previous draft.
+    $this->assertEqual($node->moderation_state->value, 'draft');
+    $this->assertEqual($node->label(), $draft_label);
+
+    // Assert that the previous revision is archived.
+    $latest_revision_id = $this->nodeStorage->getLatestRevisionId($node->id());
+    $latest_revision_id--;
+    $previous_revision = $this->nodeStorage->loadRevision($latest_revision_id);
+    $this->assertEqual($previous_revision->moderation_state->value, $unpublish_state);
+    $this->assertEqual($previous_revision->label(), $published_label);
   }
 
   /**

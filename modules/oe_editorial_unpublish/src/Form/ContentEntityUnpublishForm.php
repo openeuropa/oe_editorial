@@ -168,10 +168,30 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
-    $this->entity->moderation_state->value = $form_state->getValue('unpublish_state');
-    $this->entity->save();
+
+    /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
+    $storage = $this->entityTypeManager->getStorage($this->entity->getEntityTypeId());
+    // Gather the latest revision and default revision ids at the time of
+    // submitting the form.
+    $default_revision_id = $this->moderationInfo->getDefaultRevisionId($this->entity->getEntityTypeId(), $this->entity->id());
+    $latest_revision_id = $storage->getLatestRevisionId($this->entity->id());
+
+    // Unpublish the default revision.
+    $default_revision = $storage->loadRevision($default_revision_id);
+    $default_revision->moderation_state->value = $form_state->getValue('unpublish_state');
+    $default_revision->save();
+
+    // If there was a newer revision than the default revision, recreate it
+    // so we keep it as the current default one.
+    if ($latest_revision_id !== $default_revision_id) {
+      $latest_revision = $storage->loadRevision($latest_revision_id);
+      $latest_revision->entity_version_no_update = TRUE;
+      $latest_revision->setNewRevision();
+      $latest_revision->save();
+
+    }
     $this->messenger()->addStatus($this->t('The content %label has been unpublished.', [
-      '%label' => $this->entity->label(),
+      '%label' => $default_revision->label(),
     ]));
     $form_state->setRedirectUrl($this->entity->toUrl());
   }
@@ -250,13 +270,10 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
     }
 
     // Gather a list of states to which the entity can transition to. For this
-    // we need to load the latest revision and see if a transition can be made
-    // from that.
-    /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
-    $storage = $this->entityTypeManager->getStorage($entity->getEntityTypeId());
-    $latest_revision_id = $storage->getLatestTranslationAffectedRevisionId($entity->id(), $entity->language()->getId());
-    $revision = $storage->loadRevision($latest_revision_id);
-    $current_state = $revision->moderation_state->value;
+    // we need to load the latest default revision and see if a transition
+    // can be made from that.
+    $default_revision = $this->entityTypeManager->getStorage($entity->getEntityTypeId())->load($entity->id());
+    $current_state = $default_revision->moderation_state->value;
     $available_transitions = $workflow_type->getTransitionsForState($current_state);
     $transitionable_states = [];
     foreach ($available_transitions as $transition) {
