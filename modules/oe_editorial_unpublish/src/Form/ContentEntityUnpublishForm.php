@@ -131,7 +131,7 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
    */
   public function getQuestion() {
     return $this->t('Are you sure you want to unpublish %label?', [
-      '%label' => $this->entity->label(),
+      '%label' => $this->getUnpublishingRevision()->label(),
     ]);
   }
 
@@ -168,23 +168,29 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state): void {
-
     /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage($this->entity->getEntityTypeId());
-    // Gather the latest revision and default revision ids at the time of
-    // submitting the form.
-    $default_revision_id = $this->moderationInfo->getDefaultRevisionId($this->entity->getEntityTypeId(), $this->entity->id());
+    // Keep track of the absolute latest revision ID.
     $latest_revision_id = $storage->getLatestRevisionId($this->entity->id());
-
-    // Unpublish the default revision.
-    $default_revision = $storage->loadRevision($default_revision_id);
+    // Retrieve the default revision. This will be published because if the
+    // default revision is not published, we don't reach this point, i.e. there
+    // is nothing to unpublish. Then unpublish it. This will create a new
+    // revision of the entity.
+    $default_revision = $this->getUnpublishingRevision();
+    $default_revision_id = $default_revision->getRevisionId();
     $default_revision->moderation_state->value = $form_state->getValue('unpublish_state');
     $default_revision->save();
 
-    // If there was a newer revision than the default revision, recreate it
-    // so we keep it as the current default one.
-    if ($latest_revision_id !== $default_revision_id) {
+    // If the absolute last revision ID of the entity was not the default one,
+    // i.e. there were draft revisions following, we need to take the last one
+    // of these and "revert" them. This means play them forward after the one
+    // we just unpublished. This ensures editors can still continue with their
+    // new version of the content after the published one was unpublished.
+    if ($latest_revision_id !== (int) $default_revision_id) {
       $latest_revision = $storage->loadRevision($latest_revision_id);
+      // In case the site is using entity version, we don't wanna affect the
+      // version with this operation. It should continue from where it left
+      // off.
       $latest_revision->entity_version_no_update = TRUE;
       $latest_revision->setNewRevision();
       $latest_revision->save();
@@ -295,6 +301,21 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
     $unpublishable_states = $event->getStates();
 
     return $unpublishable_states;
+  }
+
+  /**
+   * Loads the revision of the entity that will get unpublished.
+   *
+   * This is the default one and it's expected one exists, otherwise the access
+   * callback will prevent this form from loading.
+   *
+   * @return \Drupal\Core\Entity\ContentEntityInterface
+   *   The revision.
+   */
+  protected function getUnpublishingRevision(): ContentEntityInterface {
+    $storage = $this->entityTypeManager->getStorage($this->entity->getEntityTypeId());
+    $revision_id = $this->moderationInfo->getDefaultRevisionId($this->entity->getEntityTypeId(), $this->entity->id());
+    return $storage->loadRevision($revision_id);
   }
 
 }

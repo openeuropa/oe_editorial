@@ -44,6 +44,8 @@ class EditorialUnpublishTest extends BrowserTestBase {
     'oe_editorial_corporate_workflow',
     'oe_editorial_workflow_demo',
     'oe_editorial_unpublish_test',
+    'entity_version',
+    'oe_editorial_entity_version',
   ];
 
   /**
@@ -70,9 +72,9 @@ class EditorialUnpublishTest extends BrowserTestBase {
   }
 
   /**
-   * Tests the unpublishing form.
+   * Tests the unpublishing form when the last revision is published.
    */
-  public function testBasicUnpublishForm(): void {
+  public function testUnpublishFormLatestRevision(): void {
     // Publish the node so we can access the form.
     $this->node->moderation_state->value = 'published';
     $this->node->save();
@@ -80,8 +82,9 @@ class EditorialUnpublishTest extends BrowserTestBase {
     $unpublish_url = Url::fromRoute('entity.node.unpublish', [
       'node' => $this->node->id(),
     ]);
+
     $this->drupalGet($unpublish_url);
-    // Assert we are in the correct page.
+    // Assert we are on the correct page.
     $this->assertSession()->pageTextContains('Are you sure you want to unpublish ' . $this->node->label() . '?');
     // A cancel link is present.
     $this->assertSession()->linkExists('Cancel');
@@ -91,30 +94,43 @@ class EditorialUnpublishTest extends BrowserTestBase {
     $this->assertSession()->buttonExists('Unpublish')->press();
     $this->assertSession()->pageTextContains('The content My node has been unpublished.');
     $node = $this->nodeStorage->load($this->node->id());
-    $this->assertEqual($node->moderation_state->value, $unpublish_state);
+    $this->assertEquals($node->moderation_state->value, $unpublish_state);
   }
 
   /**
-   * Tests the unpublishing form for a node that has a new draft.
+   * Tests the unpublishing form when the last revision is not published.
    */
-  public function testDraftUnpublishForm(): void {
-    // Publish the node so we can access the form.
+  public function testUnpublishFormWithRevisionUpdate(): void {
+    // Publish the node so we can access the form. But do so in a way to also
+    // increase the content version.
+    $this->node->moderation_state->value = 'request_validation';
+    $this->node->save();
+    $this->node->moderation_state->value = 'validated';
+    $this->node->save();
     $this->node->moderation_state->value = 'published';
     $this->node->save();
-    $published_label = $this->node->label();
+    $this->assertEquals(1, $this->node->get('version')->major);
+    $this->assertEquals(0, $this->node->get('version')->minor);
+    $this->assertEquals(0, $this->node->get('version')->patch);
 
     // Create a new draft of the node.
     $this->node->title = 'My node update';
     $this->node->moderation_state->value = 'draft';
     $this->node->save();
-    $draft_label = $this->node->label();
+
+    // The minor should have increased with the new draft.
+    $this->assertEquals(1, $this->node->get('version')->major);
+    $this->assertEquals(1, $this->node->get('version')->minor);
+    $this->assertEquals(0, $this->node->get('version')->patch);
+
+    $this->assertCount(5, $this->nodeStorage->revisionIds($this->node));
 
     $unpublish_url = Url::fromRoute('entity.node.unpublish', [
       'node' => $this->node->id(),
     ]);
     $this->drupalGet($unpublish_url);
-    // Assert we are in the correct page.
-    $this->assertSession()->pageTextContains('Are you sure you want to unpublish ' . $this->node->label() . '?');
+    // Assert we are on the correct page.
+    $this->assertSession()->pageTextContains('Are you sure you want to unpublish My node?');
     // A cancel link is present.
     $this->assertSession()->linkExists('Cancel');
     // Assert the state select exists.
@@ -122,17 +138,31 @@ class EditorialUnpublishTest extends BrowserTestBase {
     // Assert the unpublish button is there and using it we unpublish the node.
     $this->assertSession()->buttonExists('Unpublish')->press();
     $this->assertSession()->pageTextContains('The content My node has been unpublished.');
+
+    // An extra 2 revisions got created: one for the unpublished state and one
+    // for the extra draft.
+    $this->assertCount(7, $this->nodeStorage->revisionIds($this->node));
+
+    // Since none of the revisions are now published, loading the entity will
+    // return the latest revision.
     $node = $this->nodeStorage->load($this->node->id());
+    $this->assertEquals(7, $node->getRevisionId());
     // Assert that the current revision is the same as the previous draft.
-    $this->assertEqual($node->moderation_state->value, 'draft');
-    $this->assertEqual($node->label(), $draft_label);
+    $this->assertEquals('draft', $node->moderation_state->value);
+    $this->assertEquals('My node update', $node->label());
+    // The version should have remained the same.
+    $this->assertEquals(1, $node->get('version')->major);
+    $this->assertEquals(1, $node->get('version')->minor);
+    $this->assertEquals(0, $node->get('version')->patch);
 
     // Assert that the previous revision is archived.
-    $latest_revision_id = $this->nodeStorage->getLatestRevisionId($node->id());
-    $latest_revision_id--;
-    $previous_revision = $this->nodeStorage->loadRevision($latest_revision_id);
-    $this->assertEqual($previous_revision->moderation_state->value, $unpublish_state);
-    $this->assertEqual($previous_revision->label(), $published_label);
+    $previous_revision = $this->nodeStorage->loadRevision(6);
+    $this->assertEquals($unpublish_state, $previous_revision->moderation_state->value);
+    $this->assertEquals('My node', $previous_revision->label());
+    // The archived revision has the same version as when it was published.
+    $this->assertEquals(1, $previous_revision->get('version')->major);
+    $this->assertEquals(0, $previous_revision->get('version')->minor);
+    $this->assertEquals(0, $previous_revision->get('version')->patch);
   }
 
   /**
