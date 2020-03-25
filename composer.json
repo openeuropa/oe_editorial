@@ -6,8 +6,8 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.1",
-        "drupal/core-recommended": "^8.7"
+        "php": "~7.2.0 || ~7.3.0",
+        "drupal/core": "^8.7"
     },
     "require-dev": {
         "composer/installers": "~1.5",
@@ -17,6 +17,7 @@
         "drupal/drupal-extension": "~4.0",
         "drupal/entity_version": "1.x-dev",
         "drush/drush": "~9.0@stable",
+        "guzzlehttp/guzzle": "^6.3",
         "nikic/php-parser": "~3.0",
         "openeuropa/behat-transformation-context" : "~0.1",
         "openeuropa/code-review": "~1.0.0-alpha4",
