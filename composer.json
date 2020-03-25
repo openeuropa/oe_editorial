@@ -15,7 +15,7 @@
         "drupal/content_lock": "^1.0-alpha8",
         "drupal/config_devel": "~1.2",
         "drupal/drupal-extension": "~4.0",
-        "drupal/entity_version": "~1.0-beta2",
+        "drupal/entity_version": "1.x-dev",
         "drush/drush": "~9.0@stable",
         "nikic/php-parser": "~3.0",
         "openeuropa/behat-transformation-context" : "~0.1",
@@ -64,9 +64,6 @@
                 "https://www.drupal.org/project/content_lock/issues/2919019": "https://www.drupal.org/files/issues/content_lock-caching-invalidation-2919019-3.patch",
                 "https://www.drupal.org/project/content_lock/issues/2956625": "https://www.drupal.org/files/issues/2018-03-28/error-on-locked-content-by-deleted-user-2956625.2.patch",
                 "https://www.drupal.org/project/content_lock/issues/2949198": "https://www.drupal.org/files/issues/content_lock-unlocking-already-locked-2949198-9.patch"
-            },
-            "drupal/entity_version": {
-                "OPENEUROPA-2889": "https://github.com/openeuropa/entity_version/compare/8.x-1.x...OPENEUROPA-2889.diff"
             }
         }
     },
