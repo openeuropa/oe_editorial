@@ -1,0 +1,45 @@
+<?php
+
+/**
+ * @file
+ * OpenEuropa Editorial Unpublish module.
+ */
+
+declare(strict_types = 1);
+
+use Drupal\Core\Entity\ContentEntityTypeInterface;
+use Drupal\oe_editorial_unpublish\Form\ContentEntityUnpublishForm;
+
+/**
+ * Implements hook_entity_type_alter().
+ */
+function oe_editorial_unpublish_entity_type_alter(array &$entity_types) {
+  // Add the unpublish form handler to the entity type definitions that can
+  // be moderated. Note that this applies even if the entity type is not being
+  // moderated because we cannot check that here. The access callback of the
+  // form handler will ensure it will only show if the entity type is indeed
+  // using a workflow.
+  foreach ($entity_types as $definition) {
+    if (!$definition instanceof ContentEntityTypeInterface) {
+      // We are only interested in the content entity types.
+      continue;
+    }
+
+    if (!$definition->hasKey('published')) {
+      // We are only interested in the content entity types that can be
+      // published (editorial base).
+      continue;
+    }
+
+    if (!$definition->hasLinkTemplate('canonical')) {
+      // We are only interested in entity types that have canonical links.
+      continue;
+    }
+
+    if (!$definition->hasHandlerClass('moderation')) {
+      continue;
+    }
+
+    $definition->setFormClass('unpublish', ContentEntityUnpublishForm::class);
+  }
+}
