@@ -126,10 +126,11 @@ class EditorialUnpublishTest extends KernelTestBase {
     $anonymous = new AnonymousUserSession();
     $this->assertFalse($unpublish_url->access($anonymous));
 
-    // We can't access the unpublish page if the last revision is not published.
+    // We can access the unpublish page as long as there is a published
+    // revision.
     $node->moderation_state->value = 'draft';
     $node->save();
-    $this->assertFalse($unpublish_url->access($user));
+    $this->assertTrue($unpublish_url->access($user));
 
     // Assert we don't have access for non-moderated nodes.
     $entity_type_manager->getStorage('node_type')->create([
