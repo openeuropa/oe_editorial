@@ -5,3 +5,8 @@ services:
   oe_editorial_corporate_workflow.shortcut_transition_handler:
     class: Drupal\oe_editorial_corporate_workflow\Services\ShortcutRevisionHandler
     arguments: ['@content_moderation.moderation_information', '@current_user', '@entity_type.manager', '@datetime.time']
+  oe_editorial_corporate_workflow.content_translation_overview_alter_subscriber:
+    class: Drupal\oe_editorial_corporate_workflow\EventSubscriber\ContentTranslationOverviewAlterSubscriber
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: event_subscriber }
