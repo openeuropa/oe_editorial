@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Drupal\oe_editorial_corporate_workflow\EventSubscriber;
+namespace Drupal\oe_editorial_corporate_workflow_translation\EventSubscriber;
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;

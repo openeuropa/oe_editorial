@@ -9,3 +9,8 @@ services:
     arguments: ['@entity_type.manager', '@content_moderation.moderation_information']
     tags:
       - { name: event_subscriber }
+  oe_editorial_corporate_workflow_translation.content_translation_overview_alter_subscriber:
+    class: Drupal\oe_editorial_corporate_workflow_translation\EventSubscriber\ContentTranslationOverviewAlterSubscriber
+    arguments: ['@entity_type.manager']
+    tags:
+      - { name: event_subscriber }
