@@ -1,5 +1,16 @@
 # Change Log
 
+## [1.4.0](https://github.com/openeuropa/oe_editorial/tree/1.4.0) (2020-04-08)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.3.1...1.4.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-2943: Update composer.json. [\#69](https://github.com/openeuropa/oe_editorial/pull/69) ([sergepavle](https://github.com/sergepavle))
+- Allowing to unpublish content from any moderation state [\#68](https://github.com/openeuropa/oe_editorial/pull/68) ([upchuk](https://github.com/upchuk))
+- OPENEUROPA-0000: Use drupal/core instead of drupal/core-recommended. [\#66](https://github.com/openeuropa/oe_editorial/pull/66) ([22Alexandra](https://github.com/22Alexandra))
+- OPENEUROPA-2941: Update php version. [\#64](https://github.com/openeuropa/oe_editorial/pull/64) ([sergepavle](https://github.com/sergepavle))
+- OPENEUROPA-3018: Ensure Drupal 8.8 compatibility [\#61](https://github.com/openeuropa/oe_editorial/pull/61) ([upchuk](https://github.com/upchuk))
+
 ## [1.3.1](https://github.com/openeuropa/oe_editorial/tree/1.3.1) (2020-03-02)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.3.0...1.3.1)
 
