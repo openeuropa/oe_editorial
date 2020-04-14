@@ -59,6 +59,11 @@ class RouteSubscriber extends RouteSubscriberBase {
       }
 
       $canonical_route = $collection->get('entity.' . $definition->id() . '.canonical');
+      if (!$canonical_route) {
+        // It's possible that an entity type doesn't have a canonical route.
+        continue;
+      }
+
       $route = new Route(
         // Path.
         $canonical_route->getPath() . '/unpublish',
