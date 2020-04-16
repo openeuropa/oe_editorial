@@ -5,8 +5,13 @@ workspace:
 services:
   web:
     image: fpfis/httpd-php-ci:${PHP_VERSION}
-    environment:
+    environment: &web-environment
       - DOCUMENT_ROOT=/test/oe_editorial
+      - POETRY_IDENTIFIER_SEQUENCE=NEXT_EUROPA_COUNTER
+      - POETRY_SERVICE_USERNAME=admin
+      - POETRY_SERVICE_PASSWORD=admin
+      - POETRY_NOTIFICATION_USERNAME=admin
+      - POETRY_NOTIFICATION_PASSWORD=admin
   mysql:
     image: percona/percona-server:5.6
     environment:
@@ -18,30 +23,26 @@ services:
       - SE_OPTS=-debug
 
 pipeline:
-  composer-install-lowest:
+  composer-install:
     group: prepare
+    image: fpfis/httpd-php-ci:${PHP_VERSION}
+    volumes:
+      - /cache:/cache
+    commands:
+      - composer install --ansi --no-suggest --no-progress
+
+  composer-update-lowest:
+    group: post-prepare
     image: fpfis/httpd-php-ci:${PHP_VERSION}
     volumes:
       - /cache:/cache
     commands:
       # @todo remove "composer install" step once the following issue is fixed.
       # @link https://webgate.ec.europa.eu/CITnet/jira/browse/OPENEUROPA-1234
-      - composer install --ansi --no-suggest --no-progress
-      - composer update --prefer-lowest --prefer-stable --ansi --no-suggest --no-progress
+      - composer update --prefer-lowest --prefer-stable --ansi --no-suggest --no-progress --no-interaction
     when:
       matrix:
         COMPOSER_BOUNDARY: lowest
-
-  composer-install-highest:
-    group: prepare
-    image: fpfis/httpd-php-ci:${PHP_VERSION}
-    volumes:
-      - /cache:/cache
-    commands:
-      - composer install --ansi --no-suggest --no-progress
-    when:
-      matrix:
-        COMPOSER_BOUNDARY: highest
 
   site-install:
     image: fpfis/httpd-php-ci:${PHP_VERSION}
@@ -57,14 +58,23 @@ pipeline:
   phpunit:
     group: test
     image: fpfis/httpd-php-ci:${PHP_VERSION}
+    environment: *web-environment
     commands:
       - ./vendor/bin/phpunit
 
   behat:
     group: test
     image: fpfis/httpd-php-ci:${PHP_VERSION}
+    environment: *web-environment
     commands:
       - ./vendor/bin/behat --strict
+
+  debug:
+    image: fpfis/httpd-php-ci:${PHP_VERSION}
+    commands:
+      - ./vendor/bin/drush ws --count 500
+    when:
+      status: failure
 
 matrix:
   COMPOSER_BOUNDARY:
