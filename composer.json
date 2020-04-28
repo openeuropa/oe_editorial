@@ -16,6 +16,8 @@
         "drupal/content_lock": "^1.0-alpha8",
         "drupal/drupal-extension": "~4.0",
         "drupal/entity_version": "1.x-dev",
+        "drupal/address": "^1.8",
+        "openeuropa/oe_paragraphs": "~1.4.0",
         "drush/drush": "~9.0@stable",
         "ec-europa/oe-poetry-client": "dev-master",
         "guzzlehttp/guzzle": "^6.3",
