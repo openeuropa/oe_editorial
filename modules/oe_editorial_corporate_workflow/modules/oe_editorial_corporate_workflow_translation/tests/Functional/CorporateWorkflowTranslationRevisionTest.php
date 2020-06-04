@@ -61,22 +61,22 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
   public function setUp() {
     parent::setUp();
 
-    $this->entityTypeManager = $this->container->get('entity_type.manager');
+    $this->entityTypeManager = \Drupal::service('entity_type.manager');
 
     $this->entityTypeManager->getStorage('node_type')->create([
       'name' => 'Page',
       'type' => 'page',
     ])->save();
 
-    $this->container->get('content_translation.manager')->setEnabled('node', 'page', TRUE);
-    $this->container->get('oe_editorial_corporate_workflow.workflow_installer')->installWorkflow('page');
+    \Drupal::service('content_translation.manager')->setEnabled('node', 'page', TRUE);
+    \Drupal::service('oe_editorial_corporate_workflow.workflow_installer')->installWorkflow('page');
     $default_values = [
       'major' => 0,
       'minor' => 1,
       'patch' => 0,
     ];
-    $this->container->get('entity_version.entity_version_installer')->install('node', ['page'], $default_values);
-    $this->container->get('router.builder')->rebuild();
+    \Drupal::service('entity_version.entity_version_installer')->install('node', ['page'], $default_values);
+    \Drupal::service('router.builder')->rebuild();
 
     /** @var \Drupal\user\RoleInterface $role */
     $role = $this->entityTypeManager->getStorage('user_role')->load('oe_translator');
@@ -292,7 +292,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
    *
    * @SuppressWarnings(PHPMD.CyclomaticComplexity)
    */
-  public function testTranslationRevisions(): void {
+  public function testTranslationRevisionsCarryOver(): void {
     /** @var \Drupal\node\NodeStorageInterface $node_storage */
     $node_storage = $this->entityTypeManager->getStorage('node');
 

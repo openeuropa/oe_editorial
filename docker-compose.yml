@@ -29,14 +29,19 @@ services:
 #      - 3306:3306
   # Spawn a Selenium server which also includes a VNC server on localhost:5900 (the password is "secret")
   selenium:
+    # Newer Selenium Chrome images are not supported at the moment by behat/mink-selenium2-driver.
     image: selenium/standalone-chrome-debug:3.141.59-oxygen
     environment:
       - DISPLAY=:99
       - SE_OPTS=-debug
+      - SCREEN_WIDTH=1280
+      - SCREEN_HEIGHT=800
+      - VNC_NO_PASSWORD=1
     ports:
-      - 5900:5900
-    expose:
-      - 4444
+      - '4444:4444'
+      - '5900:5900'
+    shm_size: 2g
+
 #### Mac users: uncomment the "volumes" key to enable the NFS file sharing. You can find more information about Docker for Mac here: https://github.com/openeuropa/openeuropa/blob/master/docs/starting/tooling.md#using-docker-on-macos
 
 #volumes:
