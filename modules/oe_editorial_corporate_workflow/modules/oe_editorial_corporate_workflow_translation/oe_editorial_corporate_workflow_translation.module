@@ -233,12 +233,12 @@ function oe_editorial_corporate_workflow_translation_content_moderation_state_pr
   // Whenever a new moderation state revision is created, we need to ensure
   // that it does not have translations if the moderated entity doesn't.
   // Normally this is handled by core in
-  // EntityOperations::entityTranslationDelete() but that removes the
-  // the translations from a revision but then the next revision would still
-  // contain the translations from the default revision if it has any. And to
-  // mirror the fact that we create content entity revision translations based
-  // on the last revision (not the last default one), we need to ensure we clear
-  // translations from the content moderation state entity as well.
+  // EntityOperations::entityTranslationDelete() but that removes
+  // the translations from a revision and then the next revision would still
+  // contain the translations from the default revision if it has any. In order
+  // to mirror the fact that we create content entity revision translations
+  // based on the last revision (not the last default one), we need to ensure
+  // we clear translations from the content moderation state entity as well.
   $storage = \Drupal::entityTypeManager()->getStorage($entity->get('content_entity_type_id')->value);
   /** @var \Drupal\Core\Entity\ContentEntityInterface $moderated_entity */
   $moderated_entity = $storage->loadRevision($entity->get('content_entity_revision_id')->value);
