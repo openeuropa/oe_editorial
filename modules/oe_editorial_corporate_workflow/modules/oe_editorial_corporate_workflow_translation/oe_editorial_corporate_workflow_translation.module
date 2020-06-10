@@ -10,11 +10,30 @@ declare(strict_types = 1);
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\TypedData\TranslationStatusInterface;
+
+/**
+ * Implements hook_theme().
+ */
+function oe_editorial_corporate_workflow_translation_theme($existing, $type, $theme, $path) {
+  return [
+    'entity_moderation_form__oe_editorial_corporate_workflow' => [
+      'render element' => 'form',
+    ],
+  ];
+}
 
 /**
  * Implements hook_ENTITY_TYPE_presave().
  */
 function oe_editorial_corporate_workflow_translation_node_presave(EntityInterface $entity): void {
+  if (isset($entity->translation_drop) && $entity->translation_drop === TRUE && $entity->moderation_state->value === 'validated') {
+    foreach ($entity->getTranslationLanguages(FALSE) as $langcode => $language) {
+      $entity->removeTranslation($langcode);
+    }
+  }
+
   // Whenever we save a translation, we need to ensure that we maintain its
   // status the same as the source. This is the default behaviour for "synced"
   // translations. Later, we will introduce the "un-synced" translations by
@@ -64,7 +83,7 @@ function oe_editorial_corporate_workflow_translation_node_view_alter(array &$bui
  * Implements hook_ENTITY_TYPE_revision_create() for the Node entity.
  *
  * This hook replicates to an extent a chunk of the responsibility of
- * ContentEntityStorageBase::create().
+ * ContentEntityStorageBase::createRevision().
  *
  * The purpose is to ensure that whenever we create a new revision of a content
  * entity that is translatable, for each translation language we carry over
@@ -82,10 +101,10 @@ function oe_editorial_corporate_workflow_translation_node_view_alter(array &$bui
  * previous ones which might have been marked as default (previous published
  * versions).
  *
- * @see CorporateWorkflowTranslationRevisionTest::testTranslationRevisions()
+ * @see CorporateWorkflowTranslationDropTest::testTranslationRevisions()
  */
 function oe_editorial_corporate_workflow_translation_node_revision_create(ContentEntityInterface $revision, ContentEntityInterface $entity, $original_keep_untranslatable_fields): void {
-  if ($entity->isNew() || $entity->isDefaultRevision() || !$entity->isTranslatable() || !$entity->getTranslationLanguages(FALSE)) {
+  if ($entity->isNew() || $entity->isDefaultRevision() || !$entity->isTranslatable() || (!$entity->getTranslationLanguages(FALSE) && !$revision->getTranslationLanguages(FALSE))) {
     return;
   }
 
@@ -139,5 +158,131 @@ function oe_editorial_corporate_workflow_translation_node_revision_create(Conten
     }
   }
 
+  // If the entity no longer has translations, we should remove them from
+  // the newly created revision as well.
+  foreach ($revision->getTranslationLanguages(FALSE) as $langcode => $language) {
+    if (!$entity->hasTranslation($langcode)) {
+      $revision->removeTranslation($langcode);
+    }
+  }
+
   $revision->original = clone $revision;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the content moderation form.
+ */
+function oe_editorial_corporate_workflow_translation_form_content_moderation_entity_moderation_form_alter(array &$form, FormStateInterface $form_state) {
+  $entity = $form_state->get('entity');
+  if (!$entity instanceof ContentEntityInterface || !$entity->getTranslationLanguages(FALSE)) {
+    return;
+  }
+
+  $current_state = $entity->moderation_state->value;
+  $form['translation_drop_wrapper'] = [
+    '#type' => 'container',
+    '#states' => [
+      'visible' => [
+        [
+          'select[name="new_state"]' => ['value' => 'validated'],
+        ],
+        [
+          'select[name="new_state"]' => ['value' => 'published'],
+        ],
+      ],
+    ],
+  ];
+  $form['translation_drop_wrapper']['translation_drop'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Do not carry over the translations'),
+    // If the content is already validated and only needs to be published,
+    // we don't show it.
+    '#access' => $current_state !== 'validated',
+  ];
+
+  $form['#theme'] = 'entity_moderation_form__oe_editorial_corporate_workflow';
+  $form['#submit'] = array_merge(['oe_editorial_corporate_workflow_translation_form_content_moderation_entity_moderation_form_submit'], $form['#submit']);
+}
+
+/**
+ * Custom submit handler for the content entity moderation form.
+ *
+ * @param array $form
+ *   The form.
+ * @param \Drupal\Core\Form\FormStateInterface $form_state
+ *   The form state.
+ *
+ * @see oe_editorial_corporate_workflow_translation_form_content_moderation_entity_moderation_form_alter()
+ */
+function oe_editorial_corporate_workflow_translation_form_content_moderation_entity_moderation_form_submit(array &$form, FormStateInterface $form_state): void {
+  if ((bool) $form_state->getValue('translation_drop')) {
+    /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+    $entity = $form_state->get('entity');
+    $entity->translation_drop = TRUE;
+  }
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_presave() for the content_moderation_state.
+ */
+function oe_editorial_corporate_workflow_translation_content_moderation_state_presave(EntityInterface $entity): void {
+  if (!$entity->isNewRevision()) {
+    return;
+  }
+
+  // Whenever a new moderation state revision is created, we need to ensure
+  // that it does not have translations if the moderated entity doesn't.
+  // Normally this is handled by core in
+  // EntityOperations::entityTranslationDelete() but that removes
+  // the translations from a revision and then the next revision would still
+  // contain the translations from the default revision if it has any. In order
+  // to mirror the fact that we create content entity revision translations
+  // based on the last revision (not the last default one), we need to ensure
+  // we clear translations from the content moderation state entity as well.
+  $storage = \Drupal::entityTypeManager()->getStorage($entity->get('content_entity_type_id')->value);
+  /** @var \Drupal\Core\Entity\ContentEntityInterface $moderated_entity */
+  $moderated_entity = $storage->loadRevision($entity->get('content_entity_revision_id')->value);
+  foreach ($entity->getTranslationLanguages(FALSE) as $langcode => $language) {
+    if (!$moderated_entity->hasTranslation($langcode)) {
+      $entity->removeTranslation($langcode);
+    }
+  }
+}
+
+/**
+ * Implements hook_entity_presave().
+ *
+ * Whenever we delete a translation that is made using the TMGMT-based
+ * translators, we do not make a new revision of the entity. Since translations
+ * are added to the same revision where they were initiated, for the same
+ * reason their removal should not impact the number of entity revisions.
+ */
+function oe_editorial_corporate_workflow_translation_entity_presave(EntityInterface $entity) {
+  if (!\Drupal::entityTypeManager()->hasHandler($entity->getEntityTypeId(), 'oe_translation')) {
+    return;
+  }
+
+  $handler = \Drupal::entityTypeManager()->getHandler($entity->getEntityTypeId(), 'oe_translation');
+  $translators = $handler->getSupportedTranslators();
+  if (!$translators) {
+    // We only care about the the entities translated using the TMGMT
+    // translators.
+    return;
+  }
+
+  if (isset($entity->translation_drop) && $entity->translation_drop === TRUE) {
+    // If the translations are being dropped by the editorial carry-over logic,
+    // we do not want to prevent the creation of new revisions because the use
+    // case is different: the system is simply making a new revision onto which
+    // we don't want to carry over translations.
+    return;
+  }
+
+  $available_languages = \Drupal::service('language_manager')->getLanguages();
+  foreach ($available_languages as $lancgode => $language) {
+    if ($entity->getTranslationStatus($lancgode) === TranslationStatusInterface::TRANSLATION_REMOVED) {
+      $entity->setNewRevision(FALSE);
+      break;
+    }
+  }
 }
