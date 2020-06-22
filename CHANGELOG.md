@@ -1,11 +1,21 @@
 # Changelog
 
+## [1.6.0](https://github.com/openeuropa/oe_editorial/tree/1.6.0) (2020-06-22)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.5.0...1.6.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-0000: Update minimum oe\_paragraph version. [\#78](https://github.com/openeuropa/oe_editorial/pull/78) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- OPENEUROPA-2845: Option to drop translations when validating. [\#76](https://github.com/openeuropa/oe_editorial/pull/76) ([upchuk](https://github.com/upchuk))
+
 ## [1.5.0](https://github.com/openeuropa/oe_editorial/tree/1.5.0) (2020-04-29)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.4.0...1.5.0)
 
 **Merged pull requests:**
 
+- OPENEUROPA-0000: Prepare release 1.5.0. [\#74](https://github.com/openeuropa/oe_editorial/pull/74) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - OPENEUROPA-3012: Poetry translation updates. [\#73](https://github.com/openeuropa/oe_editorial/pull/73) ([upchuk](https://github.com/upchuk))
 - OPENEUROPA-0000: Ensure the entity type has a canonical route before adding the unpublish route. [\#72](https://github.com/openeuropa/oe_editorial/pull/72) ([upchuk](https://github.com/upchuk))
 - OPENEUROPA-2969: Display the major version of the node where the translation request originates from. [\#70](https://github.com/openeuropa/oe_editorial/pull/70) ([22Alexandra](https://github.com/22Alexandra))
@@ -86,6 +96,7 @@
 
 **Merged pull requests:**
 
+- Release-1.1.0 [\#41](https://github.com/openeuropa/oe_editorial/pull/41) ([nagyad](https://github.com/nagyad))
 -  OPENEUROPA-2076: Use entity\_version from drupal repo. [\#40](https://github.com/openeuropa/oe_editorial/pull/40) ([nagyad](https://github.com/nagyad))
 - OPENEUROPA-2041: Change url of textarea help link. [\#36](https://github.com/openeuropa/oe_editorial/pull/36) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
@@ -99,7 +110,6 @@
 
 **Merged pull requests:**
 
-- Release-1.1.0 [\#41](https://github.com/openeuropa/oe_editorial/pull/41) ([nagyad](https://github.com/nagyad))
 - Release 1.0.0: Update changelog. [\#39](https://github.com/openeuropa/oe_editorial/pull/39) ([dxvargas](https://github.com/dxvargas))
 - OPENEUROPA-2053: Corporate workflow translation. [\#38](https://github.com/openeuropa/oe_editorial/pull/38) ([upchuk](https://github.com/upchuk))
 
