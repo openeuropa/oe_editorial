@@ -154,9 +154,10 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
     // from the last version to increase the minor by one.
     $latest_revision_id = $node_storage->getLatestRevisionId($this->revision->id());
     $latest_revision = $node_storage->loadRevision($latest_revision_id);
+    $latest_revision->get('version')->first()->increase('minor');
     $version = [
       'major' => $latest_revision->get('version')->major,
-      'minor' => $latest_revision->get('version')->minor + 1,
+      'minor' => $latest_revision->get('version')->minor,
       'patch' => $latest_revision->get('version')->patch,
     ];
     $this->revision->set('version', $version);

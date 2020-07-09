@@ -6,11 +6,14 @@ namespace Drupal\Tests\oe_editorial_entity_version\Functional;
 
 use Drupal\Core\Url;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\oe_editorial_corporate_workflow\Traits\CorporateWorkflowTrait;
 
 /**
- * Tests the node revision revert.
+ * Tests the node version restore.
  */
-class NodeRevisionRevertTest extends BrowserTestBase {
+class NodeVersionRestoreTest extends BrowserTestBase {
+
+  use CorporateWorkflowTrait;
 
   /**
    * The entity type manager.
@@ -86,13 +89,8 @@ class NodeRevisionRevertTest extends BrowserTestBase {
 
     // Now create a new major version with a different title.
     $this->node->setTitle('My node ready to publish');
-    $this->node->moderation_state->value = 'request_validation';
-    $this->node->save();
-    $this->node->moderation_state->value = 'validated';
-    $this->node->save();
-    // Now Publish the node.
-    $this->node->moderation_state->value = 'published';
-    $this->node->save();
+    $this->node = $this->moderateNode($this->node, 'published');
+    $published_vid = $this->node->getRevisionId();
 
     // Revert the node to the initial revision.
     $revert_url = Url::fromRoute('node.revision_revert_confirm', [
@@ -131,6 +129,7 @@ class NodeRevisionRevertTest extends BrowserTestBase {
     $this->assertTrue($node->isDefaultRevision());
     $this->assertTrue($node->isPublished());
     $this->assertEquals('published', $node->moderation_state->value);
+    $this->assertEquals($published_vid, $node->getRevisionId());
     // Load the latest revision.
     $latest_revision = $this->nodeStorage->loadRevision($this->nodeStorage->getLatestRevisionId($node->id()));
     $this->assertTrue($latest_revision->isLatestRevision());

@@ -27,3 +27,4 @@ The module overrides the core NodeRevisionRevertForm in order to ensure that dur
 - Version numbers are correctly updated following the rules of the corporate workflow
 - The newly created revision gets always the Draft state
 - The moderation log message indicates: "Version x.x.x has been restored by userX"
+The 'restore version' permission is required, that comes with this module.
