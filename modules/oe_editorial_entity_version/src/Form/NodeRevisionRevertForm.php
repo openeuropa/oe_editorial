@@ -62,7 +62,7 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
   protected $time;
 
   /**
-   * Constructs a new EditorialRevisionRevertForm.
+   * Constructs a new NodeRevisionRevertForm.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
@@ -96,7 +96,7 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'node_revision_revert_confirm';
+    return 'node_version_restore_confirm';
   }
 
   /**

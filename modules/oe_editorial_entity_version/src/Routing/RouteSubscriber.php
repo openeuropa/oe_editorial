@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\oe_editorial_entity_version\Routing;
 
 use Drupal\Core\Routing\RouteSubscriberBase;
+use Drupal\Core\Routing\RoutingEvents;
 use Drupal\oe_editorial_entity_version\Form\NodeRevisionRevertForm;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -21,6 +22,15 @@ class RouteSubscriber extends RouteSubscriberBase {
       $route->setDefault('_form', NodeRevisionRevertForm::class);
       $route->setRequirement('_permission', 'restore version');
     }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function getSubscribedEvents() {
+    $events = parent::getSubscribedEvents();
+    $events[RoutingEvents::ALTER] = ['onAlterRoutes', 100];
+    return $events;
   }
 
 }
