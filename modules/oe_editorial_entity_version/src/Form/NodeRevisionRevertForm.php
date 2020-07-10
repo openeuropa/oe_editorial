@@ -155,12 +155,7 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
     $latest_revision_id = $node_storage->getLatestRevisionId($this->revision->id());
     $latest_revision = $node_storage->loadRevision($latest_revision_id);
     $latest_revision->get('version')->first()->increase('minor');
-    $version = [
-      'major' => $latest_revision->get('version')->major,
-      'minor' => $latest_revision->get('version')->minor,
-      'patch' => $latest_revision->get('version')->patch,
-    ];
-    $this->revision->set('version', $version);
+    $this->revision->set('version', $latest_revision->get('version')->getValue());
 
     // In this case, we don't want the version values to update automatically.
     $this->revision->entity_version_no_update = TRUE;
