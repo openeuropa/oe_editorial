@@ -20,10 +20,6 @@ class RouteSubscriber extends RouteSubscriberBase {
   protected function alterRoutes(RouteCollection $collection) {
     if ($route = $collection->get('node.revision_revert_confirm')) {
       $route->setDefault('_form', NodeRevisionRevertForm::class);
-      $route->setRequirements([
-        '_permission' => 'restore version',
-        'node' => "\d+",
-      ]);
     }
   }
 

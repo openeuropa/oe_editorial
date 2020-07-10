@@ -57,22 +57,27 @@ class NodeVersionRestoreTest extends BrowserTestBase {
     parent::setUp();
 
     $entity_type_manager = $this->container->get('entity_type.manager');
+
+    /** @var \Drupal\user\RoleInterface $role */
+    $role = $entity_type_manager->getStorage('user_role')->load('oe_author');
+    $permissions = $role->getPermissions();
+    $role = $entity_type_manager->getStorage('user_role')->load('oe_validator');
+    $permissions = array_merge($permissions, $role->getPermissions());
+    $permissions[] = 'revert oe_workflow_demo revisions';
+    $this->user = $this->drupalCreateUser($permissions);
+    $this->drupalLogin($this->user);
+
     $this->nodeStorage = $entity_type_manager->getStorage('node');
     $this->node = $this->nodeStorage->create(
       [
         'type' => 'oe_workflow_demo',
         'title' => 'My node',
         'moderation_state' => 'draft',
+        'uid' => $this->user->id(),
       ]
     );
     $this->node->save();
 
-    /** @var \Drupal\user\RoleInterface $role */
-    $role = $entity_type_manager->getStorage('user_role')->load('oe_validator');
-    $permissions = $role->getPermissions();
-    $permissions[] = 'administer nodes';
-    $this->user = $this->drupalCreateUser($permissions);
-    $this->drupalLogin($this->user);
   }
 
   /**
@@ -97,18 +102,6 @@ class NodeVersionRestoreTest extends BrowserTestBase {
       'node' => $this->node->id(),
       'node_revision' => $initial_revision_id,
     ]);
-
-    // Assert that the user can't access the url because lacks permission.
-    $this->assertFalse($revert_url->access($this->user));
-
-    // Grant the 'restore version' permission to the user.
-    $entity_type_manager = $this->container->get('entity_type.manager');
-    $role = $entity_type_manager->getStorage('user_role')->load($this->user->getRoles(TRUE)[0]);
-    $role->grantPermission('restore version');
-    $role->save();
-
-    // Assert that the user can access the url.
-    $this->assertTrue($revert_url->access($this->user));
 
     $this->drupalGet($revert_url);
 
