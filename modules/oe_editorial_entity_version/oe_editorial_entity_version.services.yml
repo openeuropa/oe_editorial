@@ -1,0 +1,5 @@
+services:
+  oe_editorial_entity_version.route_subscriber:
+    class: Drupal\oe_editorial_entity_version\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
