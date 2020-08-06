@@ -15,7 +15,7 @@
         "drupal/config_devel": "~1.2",
         "drupal/content_lock": "^1.0-alpha8",
         "drupal/drupal-extension": "~4.0",
-        "drupal/entity_version": "1.x-dev",
+        "drupal/entity_version": "EWPP-53",
         "drupal/address": "^1.8",
         "openeuropa/oe_paragraphs": "~1.6.0",
         "drush/drush": "~9.0@stable",
