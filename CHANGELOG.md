@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/openeuropa/oe_editorial/tree/1.7.0) (2020-08-04)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.6.0...1.7.0)
+
+**Merged pull requests:**
+
+- OPENEUROPA-3269: Add custom version revert confirm form. [\#79](https://github.com/openeuropa/oe_editorial/pull/79) ([nagyad](https://github.com/nagyad))
+
 ## [1.6.0](https://github.com/openeuropa/oe_editorial/tree/1.6.0) (2020-06-22)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.5.0...1.6.0)
@@ -7,6 +15,7 @@
 **Merged pull requests:**
 
 - OPENEUROPA-0000: Update minimum oe\_paragraph version. [\#78](https://github.com/openeuropa/oe_editorial/pull/78) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- Prepare release 1.6.0. [\#77](https://github.com/openeuropa/oe_editorial/pull/77) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - OPENEUROPA-2845: Option to drop translations when validating. [\#76](https://github.com/openeuropa/oe_editorial/pull/76) ([upchuk](https://github.com/upchuk))
 
 ## [1.5.0](https://github.com/openeuropa/oe_editorial/tree/1.5.0) (2020-04-29)
