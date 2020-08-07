@@ -6,7 +6,6 @@ namespace Drupal\oe_editorial_corporate_workflow_translation_poetry\EventSubscri
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\node\NodeInterface;
 use Drupal\oe_translation\Event\ContentTranslationOverviewAlterEvent;
