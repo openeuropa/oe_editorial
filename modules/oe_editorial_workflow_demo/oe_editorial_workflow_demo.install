@@ -34,7 +34,7 @@ function oe_editorial_workflow_demo_install(): void {
 
   \Drupal::service('entity_version.entity_version_installer')->install('node', $bundles, $default_values);
 
-  // After version field has been installed, we apply to entity version setting.
+  // We apply the entity version setting for the version field.
   \Drupal::entityTypeManager()->getStorage('entity_version_settings')->create([
     'target_entity_type_id' => 'node',
     'target_bundle' => 'oe_workflow_demo',

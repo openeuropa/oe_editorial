@@ -73,7 +73,7 @@
                 "https://www.drupal.org/project/content_lock/issues/2949198": "https://www.drupal.org/files/issues/content_lock-unlocking-already-locked-2949198-9.patch"
             },
             "drupal/entity_version": {
-                "EPIC-History": "https://github.com/openeuropa/entity_version/compare/8.x-1.0-beta3...EWPP-53.diff"
+                "8.x-1.x": "https://github.com/openeuropa/entity_version/compare/8.x-1.0-beta3...8.x-1.x.diff"
             }
         }
     },

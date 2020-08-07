@@ -46,6 +46,12 @@ class PoetryTranslationsTest extends PoetryTranslationTestBase {
       'patch' => 0,
     ];
     $this->container->get('entity_version.entity_version_installer')->install('node', ['page'], $default_values);
+    // We apply the entity version setting for the version field.
+    $this->container->get('entity_type.manager')->getStorage('entity_version_settings')->create([
+      'target_entity_type_id' => 'node',
+      'target_bundle' => 'page',
+      'target_field' => 'version',
+    ])->save();
     $this->container->get('router.builder')->rebuild();
   }
 

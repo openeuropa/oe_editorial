@@ -76,6 +76,12 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
       'patch' => 0,
     ];
     \Drupal::service('entity_version.entity_version_installer')->install('node', ['page'], $default_values);
+    // We apply the entity version setting for the version field.
+    $this->entityTypeManager->getStorage('entity_version_settings')->create([
+      'target_entity_type_id' => 'node',
+      'target_bundle' => 'page',
+      'target_field' => 'version',
+    ])->save();
     \Drupal::service('router.builder')->rebuild();
 
     /** @var \Drupal\user\RoleInterface $role */
