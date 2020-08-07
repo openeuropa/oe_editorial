@@ -28,3 +28,7 @@ The module overrides the core NodeRevisionRevertForm in order to ensure that dur
 - The newly created revision gets always the Draft state
 - The moderation log message indicates: "Version x.x.x has been restored by userX"
 The 'restore version' permission is required, that comes with this module.
+
+## Configurations
+Entity version settings under path "admin/config/entity-version/settings" have to be configured in order to
+have the module fully operational.
