@@ -1,4 +1,4 @@
-@api
+@api @run
 Feature: Content version
   As a content editor
   I can moderate content and its version will change according to the corporate rules.
