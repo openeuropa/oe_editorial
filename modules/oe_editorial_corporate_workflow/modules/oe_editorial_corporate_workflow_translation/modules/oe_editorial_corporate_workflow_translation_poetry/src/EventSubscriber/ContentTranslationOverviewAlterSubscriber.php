@@ -6,7 +6,6 @@ namespace Drupal\oe_editorial_corporate_workflow_translation_poetry\EventSubscri
 
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\node\NodeInterface;
 use Drupal\oe_translation\Event\ContentTranslationOverviewAlterEvent;
@@ -78,21 +77,21 @@ class ContentTranslationOverviewAlterSubscriber implements EventSubscriberInterf
     $entity_type = $job_item->get('item_type')->value;
 
     $storage = $this->entityTypeManager->getStorage($entity_type);
-
     /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
     $entity = $storage->loadRevision($revision_id);
-    $field_definitions = array_filter($entity->getFieldDefinitions(), function (FieldDefinitionInterface $definition) {
-      return $definition->getType() === 'entity_version';
-    });
 
-    if (!$field_definitions) {
+    $entity_version_storage = $this->entityTypeManager->getStorage('entity_version_settings');
+    $version_field_setting = $entity_version_storage->load($entity_type . '.' . $entity->bundle());
+    if (!$version_field_setting) {
       return;
     }
 
-    // We assume only one version field per entity type.
-    $field_name = key($field_definitions);
+    $version_field = $version_field_setting->getTargetField();
+    if (!$version_field) {
+      return;
+    }
 
-    $entity = $this->getLatestRevisionForMajor($entity, $field_name);
+    $entity = $this->getLatestRevisionForMajor($entity, $version_field);
     $current = $storage->loadRevision($storage->getLatestRevisionId($entity->id()));
 
     // Display the major version of the entity that the ongoing request
@@ -105,8 +104,8 @@ class ContentTranslationOverviewAlterSubscriber implements EventSubscriberInterf
         ],
       ])->toString();
     }
-    $version = implode('.', $entity->get($field_name)->offsetGet(0)->getValue());
-    $current_version = implode('.', $current->get($field_name)->offsetGet(0)->getValue());
+    $version = implode('.', $entity->get($version_field)->offsetGet(0)->getValue());
+    $current_version = implode('.', $current->get($version_field)->offsetGet(0)->getValue());
     $parameters = [
       '@version' => $version,
       '@title' => $title,
