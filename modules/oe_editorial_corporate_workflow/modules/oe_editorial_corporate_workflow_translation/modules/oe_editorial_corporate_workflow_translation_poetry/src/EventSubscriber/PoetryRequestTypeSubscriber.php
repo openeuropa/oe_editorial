@@ -86,7 +86,7 @@ class PoetryRequestTypeSubscriber implements EventSubscriberInterface {
     $revision_id = $job_item->get('item_rid')->value;
     $original_revision = $entity_storage->loadRevision($revision_id);
     $original_major = (int) $original_revision->get('version')->first()->getValue()['major'];
-    $current_major = (int) $entity_storage->loadRevision($entity_storage->getLatestRevisionId($entity->id()))->get('version')->first()->getValue()['major'];;
+    $current_major = (int) $entity_storage->loadRevision($entity_storage->getLatestRevisionId($entity->id()))->get('version')->first()->getValue()['major'];
     if ($current_major <= $original_major) {
       // If the version of the current entity is not higher, we don't allow
       // updates.
