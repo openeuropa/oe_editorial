@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/openeuropa/oe_editorial/tree/1.8.0) (2020-10-08)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.7.0...1.8.0)
+
+**Merged pull requests:**
+
+- EWPP-53: Add usage of entity version settings. [\#81](https://github.com/openeuropa/oe_editorial/pull/81) ([nagyad](https://github.com/nagyad))
+
 ## [1.7.0](https://github.com/openeuropa/oe_editorial/tree/1.7.0) (2020-08-04)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.6.0...1.7.0)
