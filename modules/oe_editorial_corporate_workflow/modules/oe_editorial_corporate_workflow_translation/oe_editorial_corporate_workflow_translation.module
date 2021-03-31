@@ -12,6 +12,7 @@ use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\TypedData\TranslationStatusInterface;
+use Drupal\node\NodeInterface;
 
 /**
  * Implements hook_theme().
@@ -80,7 +81,7 @@ function oe_editorial_corporate_workflow_translation_node_view_alter(array &$bui
 }
 
 /**
- * Implements hook_ENTITY_TYPE_revision_create() for the Node entity.
+ * Implements hook_entity_revision_create() for the Node entity.
  *
  * This hook replicates to an extent a chunk of the responsibility of
  * ContentEntityStorageBase::createRevision().
@@ -101,10 +102,16 @@ function oe_editorial_corporate_workflow_translation_node_view_alter(array &$bui
  * previous ones which might have been marked as default (previous published
  * versions).
  *
- * @see CorporateWorkflowTranslationDropTest::testTranslationRevisions()
+ * @see CorporateWorkflowTranslationRevisionTest::testTranslationRevisionsCarryOver()
  */
-function oe_editorial_corporate_workflow_translation_node_revision_create(ContentEntityInterface $revision, ContentEntityInterface $entity, $original_keep_untranslatable_fields): void {
+function oe_editorial_corporate_workflow_translation_entity_revision_create(ContentEntityInterface $revision, ContentEntityInterface $entity, $original_keep_untranslatable_fields): void {
   if ($entity->isNew() || $entity->isDefaultRevision() || !$entity->isTranslatable() || (!$entity->getTranslationLanguages(FALSE) && !$revision->getTranslationLanguages(FALSE))) {
+    return;
+  }
+
+  // We only support nodes and entities that can be embedded into nodes that
+  // are using the entity reference revision parent-child relation.
+  if (!$entity instanceof NodeInterface && !$entity->getEntityType()->get('entity_revision_parent_id_field')) {
     return;
   }
 

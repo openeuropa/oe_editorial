@@ -1,5 +1,5 @@
-name: OpenEuropa Editorial Corporate Workflow Translation Poetry
-description: Integrates the editorial workflow with OE Translation Poetry
+name: 'OpenEuropa Editorial Corporate Workflow Translation Poetry'
+description: 'Integrates the editorial workflow with OE Translation Poetry'
 package: OpenEuropa
 type: module
 core: 8.x

@@ -4,7 +4,10 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_editorial_corporate_workflow_translation\Functional;
 
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
+use Drupal\paragraphs\Entity\Paragraph;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\Tests\oe_editorial_corporate_workflow\Traits\CorporateWorkflowTrait;
 
@@ -53,6 +56,8 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     'oe_editorial_workflow_demo',
     'oe_translation',
     'oe_editorial_corporate_workflow_translation',
+    'paragraphs',
+    'oe_editorial_corporate_workflow_translation_test',
   ];
 
   /**
@@ -83,6 +88,22 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
       'target_field' => 'version',
     ])->save();
     \Drupal::service('router.builder')->rebuild();
+
+    $form_display = EntityFormDisplay::load('node.oe_workflow_demo.default');
+    $form_display->setComponent('field_workflow_paragraphs', [
+      'type' => 'entity_reference_paragraphs',
+      'settings' => [
+        'title' => 'Paragraph',
+        'title_plural' => 'Paragraphs',
+        'edit_mode' => 'open',
+        'add_mode' => 'dropdown',
+        'form_display_mode' => 'default',
+        'default_paragraph_type' => 'workflow_paragraph',
+      ],
+      'third_party_settings' => [],
+      'region' => 'content',
+    ]);
+    $form_display->save();
 
     /** @var \Drupal\user\RoleInterface $role */
     $role = $this->entityTypeManager->getStorage('user_role')->load('oe_translator');
@@ -368,7 +389,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
 
     // Publish the node and check that the published versions have the correct
     // translations. Since we have previously published revisions, we need to
-    // use the latest revision to transition to the publised state.
+    // use the latest revision to transition to the published state.
     $revision_id = $node_storage->getLatestRevisionId($node->id());
     $node = $node_storage->loadRevision($revision_id);
     $node = $this->moderateNode($node, 'published');
@@ -425,6 +446,94 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     foreach (['fr', 'it', 'ro'] as $langcode) {
       $this->assertTrue($node->hasTranslation($langcode), 'Translation missing in ' . $langcode);
     }
+
+    // Test that translations carry over works also with embedded entities.
+    // These are entities such as paragraphs which are considered as composite,
+    // depend on the parent via the entity_reference_revisions
+    // entity_revision_parent_id_field.
+    /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $form_display */
+    $paragraph = Paragraph::create([
+      'type' => 'workflow_paragraph',
+      'field_workflow_paragraph_text' => 'the paragraph text value',
+    ]);
+    $paragraph->save();
+
+    $node = Node::create([
+      'type' => 'oe_workflow_demo',
+      'title' => 'Node with a paragraph',
+      'field_workflow_paragraphs' => [
+        [
+          'target_id' => $paragraph->id(),
+          'target_revision_id' => $paragraph->getRevisionId(),
+        ],
+      ],
+    ]);
+
+    $node->save();
+    // Publish the node.
+    $node = $this->moderateNode($node, 'published');
+
+    // Add a translation to the published version.
+    $this->drupalGet(Url::fromRoute('oe_translation.permission_translator.create_local_task', [
+      'entity' => $node->id(),
+      'source' => 'en',
+      'target' => 'fr',
+      'entity_type' => 'node',
+    ]));
+    $this->assertSession()->elementContains('css', '#edit-title0value-translation', 'Node with a paragraph');
+    $this->assertSession()->elementContains('css', '#edit-field-workflow-paragraphs0entityfield-workflow-paragraph-text0value-translation', 'the paragraph text value');
+    $values = [
+      'title|0|value[translation]' => 'Node with a paragraph FR',
+      'field_workflow_paragraphs|0|entity|field_workflow_paragraph_text|0|value[translation]' => 'the paragraph text value FR',
+    ];
+
+    $ids = \Drupal::entityTypeManager()->getStorage('tmgmt_local_task_item')->getQuery()
+      ->sort('tltiid', 'DESC')
+      ->execute();
+    $id = reset($ids);
+    $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => $id]);
+    $this->drupalPostForm($url, $values, t('Save and complete translation'));
+
+    // Make a new draft and change the node and paragraph.
+    $user = $this->createUser([], NULL, TRUE);
+    $this->drupalLogin($user);
+    $this->drupalPlaceBlock('local_tasks_block');
+    $this->drupalGet($node->toUrl());
+    $this->clickLink('New draft');
+    $this->getSession()->getPage()->fillField('title[0][value]', 'Node with a paragraph - updated');
+    $this->getSession()->getPage()->fillField('field_workflow_paragraphs[0][subform][field_workflow_paragraph_text][0][value]', 'the paragraph text value - updated');
+    $this->getSession()->getPage()->pressButton('Save (this translation)');
+    $this->assertSession()->pageTextContains('Node with a paragraph - updated has been updated.');
+    // Validate the node.
+    $this->getSession()->getPage()->selectFieldOption('Change to', 'Validated');
+    $this->getSession()->getPage()->pressButton('Apply');
+    $this->assertSession()->pageTextContains('The moderation state has been updated.');
+    // Update also the translation.
+    $this->clickLink('Translate');
+    $this->getSession()->getPage()->find('css', '.tmgmttranslate-localadd a[hreflang="fr"]')->click();
+    $this->assertSession()->elementContains('css', '#edit-title0value-translation', 'Node with a paragraph FR');
+    $this->assertSession()->elementContains('css', '#edit-field-workflow-paragraphs0entityfield-workflow-paragraph-text0value-translation', 'the paragraph text value FR');
+    $values = [
+      'title|0|value[translation]' => 'Node with a paragraph FR 2',
+      'field_workflow_paragraphs|0|entity|field_workflow_paragraph_text|0|value[translation]' => 'the paragraph text value FR 2',
+    ];
+    $this->drupalPostForm(NULL, $values, t('Save and complete translation'));
+    // Go back to the node and publish it.
+    $this->drupalGet($node->toUrl());
+    $this->clickLink('View draft');
+    $this->getSession()->getPage()->selectFieldOption('Change to', 'Published');
+    $this->getSession()->getPage()->pressButton('Apply');
+    $this->assertSession()->pageTextContains('The moderation state has been updated.');
+    $node_storage->resetCache();
+    $revision_id = $node_storage->getLatestRevisionId($node->id());
+    $revision = $node_storage->loadRevision($revision_id);
+    $node_translation = $revision->getTranslation('fr');
+    $this->assertEquals('Node with a paragraph - updated', $revision->label());
+    $this->assertEquals('Node with a paragraph FR 2', $node_translation->label());
+    $paragraph = $revision->get('field_workflow_paragraphs')->entity;
+    $paragraph_translation = $paragraph->getTranslation('fr');
+    $this->assertEquals('the paragraph text value - updated', $paragraph->get('field_workflow_paragraph_text')->value);
+    $this->assertEquals('the paragraph text value FR 2', $paragraph_translation->get('field_workflow_paragraph_text')->value);
   }
 
 }
