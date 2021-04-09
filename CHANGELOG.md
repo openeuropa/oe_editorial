@@ -1,11 +1,23 @@
 # Changelog
 
+## [1.9.0](https://github.com/openeuropa/oe_editorial/tree/1.9.0) (2021-04-09)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.8.0...1.9.0)
+
+**Merged pull requests:**
+
+- EWPP-883: Fix composer lowest fail. [\#89](https://github.com/openeuropa/oe_editorial/pull/89) ([nagyad](https://github.com/nagyad))
+- EWPP-860: Workflow translation to apply to embedded paragraphs. [\#87](https://github.com/openeuropa/oe_editorial/pull/87) ([upchuk](https://github.com/upchuk))
+- EWPP-529: Replace scaffold library. [\#84](https://github.com/openeuropa/oe_editorial/pull/84) ([sergepavle](https://github.com/sergepavle))
+- EWPP-516: Update docker images. [\#83](https://github.com/openeuropa/oe_editorial/pull/83) ([22Alexandra](https://github.com/22Alexandra))
+
 ## [1.8.0](https://github.com/openeuropa/oe_editorial/tree/1.8.0) (2020-10-08)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.7.0...1.8.0)
 
 **Merged pull requests:**
 
+- EWPP-0000: Preparing for 1.8.0 release. [\#82](https://github.com/openeuropa/oe_editorial/pull/82) ([hernani](https://github.com/hernani))
 - EWPP-53: Add usage of entity version settings. [\#81](https://github.com/openeuropa/oe_editorial/pull/81) ([nagyad](https://github.com/nagyad))
 
 ## [1.7.0](https://github.com/openeuropa/oe_editorial/tree/1.7.0) (2020-08-04)
@@ -14,6 +26,7 @@
 
 **Merged pull requests:**
 
+- Release-1.7.0: Update changelog. [\#80](https://github.com/openeuropa/oe_editorial/pull/80) ([nagyad](https://github.com/nagyad))
 - OPENEUROPA-3269: Add custom version revert confirm form. [\#79](https://github.com/openeuropa/oe_editorial/pull/79) ([nagyad](https://github.com/nagyad))
 
 ## [1.6.0](https://github.com/openeuropa/oe_editorial/tree/1.6.0) (2020-06-22)
