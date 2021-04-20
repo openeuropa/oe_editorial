@@ -36,4 +36,17 @@ interface ShortcutRevisionHandlerInterface {
    */
   public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL): EntityInterface;
 
+  /**
+   * Gets a series of transitions needed for an entity to reach a target state.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The entity being transitioned.
+   * @param string $to_state
+   *   The target state.
+   *
+   * @return \Drupal\workflows\TransitionInterface[]
+   *   The series of transitions.
+   */
+  public function getTransitionsToState(ContentEntityInterface $entity, string $to_state): array;
+
 }

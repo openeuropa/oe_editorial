@@ -14,7 +14,7 @@ use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\workflows\WorkflowTypeInterface;
 
 /**
- * Handler for creating state transition revisions when shortcuts are used.
+ * Calculates and performs workflow transitions between two states.
  */
 class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
 
@@ -79,6 +79,33 @@ class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
     $current_state = $entity->get('moderation_state')->value;
 
     return $this->saveTransitionRevisions($current_state, $target_state, $workflow_plugin, $entity, $revision_message);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getTransitionsToState(ContentEntityInterface $entity, string $to_state): array {
+    $workflow_plugin = $this->moderationInfo->getWorkflowForEntity($entity)->getTypePlugin();
+    $current_state = $entity->get('moderation_state')->value;
+
+    $transitions = [];
+    while ($current_state !== $to_state) {
+      // If the final state is reachable from the current one, finish the loop.
+      if ($workflow_plugin->hasTransitionFromStateToState($current_state, $to_state)) {
+        $transitions[] = $workflow_plugin->getTransitionFromStateToState($current_state, $to_state);
+        break;
+      }
+
+      $available_transitions = $workflow_plugin->getTransitionsForState($current_state);
+      // Transitions in corporate workflow are created so that higher weights
+      // are given to the ones moving to the "next" state.
+      /** @var \Drupal\workflows\TransitionInterface $next_transition */
+      $next_transition = end($available_transitions);
+      $transitions[] = $next_transition;
+      $current_state = $next_transition->to()->id();
+    }
+
+    return $transitions;
   }
 
   /**
