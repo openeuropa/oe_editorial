@@ -506,7 +506,9 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     $this->assertSession()->pageTextContains('Node with a paragraph - updated has been updated.');
     // Validate the node.
     $this->getSession()->getPage()->selectFieldOption('Change to', 'Validated');
-    $this->getSession()->getPage()->pressButton('Apply');
+    // Submitting the form will trigger a batch, so use the correct method to
+    // account for redirects.
+    $this->submitForm([], 'Apply');
     $this->assertSession()->pageTextContains('The moderation state has been updated.');
     // Update also the translation.
     $this->clickLink('Translate');

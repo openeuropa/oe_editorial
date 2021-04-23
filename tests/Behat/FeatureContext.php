@@ -225,4 +225,34 @@ class FeatureContext extends RawDrupalContext {
     }
   }
 
+  /**
+   * Waits for some text to appear on the page.
+   *
+   * Note that the text asserted is case insensitive.
+   *
+   * @param string $text
+   *   The text to wait for.
+   *
+   * @Then I wait for the text :text
+   */
+  public function waitForText(string $text): void {
+    $page = $this->getSession()->getPage();
+    $timeout = $this->getMinkParameter('ajax_timeout');
+
+    $assert_session = $this->assertSession();
+    $result = $page->waitFor($timeout, function () use ($assert_session, $text): bool {
+      try {
+        $assert_session->pageTextContains($text);
+        return TRUE;
+      }
+      catch (ResponseTextException $exception) {
+        return FALSE;
+      }
+    });
+
+    if (!$result) {
+      throw new \Exception(sprintf('The text "%s" was not found on the page after %d seconds.', $text, $timeout));
+    }
+  }
+
 }
