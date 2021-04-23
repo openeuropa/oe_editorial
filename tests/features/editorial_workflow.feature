@@ -28,7 +28,6 @@ Feature: Corporate editorial workflow
     Then I should have the following options for the "Change to" select:
       | Draft |
 
-
   Scenario: As a Reviewer user, I can moderate demo content by send it back to Draft or to Request Validation.
     Given I am logged in as a user with the "Reviewer" role
     And "oe_workflow_demo" content:
@@ -151,7 +150,6 @@ Feature: Corporate editorial workflow
     And I should not see the link "Revert"
     And I should not see the link "Delete"
 
-  @javascript
   Scenario: As a user with combined roles I can publish a node directly and after I can move it to Archived via the Edit form.
     Given I am logged in as a user with the "Author, Reviewer, Validator" roles
     And I visit "the demo content creation page"
@@ -168,7 +166,7 @@ Feature: Corporate editorial workflow
     # Node is in published state.
     When I select "Published" from "Change to"
     And I press "Apply"
-    And I wait for the text "The moderation state has been updated."
+    And I wait for the batch to complete
     Then I should not see "Edit draft"
     And I should see "View published"
     # The revisions are created for intermediary states when shortcuts are used.

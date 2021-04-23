@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\Tests\oe_editorial\Behat;
 
 use Behat\Mink\Exception\ResponseTextException;
+use Drupal\Component\Utility\Html;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Element\NodeElement;
@@ -260,6 +261,32 @@ class FeatureContext extends RawDrupalContext {
 
     if (!$result) {
       throw new \Exception(sprintf('The text "%s" was not found on the page after %d seconds.', $text, $timeout));
+    }
+  }
+
+  /**
+   * Executes redirects specified by the meta refresh tag.
+   *
+   * To be used with non-JS browsers.
+   *
+   * @see \Drupal\Tests\UiHelperTrait::checkForMetaRefresh()
+   *
+   * @Then I wait for the batch to complete
+   * @Then I wait until redirections are completed
+   */
+  public function executeRedirects(): void {
+    $refresh = $this->getSession()->getPage()->find('css', 'meta[http-equiv="Refresh"], meta[http-equiv="refresh"]');
+    // No (more) redirects to perform.
+    if (empty($refresh)) {
+      return;
+    }
+
+    // Parse the content attribute of the meta tag for the format:
+    // "[delay]: URL=[page_to_redirect_to]".
+    if (preg_match('/\d+;\s*URL=\'?(?<url>[^\']*)/i', $refresh->getAttribute('content'), $match)) {
+      $this->getSession()->visit(Html::decodeEntities($match['url']));
+      // Recurse this function until no more redirects are available.
+      $this->executeRedirects();
     }
   }
 

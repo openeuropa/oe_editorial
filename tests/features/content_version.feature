@@ -3,7 +3,6 @@ Feature: Content version
   As a content editor
   I can moderate content and its version will change according to the corporate rules.
 
-  @javascript
   Scenario: The version field value changes based on the configured transitions.
     Given users:
       | name        | roles                                          |
@@ -46,7 +45,7 @@ Feature: Content version
     # Set to Request Review and move back to Draft by changing the content.
     When I select "Request Validation" from "Change to"
     And I press "Apply"
-    And I wait for the text "The moderation state has been updated."
+    And I wait for the batch to complete
     Then the node "Workflow node 1" should have the following version:
       | major | 0 |
       | minor | 2 |
@@ -61,7 +60,7 @@ Feature: Content version
     # Set to validated.
     When I select "Validated" from "Change to"
     And I press "Apply"
-    And I wait for the text "The moderation state has been updated."
+    And I wait for the batch to complete
     Then the node "Workflow node 2" should have the following version:
       | major | 1 |
       | minor | 0 |
