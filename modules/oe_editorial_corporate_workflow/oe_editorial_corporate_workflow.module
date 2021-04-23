@@ -160,7 +160,10 @@ function _oe_editorial_corporate_workflow_moderation_submit(array &$form, FormSt
   $batch_instance = \Drupal::service('class_resolver')->getInstanceFromDefinition(EntityStateTransitionBatch::class);
   batch_set([
     'operations' => [
-      [[$batch_instance, 'execute'], [$entity, $states, $form_state->getValue('revision_log')]],
+      [
+        [$batch_instance, 'execute'],
+        [$entity, $states, $form_state->getValue('revision_log')],
+      ],
     ],
     'finished' => [$batch_instance, 'finish'],
     'init_message' => t('Preparing to execute moderation state transitions.'),
