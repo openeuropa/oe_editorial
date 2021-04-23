@@ -9,7 +9,7 @@ declare(strict_types = 1);
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
-use Drupal\oe_editorial_corporate_workflow\ShortcutTransitionBatch;
+use Drupal\oe_editorial_corporate_workflow\EntityStateTransitionBatch;
 
 /**
  * Implements hook_menu_local_tasks_alter().
@@ -151,16 +151,20 @@ function _oe_editorial_corporate_workflow_moderation_submit(array &$form, FormSt
     return;
   }
 
-  $batch_instance = \Drupal::service('class_resolver')->getInstanceFromDefinition(ShortcutTransitionBatch::class);
-  $revision_log_message = $form_state->getValue('revision_log');
-  $operations = [];
+  // Extract the target states of each transition.
+  $states = [];
   foreach ($transitions as $transition) {
-    $operations[] = [[$batch_instance, 'transitionToState'], [$entity, $transition->to()->id(), $revision_log_message]];
+    $states[] = $transition->to()->id();
   }
 
+  $batch_instance = \Drupal::service('class_resolver')->getInstanceFromDefinition(EntityStateTransitionBatch::class);
   batch_set([
-    'operations' => $operations,
+    'operations' => [
+      [[$batch_instance, 'execute'], [$entity, $states, $form_state->getValue('revision_log')]],
+    ],
     'finished' => [$batch_instance, 'finish'],
+    'init_message' => t('Preparing to execute moderation state transitions.'),
+    'progress_message' => t('Executing moderation state transitions'),
   ]);
 }
 

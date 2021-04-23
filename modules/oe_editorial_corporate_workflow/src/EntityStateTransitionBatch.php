@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 /**
  * Batch methods to transition an entity to a final state.
  */
-class ShortcutTransitionBatch implements ContainerInjectionInterface {
+class EntityStateTransitionBatch implements ContainerInjectionInterface {
 
   use DependencySerializationTrait;
   use StringTranslationTrait;
@@ -61,7 +61,7 @@ class ShortcutTransitionBatch implements ContainerInjectionInterface {
   protected $time;
 
   /**
-   * Create a new StateTransitionBatch object.
+   * Create a new EntityStateTransitionBatch object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
@@ -100,17 +100,23 @@ class ShortcutTransitionBatch implements ContainerInjectionInterface {
    *
    * @param \Drupal\Core\Entity\ContentEntityInterface $entity
    *   The entity being transitioned.
-   * @param string $to_state
-   *   The target state.
+   * @param array $transitions
+   *   The original list of transitions to execute.
    * @param string $revision_log_message
    *   The revision log message.
    * @param array $context
    *   The batch context.
    */
-  public function transitionToState(ContentEntityInterface $entity, string $to_state, string $revision_log_message, array &$context): void {
-    // If the current revision of the entity has been passed down from the
-    // previous operations, use that one.
-    $entity = $context['results']['current_revision'] ?? $entity;
+  public function execute(ContentEntityInterface $entity, array $transitions, string $revision_log_message, array &$context): void {
+    // Initialise the sandbox if needed.
+    if (!isset($context['sandbox']['current_revision'])) {
+      $context['sandbox']['current_revision'] = $entity;
+      $context['sandbox']['transitions'] = $transitions;
+      $context['sandbox']['total'] = count($transitions);
+    }
+
+    $entity = $context['sandbox']['current_revision'];
+    $to_state = array_shift($context['sandbox']['transitions']);
 
     // Create a new revision for the transition change and save the entity.
     /** @var \Drupal\Core\Entity\ContentEntityStorageInterface $storage */
@@ -126,7 +132,15 @@ class ShortcutTransitionBatch implements ContainerInjectionInterface {
     }
     $entity->save();
 
-    $context['results']['current_revision'] = $entity;
+    $context['sandbox']['current_revision'] = $entity;
+
+    // If no more transitions are available, store the final revision in the
+    // results.
+    if (empty($context['sandbox']['transitions'])) {
+      $context['results']['current_revision'] = $entity;
+    }
+
+    $context['finished'] = 1 - (count($context['sandbox']['transitions']) / $context['sandbox']['total']);
   }
 
   /**
