@@ -4,12 +4,14 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_editorial\Behat;
 
+use Behat\Mink\Exception\ResponseTextException;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Element\NodeElement;
 use Behat\Gherkin\Node\TableNode;
 use Drupal\node\NodeInterface;
 use PHPUnit\Framework\Assert;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Defines step definitions that are generally useful in this project.
@@ -65,13 +67,19 @@ class FeatureContext extends RawDrupalContext {
   public function assertCurrentWorkflowState(string $state): void {
     // Find the content moderation form.
     $xpath = '//form[@class and contains(concat(" ", normalize-space(@class), " "), " content-moderation-entity-moderation-form ")]'
-      // Target the text after the "Moderation state" label.
-      . '//label[text()="Moderation state"]/following-sibling::text()[1]';
+      // Target wrapper of the "Moderation state" label.
+      . '//label[text()="Moderation state"]/..';
     $element = $this->getSession()->getPage()->find('xpath', $xpath);
     if (empty($element)) {
       throw new \Exception('The current workflow state field is not present on the page.');
     }
-    Assert::assertEquals($state, trim($element->getText()));
+
+    // Selenium drivers cannot target text elements, so we need to find the
+    // wanted text node by using the crawler.
+    $crawler = new Crawler($element->getHtml());
+    $state_text = $crawler->filterXPath('//label/following-sibling::text()')->text();
+
+    Assert::assertEquals($state, trim($state_text));
   }
 
   /**
