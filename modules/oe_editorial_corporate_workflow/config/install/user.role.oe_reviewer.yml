@@ -8,7 +8,6 @@ is_admin: null
 permissions:
   - 'access content overview'
   - 'use oe_corporate_workflow transition needs_review_to_draft'
-  - 'use oe_corporate_workflow transition needs_review_to_needs_review'
   - 'use oe_corporate_workflow transition needs_review_to_request_validation'
   - 'view all revisions'
   - 'view any unpublished content'
