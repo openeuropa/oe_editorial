@@ -6,6 +6,7 @@ namespace Drupal\Tests\oe_editorial_corporate_workflow_translation\FunctionalJav
 
 use Drupal\Core\Url;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
+use Drupal\Tests\oe_editorial\Traits\BatchTrait;
 
 /**
  * Tests the translation drop capability.
@@ -14,6 +15,8 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
  * the translations and not carry them over onto the next version.
  */
 class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
+
+  use BatchTrait;
 
   /**
    * The entity type manager.
@@ -97,7 +100,7 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
     // Publish the content. We use the shortcuts for that.
     $this->getSession()->getPage()->selectFieldOption('Change to', 'published');
     $this->getSession()->getPage()->pressButton('Apply');
-    // Wait for the batch operations to complete.
+    $this->waitForBatchExecution();
     $this->assertSession()->waitForText('The moderation state has been updated.');
 
     // We have 5 revisions all the way to published.
@@ -162,7 +165,7 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
     // Moderate until we only have 1 step (this will create two revisions).
     $this->getSession()->getPage()->selectFieldOption('Change to', 'request_validation');
     $this->getSession()->getPage()->pressButton('Apply');
-    // Wait for the batch operations to complete.
+    $this->waitForBatchExecution();
     $this->assertSession()->waitForText('The moderation state has been updated.');
     $this->assertRevisions('node', 8, [5, 6, 7, 8]);
     $this->assertRevisions('content_moderation_state', 8, [5, 6, 7, 8]);
@@ -222,7 +225,7 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
     // Publish the content. We use the shortcuts for that.
     $this->getSession()->getPage()->selectFieldOption('Change to', 'published');
     $this->getSession()->getPage()->pressButton('Apply');
-    // Wait for the batch operations to complete.
+    $this->waitForBatchExecution();
     $this->assertSession()->waitForText('The moderation state has been updated.');
 
     $this->assertRevisions('node', 5);
@@ -265,7 +268,7 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
     $this->getSession()->getPage()->selectFieldOption('Change to', 'published');
     $this->getSession()->getPage()->checkField('Do not carry over the translations');
     $this->getSession()->getPage()->pressButton('Apply');
-    // Wait for the batch operations to complete.
+    $this->waitForBatchExecution();
     $this->assertSession()->waitForText('The moderation state has been updated.');
     $this->assertRevisions('node', 10, [5, 6, 7, 8]);
     // Due to content moderation also handling the deletion of translations,
