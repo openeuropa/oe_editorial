@@ -7,6 +7,7 @@
 
 declare(strict_types = 1);
 
+use Drupal\Core\Batch\BatchBuilder;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
 use Drupal\oe_editorial_corporate_workflow\EntityStateTransitionBatch;
@@ -158,17 +159,16 @@ function _oe_editorial_corporate_workflow_moderation_submit(array &$form, FormSt
   }
 
   $batch_instance = \Drupal::service('class_resolver')->getInstanceFromDefinition(EntityStateTransitionBatch::class);
-  batch_set([
-    'operations' => [
-      [
-        [$batch_instance, 'execute'],
-        [$entity, $states, $form_state->getValue('revision_log')],
-      ],
-    ],
-    'finished' => [$batch_instance, 'finish'],
-    'init_message' => t('Preparing to execute moderation state transitions.'),
-    'progress_message' => t('Executing moderation state transitions'),
-  ]);
+  $batch = (new BatchBuilder())
+    ->setInitMessage(t('Preparing to execute moderation state transitions.'))
+    ->setProgressMessage(t('Executing moderation state transitions.'))
+    ->addOperation([$batch_instance, 'execute'], [
+      $entity,
+      $states,
+      $form_state->getValue('revision_log'),
+    ])
+    ->setFinishCallback([$batch_instance, 'finish']);
+  batch_set($batch->toArray());
 }
 
 /**
