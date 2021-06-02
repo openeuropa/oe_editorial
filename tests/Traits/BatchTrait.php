@@ -13,7 +13,7 @@ trait BatchTrait {
    * Waits for batches execution to end.
    *
    * Batches are considered executed when the update progress bar is not present
-   * in the page anymore.
+   * on the page anymore.
    */
   protected function waitForBatchExecution(): void {
     $this->getSession()->wait(180000, 'document.querySelector("#updateprogress") === null');
