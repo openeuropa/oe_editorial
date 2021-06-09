@@ -7,16 +7,17 @@
     "prefer-stable": true,
     "require": {
         "php": ">=7.3",
-        "drupal/core": "^8.9 || ^9"
+        "drupal/core": "^8.9 || ^9.1"
     },
     "require-dev": {
         "composer/installers": "^1.11",
-        "drupal/core-composer-scaffold": "^8.9 || ^9",
+        "cweagans/composer-patches": "^1.7",
+        "drupal/address": "^1.8",
         "drupal/config_devel": "~1.2",
         "drupal/content_lock": "2.x-dev",
+        "drupal/core-composer-scaffold": "^8.9 || ^9.1",
         "drupal/drupal-extension": "~4.0",
         "drupal/entity_version": "dev-OEL-76",
-        "drupal/address": "^1.8",
         "guzzlehttp/guzzle": "^6.3",
         "openeuropa/oe_paragraphs": "dev-OEL-67",
         "drush/drush": "^10.3",
@@ -24,7 +25,6 @@
         "instaclick/php-webdriver": "^1.4.7",
         "openeuropa/behat-transformation-context": "~0.1",
         "openeuropa/code-review": "~1.6",
-        "openeuropa/drupal-core-require-dev": "^8.9 || ^9",
         "openeuropa/oe_multilingual": "^1.4",
         "openeuropa/task-runner": "~1.0-beta4",
         "phpunit/phpunit": "~6.0",
