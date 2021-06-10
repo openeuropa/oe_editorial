@@ -63,6 +63,11 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'classy';
+
+  /**
+   * {@inheritdoc}
+   */
   public function setUp() {
     parent::setUp();
 
@@ -225,7 +230,8 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     // It should be the first local task item created so we use the ID 1.
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 1]);
 
-    $this->drupalPostForm($url, $values, t('Save and complete translation'));
+    $this->drupalGet($url);
+    $this->submitForm($values, t('Save and complete translation'));
     $node_storage->resetCache();
     /** @var \Drupal\node\NodeInterface[] $revisions */
     $revisions = $node_storage->loadMultipleRevisions($revision_ids);
@@ -286,7 +292,8 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     ];
     // It should be the second local task item created so we use the ID 2.
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 2]);
-    $this->drupalPostForm($url, $values, t('Save and complete translation'));
+    $this->drupalGet($url);
+    $this->submitForm($values, t('Save and complete translation'));
     $node_storage->resetCache();
     $validated_node = $node_storage->loadRevision($validated_node->getRevisionId());
     // The second validated revision should have the old FR translation.
@@ -344,7 +351,8 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     ];
     // It should be the first local task item created so we use the ID 1.
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 1]);
-    $this->drupalPostForm($url, $values, t('Save and complete translation'));
+    $this->drupalGet($url);
+    $this->submitForm($values, t('Save and complete translation'));
 
     $node = $node_storage->load($node->id());
     // Publish the node and check that the translation is available in the
@@ -385,7 +393,8 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     ];
     // It should be the second local task item created so we use the ID 2.
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 2]);
-    $this->drupalPostForm($url, $values, t('Save and complete translation'));
+    $this->drupalGet($url);
+    $this->submitForm($values, t('Save and complete translation'));
 
     // Publish the node and check that the published versions have the correct
     // translations. Since we have previously published revisions, we need to
@@ -435,7 +444,8 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
       ];
       $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => $task_id]);
       $task_id++;
-      $this->drupalPostForm($url, $values, t('Save and complete translation'));
+      $this->drupalGet($url);
+      $this->submitForm($values, t('Save and complete translation'));
     }
 
     // Publish the content and assert that the new published version has
@@ -492,7 +502,8 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
       ->execute();
     $id = reset($ids);
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => $id]);
-    $this->drupalPostForm($url, $values, t('Save and complete translation'));
+    $this->drupalGet($url);
+    $this->submitForm($values, t('Save and complete translation'));
 
     // Make a new draft and change the node and paragraph.
     $user = $this->createUser([], NULL, TRUE);
@@ -519,7 +530,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
       'title|0|value[translation]' => 'Node with a paragraph FR 2',
       'field_workflow_paragraphs|0|entity|field_workflow_paragraph_text|0|value[translation]' => 'the paragraph text value FR 2',
     ];
-    $this->drupalPostForm(NULL, $values, t('Save and complete translation'));
+    $this->submitForm($values, t('Save and complete translation'));
     // Go back to the node and publish it.
     $this->drupalGet($node->toUrl());
     $this->clickLink('View draft');

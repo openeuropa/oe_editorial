@@ -8,6 +8,12 @@ use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\oe_translation\Event\ContentEntitySourceEntityEvent;
+/**
+ * Use Component instead of Contracts.
+ *
+ * @deprecated since Symfony 4.3, use "Symfony\Contracts\EventDispatcher\Event" instead
+ * @todo change this when Drupal version supports Symfony >= 4.3.
+ */
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**

@@ -47,6 +47,11 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   public function setUp() {
     parent::setUp();
 
@@ -120,7 +125,8 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
     ];
     // It should be the first local task item created so we use the ID 1.
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 1]);
-    $this->drupalPostForm($url, $values, t('Save and complete translation'));
+    $this->drupalGet($url);
+    $this->submitForm($values, t('Save and complete translation'));
 
     // We still only 5 revisions of each and only the published one has a
     // translation.
@@ -244,7 +250,8 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
     ];
     // It should be the first local task item created so we use the ID 1.
     $url = Url::fromRoute('entity.tmgmt_local_task_item.canonical', ['tmgmt_local_task_item' => 1]);
-    $this->drupalPostForm($url, $values, t('Save and complete translation'));
+    $this->drupalGet($url);
+    $this->submitForm($values, t('Save and complete translation'));
 
     // We still only 5 revisions of each and only the published one has a
     // translation.

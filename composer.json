@@ -25,13 +25,15 @@
         "instaclick/php-webdriver": "^1.4.7",
         "openeuropa/behat-transformation-context": "~0.1",
         "openeuropa/code-review": "~1.6",
+        "openeuropa/drupal-core-require-dev": "^8.9 || ^9.1",
         "openeuropa/oe_multilingual": "^1.4",
         "openeuropa/task-runner": "~1.0-beta4",
         "phpunit/phpunit": "~6.0",
         "symfony/dom-crawler": "~3.4|~4.0"
         "openeuropa/oe_translation": "dev-EWPP-917",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0",
-        "phpspec/prophecy-phpunit": "^1 || ^2"
+        "phpspec/prophecy-phpunit": "^1 || ^2",
+        "nikic/php-parser": "^4.10"
     },
     "conflict": {
         "openeuropa/oe_translation": "<0.3.0"
@@ -54,8 +56,8 @@
     "autoload-dev": {
         "psr-4": {
             "Drupal\\Tests\\oe_editorial\\": "./tests/",
-            "Drupal\\Tests\\oe_translation\\": "./build/modules/contrib/oe_translation/tests/src",
-            "Drupal\\Tests\\oe_translation_poetry\\": "./build/modules/contrib/oe_translation/modules/oe_translation_poetry/tests/src"
+            "Drupal\\Tests\\oe_translation\\": "./build/modules/contrib/oe_translation/tests/",
+            "Drupal\\Tests\\oe_translation_poetry\\": "./build/modules/contrib/oe_translation/modules/oe_translation_poetry/tests/"
         }
     },
     "extra": {
