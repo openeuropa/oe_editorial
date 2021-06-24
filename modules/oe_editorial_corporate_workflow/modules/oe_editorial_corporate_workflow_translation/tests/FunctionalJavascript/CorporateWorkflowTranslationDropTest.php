@@ -122,6 +122,12 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
     $this->assertRevisions('node', 5, [5]);
     $this->assertRevisions('content_moderation_state', 5, [5]);
 
+    // Assert the translation overview page shows the FR translation link.
+    $this->drupalGet($node->toUrl('drupal:content-translation-overview'));
+    $this->assertSession()->linkExistsExact('My node');
+    $this->assertSession()->linkExistsExact('My node FR');
+    $this->assertSession()->elementContains('xpath', '//td[@hreflang=\'fr\']/following-sibling::td', 'My node FR');
+
     // Create a new draft.
     $node_storage->resetCache();
     $node = $node_storage->load($node->id());
@@ -181,6 +187,14 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
     // One more revision but still no extra translations.
     $this->assertRevisions('node', 10, [5, 6, 7, 8]);
     $this->assertRevisions('content_moderation_state', 10, [5, 6, 7]);
+
+    // Assert the translation overview page no longer shows the FR translation
+    // link.
+    $this->drupalGet($node->toUrl('drupal:content-translation-overview'));
+
+    $this->assertSession()->linkExistsExact('My node 2');
+    $this->assertSession()->linkNotExistsExact('My node FR');
+    $this->assertSession()->elementContains('xpath', '//td[@hreflang=\'fr\']/following-sibling::td', 'n/a');
   }
 
   /**
