@@ -45,6 +45,7 @@ Feature: Content version
     # Set to Request Review and move back to Draft by changing the content.
     When I select "Request Validation" from "Change to"
     And I press "Apply"
+    And I wait for the batch to complete
     Then the node "Workflow node 1" should have the following version:
       | major | 0 |
       | minor | 2 |
@@ -59,6 +60,7 @@ Feature: Content version
     # Set to validated.
     When I select "Validated" from "Change to"
     And I press "Apply"
+    And I wait for the batch to complete
     Then the node "Workflow node 2" should have the following version:
       | major | 1 |
       | minor | 0 |

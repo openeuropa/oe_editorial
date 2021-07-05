@@ -4,12 +4,15 @@ declare(strict_types = 1);
 
 namespace Drupal\Tests\oe_editorial\Behat;
 
+use Behat\Mink\Exception\ResponseTextException;
+use Drupal\Component\Utility\Html;
 use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Element\NodeElement;
 use Behat\Gherkin\Node\TableNode;
 use Drupal\node\NodeInterface;
 use PHPUnit\Framework\Assert;
+use Symfony\Component\DomCrawler\Crawler;
 
 /**
  * Defines step definitions that are generally useful in this project.
@@ -65,13 +68,19 @@ class FeatureContext extends RawDrupalContext {
   public function assertCurrentWorkflowState(string $state): void {
     // Find the content moderation form.
     $xpath = '//form[@class and contains(concat(" ", normalize-space(@class), " "), " content-moderation-entity-moderation-form ")]'
-      // Target the text after the "Moderation state" label.
-      . '//label[text()="Moderation state"]/following-sibling::text()[1]';
+      // Target wrapper of the "Moderation state" label.
+      . '//label[text()="Moderation state"]/..';
     $element = $this->getSession()->getPage()->find('xpath', $xpath);
     if (empty($element)) {
       throw new \Exception('The current workflow state field is not present on the page.');
     }
-    Assert::assertEquals($state, trim($element->getText()));
+
+    // Selenium drivers cannot target text elements, so we need to find the
+    // wanted text node by using the crawler.
+    $crawler = new Crawler($element->getHtml());
+    $state_text = $crawler->filterXPath('//label/following-sibling::text()')->text();
+
+    Assert::assertEquals($state, trim($state_text));
   }
 
   /**
@@ -222,6 +231,62 @@ class FeatureContext extends RawDrupalContext {
     $href = $result->getAttribute('href');
     if ($expected_path != $href) {
       throw new \Exception("The link '{$link}' points to '{$href}'");
+    }
+  }
+
+  /**
+   * Waits for some text to appear on the page.
+   *
+   * Note that the text asserted is case insensitive.
+   *
+   * @param string $text
+   *   The text to wait for.
+   *
+   * @Then I wait for the text :text
+   */
+  public function waitForText(string $text): void {
+    $page = $this->getSession()->getPage();
+    $timeout = $this->getMinkParameter('ajax_timeout');
+
+    $assert_session = $this->assertSession();
+    $result = $page->waitFor($timeout, function () use ($assert_session, $text): bool {
+      try {
+        $assert_session->pageTextContains($text);
+        return TRUE;
+      }
+      catch (ResponseTextException $exception) {
+        return FALSE;
+      }
+    });
+
+    if (!$result) {
+      throw new \Exception(sprintf('The text "%s" was not found on the page after %d seconds.', $text, $timeout));
+    }
+  }
+
+  /**
+   * Executes redirects specified by the meta refresh tag.
+   *
+   * To be used with non-JS browsers.
+   *
+   * @see \Drupal\Tests\UiHelperTrait::checkForMetaRefresh()
+   *
+   * @Then I wait for the batch to complete
+   * @Then I wait until redirections are completed
+   */
+  public function executeRedirects(): void {
+    $refresh = $this->getSession()->getPage()->find('css', 'meta[http-equiv="Refresh"], meta[http-equiv="refresh"]');
+    // No (more) redirects to perform.
+    if (empty($refresh)) {
+      return;
+    }
+
+    // Parse the content attribute of the meta tag for the format:
+    // "[delay]: URL=[page_to_redirect_to]".
+    if (preg_match('/\d+;\s*URL=\'?(?<url>[^\']*)/i', $refresh->getAttribute('content'), $match)) {
+      $this->getSession()->visit(Html::decodeEntities($match['url']));
+      // Recurse this function until no more redirects are available.
+      $this->executeRedirects();
     }
   }
 

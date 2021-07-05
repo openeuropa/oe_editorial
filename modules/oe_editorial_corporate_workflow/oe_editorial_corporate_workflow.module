@@ -7,8 +7,10 @@
 
 declare(strict_types = 1);
 
+use Drupal\Core\Batch\BatchBuilder;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\node\NodeInterface;
+use Drupal\oe_editorial_corporate_workflow\EntityStateTransitionBatch;
 
 /**
  * Implements hook_menu_local_tasks_alter().
@@ -139,13 +141,34 @@ function oe_editorial_corporate_workflow_form_content_moderation_entity_moderati
 function _oe_editorial_corporate_workflow_moderation_submit(array &$form, FormStateInterface &$form_state): void {
   /** @var \Drupal\oe_editorial_corporate_workflow\Services\ShortcutRevisionHandler $shortcut_handler */
   $shortcut_handler = \Drupal::service('oe_editorial_corporate_workflow.shortcut_transition_handler');
-  $latest_revision = $shortcut_handler->createShortcutRevisions($form_state->getValue('new_state'), $form_state->get('entity'), $form_state->getValue('revision_log'));
 
-  // When using the shortcut, we are creating revisions for all of the
-  // transitions we are skipping. The last transition in the chain is handled
-  // by core so we need to make sure that its submit handler receives the latest
-  // revision that we created. Otherwise it may use a revision with stale data.
-  $form_state->set('entity', $latest_revision);
+  /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+  $entity = $form_state->get('entity');
+  $transitions = $shortcut_handler->getTransitionsToState($entity, $form_state->getValue('new_state'));
+
+  // If only one transition is needed, it will be taken care by the default
+  // submit handler of the form.
+  if (count($transitions) === 1) {
+    return;
+  }
+
+  // Extract the target states of each transition.
+  $states = [];
+  foreach ($transitions as $transition) {
+    $states[] = $transition->to()->id();
+  }
+
+  $batch_instance = \Drupal::service('class_resolver')->getInstanceFromDefinition(EntityStateTransitionBatch::class);
+  $batch = (new BatchBuilder())
+    ->setInitMessage(t('Preparing to execute moderation state transitions.'))
+    ->setProgressMessage(t('Executing moderation state transitions.'))
+    ->addOperation([$batch_instance, 'execute'], [
+      $entity,
+      $states,
+      $form_state->getValue('revision_log'),
+    ])
+    ->setFinishCallback([$batch_instance, 'finish']);
+  batch_set($batch->toArray());
 }
 
 /**

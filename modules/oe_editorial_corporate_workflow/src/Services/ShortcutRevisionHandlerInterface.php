@@ -33,7 +33,24 @@ interface ShortcutRevisionHandlerInterface {
    *
    * @return \Drupal\Core\Entity\EntityInterface
    *   Return the entity with the latest revisions.
+   *
+   * @deprecated in 1.x and will be removed in 2.x. Saving multiple revisions
+   *   in the same request is very slow, use self::getTransitionsToState() and
+   *   a batch like EntityStateTransitionBatch.
    */
   public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL): EntityInterface;
+
+  /**
+   * Gets a series of transitions needed for an entity to reach a target state.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The entity being transitioned.
+   * @param string $to_state
+   *   The target state.
+   *
+   * @return \Drupal\workflows\TransitionInterface[]
+   *   The series of transitions.
+   */
+  public function getTransitionsToState(ContentEntityInterface $entity, string $to_state): array;
 
 }
