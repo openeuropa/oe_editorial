@@ -104,10 +104,10 @@ class EntityStateTransitionBatch implements ContainerInjectionInterface {
    *   The original list of transitions to execute.
    * @param string $revision_log_message
    *   The revision log message.
-   * @param array $context
+   * @param mixed $context
    *   The batch context.
    */
-  public function execute(ContentEntityInterface $entity, array $transitions, string $revision_log_message, array &$context): void {
+  public function execute(ContentEntityInterface $entity, array $transitions, string $revision_log_message, &$context): void {
     // Initialise the sandbox if needed.
     if (!isset($context['sandbox']['current_revision'])) {
       $context['sandbox']['current_revision'] = $entity;
