@@ -61,7 +61,7 @@ function oe_editorial_corporate_workflow_translation_node_presave(EntityInterfac
     }
   }
 
-  // @todo, when introducing the "un-synced" translations, we need to apply
+  // @todo When introducing the "un-synced" translations, we need to apply
   // a check to determine whether the entity status stays synced.
 }
 
