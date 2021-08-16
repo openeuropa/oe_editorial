@@ -1,12 +1,22 @@
-# Changelog
+# Change Log
+
+## [1.10.0](https://github.com/openeuropa/oe_editorial/tree/1.10.0) (2021-08-12)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.9.0...1.10.0)
+
+**Merged pull requests:**
+
+- EWPP-1347: Do not typehint batch callback context parameter. [\#93](https://github.com/openeuropa/oe_editorial/pull/93) ([brummbar](https://github.com/brummbar))
+- EWPP-961: Showing only the latest version translations on the overview form. [\#91](https://github.com/openeuropa/oe_editorial/pull/91) ([upchuk](https://github.com/upchuk))
+- EWPP-1034: Execute multiple state transitions in batches. [\#90](https://github.com/openeuropa/oe_editorial/pull/90) ([brummbar](https://github.com/brummbar))
+- EWPP-721: Update xdebug configuration. [\#86](https://github.com/openeuropa/oe_editorial/pull/86) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.9.0](https://github.com/openeuropa/oe_editorial/tree/1.9.0) (2021-04-09)
-
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.8.0...1.9.0)
 
 **Merged pull requests:**
 
 - EWPP-883: Fix composer lowest fail. [\#89](https://github.com/openeuropa/oe_editorial/pull/89) ([nagyad](https://github.com/nagyad))
+- Release-1.9.0: Update changelog. [\#88](https://github.com/openeuropa/oe_editorial/pull/88) ([nagyad](https://github.com/nagyad))
 - EWPP-860: Workflow translation to apply to embedded paragraphs. [\#87](https://github.com/openeuropa/oe_editorial/pull/87) ([upchuk](https://github.com/upchuk))
 - EWPP-529: Replace scaffold library. [\#84](https://github.com/openeuropa/oe_editorial/pull/84) ([sergepavle](https://github.com/sergepavle))
 - EWPP-516: Update docker images. [\#83](https://github.com/openeuropa/oe_editorial/pull/83) ([22Alexandra](https://github.com/22Alexandra))
