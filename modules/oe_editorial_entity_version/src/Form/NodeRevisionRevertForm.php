@@ -154,6 +154,10 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
     // from the last version to increase the minor by one.
     $latest_revision_id = $node_storage->getLatestRevisionId($this->revision->id());
     $latest_revision = $node_storage->loadRevision($latest_revision_id);
+    if (empty($latest_revision->get('version')->getValue())) {
+      $defaultVersion = $this->getDefaultVersionItem();
+      $latest_revision->set('version', $defaultVersion);
+    }
     $latest_revision->get('version')->first()->increase('minor');
     $this->revision->set('version', $latest_revision->get('version')->getValue());
 
@@ -178,6 +182,9 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
    */
   protected function getVersionString(RevisionableInterface $revision): string {
     $version_number = $revision->get($this->versionField)->getValue();
+    if (empty($version_number)) {
+      $version_number = $this->getDefaultVersionItem();
+    }
     $version_number = reset($version_number);
 
     return implode('.', $version_number);
@@ -200,6 +207,22 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
     reset($version_field);
 
     return key($version_field);
+  }
+
+  /**
+   * Returns a default version item array.
+   *
+   * @return Array
+   *   A default version item array.
+   */
+  protected function getDefaultVersionItem() {
+    return [
+      [
+        "major" => "0",
+        "minor" => "0",
+        "patch" => "0",
+      ]
+    ];
   }
 
 }
