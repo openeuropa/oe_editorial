@@ -1,5 +1,5 @@
-name: OpenEuropa Editorial Corporate Workflow
-description: Editorial corporate workflow feature for the OpenEuropa project.
+name: 'OpenEuropa Editorial Corporate Workflow'
+description: 'Editorial corporate workflow feature for the OpenEuropa project.'
 package: OpenEuropa
 type: module
 core_version_requirement: ^8.9 || ^9.1

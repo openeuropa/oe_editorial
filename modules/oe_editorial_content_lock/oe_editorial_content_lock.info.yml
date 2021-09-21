@@ -1,5 +1,5 @@
-name: OpenEuropa Editorial Content Lock
-description: Lock content to prevent concurrent editing.
+name: 'OpenEuropa Editorial Content Lock'
+description: 'Lock content to prevent concurrent editing.'
 package: OpenEuropa
 type: module
 core_version_requirement: ^8.9 || ^9.1

@@ -10,9 +10,9 @@ declare(strict_types = 1);
 /**
  * Implements hook_install().
  */
-function oe_editorial_workflow_demo_install(): void {
+function oe_editorial_workflow_demo_install($is_syncing): void {
   // If we are installing from config, we bail out.
-  if (\Drupal::isConfigSyncing() === TRUE) {
+  if ($is_syncing) {
     return;
   }
 

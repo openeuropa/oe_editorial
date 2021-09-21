@@ -45,7 +45,7 @@ pipeline:
     group: prepare
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
     volumes:
-      - /cache:/cache
+      - /cache/${DRONE_REPO_NAME}:/cache
     commands:
       - composer install --ansi --no-suggest --no-progress
 
@@ -53,7 +53,7 @@ pipeline:
     group: post-prepare
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
     volumes:
-      - /cache:/cache
+      - /cache/${DRONE_REPO_NAME}:/cache
     commands:
       # @todo remove "composer install" step once the following issue is fixed.
       # @link https://webgate.ec.europa.eu/CITnet/jira/browse/OPENEUROPA-1234

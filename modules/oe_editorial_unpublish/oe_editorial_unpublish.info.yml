@@ -1,5 +1,5 @@
-name: OpenEuropa Editorial Unpublish
-description: Adds an "Unpublish" action tab with a confirmation page for moderated content.
+name: 'OpenEuropa Editorial Unpublish'
+description: 'Adds an "Unpublish" action tab with a confirmation page for moderated content.'
 package: OpenEuropa
 type: module
 core_version_requirement: ^8.9 || ^9.1

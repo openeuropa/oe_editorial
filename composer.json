@@ -10,33 +10,25 @@
         "drupal/core": "^8.9 || ^9.1"
     },
     "require-dev": {
-        "composer/installers": "^1.11",
-        "cweagans/composer-patches": "^1.7",
-        "drupal/address": "^1.8",
-        "drupal/config_devel": "~1.2",
-        "drupal/content_lock": "2.x-dev",
+        "composer/installers": "^1.5",
         "drupal/core-composer-scaffold": "^8.9 || ^9.1",
-        "drupal/drupal-extension": "~4.0",
-        "drupal/entity_version": "dev-OEL-76",
-        "guzzlehttp/guzzle": "^6.3",
-        "openeuropa/oe_paragraphs": "dev-OEL-67",
+        "drupal/config_devel": "^1.2",
+        "drupal/content_lock": "^2.2",
+        "drupal/drupal-extension": "^4.0",
+        "drupal/entity_version": "^1.0-beta8",
+        "drupal/address": "^1.8",
+        "openeuropa/oe_paragraphs": "dev-master",
         "drush/drush": "^10.3",
-        "ec-europa/oe-poetry-client": "dev-master",
+        "ec-europa/oe-poetry-client": "dev-EWPP-917",
         "instaclick/php-webdriver": "^1.4.7",
+        "nikic/php-parser": "^3.1.5",
         "openeuropa/behat-transformation-context": "~0.1",
-        "openeuropa/code-review": "~1.6",
+        "openeuropa/code-review": "^1.7",
         "openeuropa/drupal-core-require-dev": "^8.9 || ^9.1",
-        "openeuropa/oe_multilingual": "^1.4",
-        "openeuropa/task-runner": "~1.0-beta4",
-        "phpunit/phpunit": "~6.0",
-        "symfony/dom-crawler": "~3.4|~4.0"
+        "openeuropa/oe_multilingual": "^1.5",
         "openeuropa/oe_translation": "dev-EWPP-917",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0",
-        "phpspec/prophecy-phpunit": "^1 || ^2",
-        "nikic/php-parser": "^4.10"
-    },
-    "conflict": {
-        "openeuropa/oe_translation": "<0.3.0"
+        "phpspec/prophecy-phpunit": "^1 || ^2"
     },
     "scripts": {
         "post-install-cmd": "./vendor/bin/run drupal:site-setup",
@@ -55,7 +47,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Drupal\\Tests\\oe_editorial\\": "./tests/",
+            "Drupal\\Tests\\oe_editorial\\": "./tests/src",
             "Drupal\\Tests\\oe_translation\\": "./build/modules/contrib/oe_translation/tests/",
             "Drupal\\Tests\\oe_translation_poetry\\": "./build/modules/contrib/oe_translation/modules/oe_translation_poetry/tests/"
         }
