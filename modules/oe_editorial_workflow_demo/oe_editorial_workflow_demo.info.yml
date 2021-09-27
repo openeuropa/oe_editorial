@@ -1,5 +1,5 @@
-name: 'OpenEuropa Editorial Workflow Demo'
-description: 'Editorial workflow demo module to showcase the workflows for the OpenEuropa project.'
+name: OpenEuropa Editorial Workflow Demo
+description: Editorial workflow demo module to showcase the workflows for the OpenEuropa project.
 package: OpenEuropa
 type: module
 core_version_requirement: ^8.9 || ^9.1
