@@ -33,7 +33,7 @@ class PoetryTranslationsTest extends PoetryTranslationTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $this->entityTypeManager = $this->container->get('entity_type.manager');

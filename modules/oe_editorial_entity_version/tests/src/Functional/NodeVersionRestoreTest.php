@@ -58,7 +58,7 @@ class NodeVersionRestoreTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  public function setUp(): void {
     parent::setUp();
 
     $entity_type_manager = $this->container->get('entity_type.manager');
