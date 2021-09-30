@@ -10,7 +10,12 @@ declare(strict_types = 1);
 /**
  * Implements hook_install().
  */
-function oe_editorial_corporate_workflow_translation_install() {
+function oe_editorial_corporate_workflow_translation_install($is_syncing) {
+  // If we are installing from config, we bail out.
+  if ($is_syncing) {
+    return;
+  }
+
   // Make sure that the oe_translator role has the necessary permissions for
   // content moderation.
   $permissions = [

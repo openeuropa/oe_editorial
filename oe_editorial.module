@@ -29,6 +29,9 @@ function _oe_editorial_alter_text_format_help(&$element, FormStateInterface $for
   // Replace the format help links with custom ones that point to
   // the appropriate help page.
   if (isset($element['format']['format'])) {
+    // Apply custom class to text format select field.
+    $element['format']['format']['#attributes']['class'][] = 'text-format-filter-list';
+
     foreach ($element['format']['format']['#options'] as $allowed_format_id => $allowed_format_name) {
       // We add one link for each of the available format types.
       $element['format']['help'][$allowed_format_id] = [

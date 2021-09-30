@@ -51,7 +51,12 @@ class EditorialUnpublishTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp(): void {
     parent::setUp();
 
     $entity_type_manager = $this->container->get('entity_type.manager');
