@@ -61,6 +61,11 @@ class NodeVersionRestoreTest extends BrowserTestBase {
   public function setUp(): void {
     parent::setUp();
 
+    // Rebuild the container as we installed the oe_editorial_workflow_demo
+    // module which enables the demo content type on the corporate workflow.
+    $kernel = \Drupal::service('kernel');
+    $kernel->rebuildContainer();
+
     $entity_type_manager = $this->container->get('entity_type.manager');
 
     /** @var \Drupal\user\RoleInterface $role */
@@ -82,7 +87,6 @@ class NodeVersionRestoreTest extends BrowserTestBase {
       ]
     );
     $this->node->save();
-
   }
 
   /**
