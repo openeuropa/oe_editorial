@@ -1,16 +1,29 @@
-# Change Log
+# Changelog
 
-## [1.10.0](https://github.com/openeuropa/oe_editorial/tree/1.10.0) (2021-08-12)
+## [1.11.0](https://github.com/openeuropa/oe_editorial/tree/1.11.0) (2021-11-08)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.10.0...1.11.0)
+
+**Merged pull requests:**
+
+- EWPP-1706: Minor fix on the node version test. [\#99](https://github.com/openeuropa/oe_editorial/pull/99) ([upchuk](https://github.com/upchuk))
+- EWPP-921: Fixing oe\_translation test autoload paths. [\#98](https://github.com/openeuropa/oe_editorial/pull/98) ([upchuk](https://github.com/upchuk))
+- EWPP-921 - Drupal 9 compatibility fixes [\#92](https://github.com/openeuropa/oe_editorial/pull/92) ([GilNovacomm](https://github.com/GilNovacomm))
+
+## [1.10.0](https://github.com/openeuropa/oe_editorial/tree/1.10.0) (2021-08-16)
+
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.9.0...1.10.0)
 
 **Merged pull requests:**
 
+- Prepare release 1.10.0 [\#94](https://github.com/openeuropa/oe_editorial/pull/94) ([brummbar](https://github.com/brummbar))
 - EWPP-1347: Do not typehint batch callback context parameter. [\#93](https://github.com/openeuropa/oe_editorial/pull/93) ([brummbar](https://github.com/brummbar))
 - EWPP-961: Showing only the latest version translations on the overview form. [\#91](https://github.com/openeuropa/oe_editorial/pull/91) ([upchuk](https://github.com/upchuk))
 - EWPP-1034: Execute multiple state transitions in batches. [\#90](https://github.com/openeuropa/oe_editorial/pull/90) ([brummbar](https://github.com/brummbar))
 - EWPP-721: Update xdebug configuration. [\#86](https://github.com/openeuropa/oe_editorial/pull/86) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.9.0](https://github.com/openeuropa/oe_editorial/tree/1.9.0) (2021-04-09)
+
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.8.0...1.9.0)
 
 **Merged pull requests:**
