@@ -17,7 +17,7 @@
         "drupal/drupal-extension": "^4.0",
         "drupal/entity_version": "^1.0-beta8",
         "drupal/address": "^1.8",
-        "openeuropa/oe_paragraphs": "^1.10",
+        "openeuropa/oe_paragraphs": "dev-OEL-775",
         "drush/drush": "^10.3",
         "ec-europa/oe-poetry-client": "dev-master",
         "instaclick/php-webdriver": "^1.4.7",
