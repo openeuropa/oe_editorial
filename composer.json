@@ -30,7 +30,7 @@
         "openeuropa/behat-transformation-context": "~0.1",
         "openeuropa/code-review": "^2.0",
         "openeuropa/oe_multilingual": "^1.10",
-        "openeuropa/oe_paragraphs": "^1.10",
+        "openeuropa/oe_paragraphs": "^1.12",
         "openeuropa/oe_translation": "^0.17",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0-beta5",
         "phpspec/prophecy-phpunit": "^2",
