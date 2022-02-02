@@ -2,7 +2,7 @@ name: OpenEuropa Editorial Entity Version
 description: Editorial entity version brings the entity_version module configured for workflows.
 package: OpenEuropa
 type: module
-core_version_requirement: ^8.9 || ^9.1
+core_version_requirement: ^9.2
 
 dependencies:
   - entity_version_workflows:entity_version_workflows

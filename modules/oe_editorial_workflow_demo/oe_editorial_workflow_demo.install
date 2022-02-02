@@ -21,7 +21,7 @@ function oe_editorial_workflow_demo_install($is_syncing): void {
   // Add entity version field to corporate workflow bundles.
   /** @var \Drupal\workflows\WorkflowInterface $corporate_workflow */
   $corporate_workflow = \Drupal::entityTypeManager()->getStorage('workflow')->load('oe_corporate_workflow');
-  $bundles = isset($corporate_workflow->get('type_settings')['entity_types']['node']) ? $corporate_workflow->get('type_settings')['entity_types']['node'] : [];
+  $bundles = $corporate_workflow->get('type_settings')['entity_types']['node'] ?? [];
   if (!$bundles) {
     return;
   }
