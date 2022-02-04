@@ -7,6 +7,7 @@ namespace Drupal\Tests\oe_editorial_corporate_workflow_translation\Kernel;
 use Drupal\KernelTests\KernelTestBase;
 use Drupal\language\Entity\ConfigurableLanguage;
 use Drupal\node\Entity\NodeType;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Testing custom translation-related logic.
@@ -64,10 +65,9 @@ class CorporateWorkflowTranslationTest extends KernelTestBase {
     $this->container->get('oe_editorial_corporate_workflow.workflow_installer')->installWorkflow($node_type->id());
 
     // Add the workflow to the test entity as well.
-    $config = $this->config('workflows.workflow.oe_corporate_workflow');
-    $config_value = $config->get('type_settings.entity_types.entity_test_mulrev');
-    $config_value[] = 'entity_test_mulrev';
-    $config->set('type_settings.entity_types.entity_test_mulrev', $config_value)->save();
+    $workflow = Workflow::load('oe_corporate_workflow');
+    $workflow->getTypePlugin()->addEntityTypeAndBundle('entity_test_mulrev', 'entity_test_mulrev');
+    $workflow->save();
 
     ConfigurableLanguage::create(['id' => 'fr'])->save();
   }
