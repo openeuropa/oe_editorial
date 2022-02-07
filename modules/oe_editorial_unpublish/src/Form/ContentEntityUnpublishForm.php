@@ -216,7 +216,7 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
    */
   public function access(AccountInterface $account, RouteMatchInterface $routeMatch): AccessResultInterface {
     $entity_form = $routeMatch->getRouteObject()->getDefault('_entity_form');
-    list($entity_type_id, $operation) = explode('.', $entity_form);
+    [$entity_type_id, $operation] = explode('.', $entity_form);
     $entity = $this->getEntityFromRouteMatch($routeMatch, $entity_type_id);
     $cache = new CacheableMetadata();
     $cache->addCacheContexts(['url']);

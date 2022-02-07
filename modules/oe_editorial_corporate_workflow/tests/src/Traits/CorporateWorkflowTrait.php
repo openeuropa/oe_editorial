@@ -19,7 +19,7 @@ trait CorporateWorkflowTrait {
    *   The entity type manager.
    */
   protected function getEntityTypeManager(): EntityTypeManagerInterface {
-    return isset($this->entityTypeManager) ? $this->entityTypeManager : \Drupal::entityTypeManager();
+    return $this->entityTypeManager ?? \Drupal::entityTypeManager();
   }
 
   /**
@@ -49,7 +49,7 @@ trait CorporateWorkflowTrait {
 
     $pos = array_search($current_state, $states);
     foreach (array_slice($states, $pos + 1) as $new_state) {
-      $node = isset($revision) ? $revision : $node;
+      $node = $revision ?? $node;
       $revision = $this->getEntityTypeManager()->getStorage('node')->createRevision($node);
       $revision->set('moderation_state', $new_state);
       $revision->save();
@@ -58,7 +58,7 @@ trait CorporateWorkflowTrait {
       }
     }
 
-    return isset($revision) ? $revision : $node;
+    return $revision ?? $node;
   }
 
 }

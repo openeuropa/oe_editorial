@@ -2,7 +2,7 @@ name: 'OpenEuropa Editorial Unpublish Test'
 type: module
 description: 'Helper module to test the Editorial Unpublish module.'
 package: Testing
-core_version_requirement: ^8.9 || ^9.1
+core_version_requirement: ^9.2
 
 dependencies:
   - oe_editorial_unpublish:oe_editorial_unpublish

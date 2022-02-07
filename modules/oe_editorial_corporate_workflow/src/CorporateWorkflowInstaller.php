@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Drupal\oe_editorial_corporate_workflow;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\user\RoleInterface;
 
@@ -14,11 +13,11 @@ use Drupal\user\RoleInterface;
 class CorporateWorkflowInstaller {
 
   /**
-   * The config factory.
+   * The corporate editorial workflow.
    *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   * @var \Drupal\workflows\WorkflowInterface
    */
-  protected $configFactory;
+  protected $workflow;
 
   /**
    * The entity type manager.
@@ -30,14 +29,12 @@ class CorporateWorkflowInstaller {
   /**
    * CorporateWorkflowInstaller constructor.
    *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
-   *   The config factory.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
    *   The entity type manager.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, EntityTypeManagerInterface $entityTypeManager) {
-    $this->configFactory = $configFactory;
+  public function __construct(EntityTypeManagerInterface $entityTypeManager) {
     $this->entityTypeManager = $entityTypeManager;
+    $this->workflow = $this->entityTypeManager->getStorage('workflow')->load('oe_corporate_workflow');
   }
 
   /**
@@ -47,10 +44,8 @@ class CorporateWorkflowInstaller {
    *   The content type to enable the workflow on.
    */
   public function installWorkflow(string $content_type): void {
-    $config = $this->configFactory->getEditable('workflows.workflow.oe_corporate_workflow');
-    $config_value = $config->get('type_settings.entity_types.node');
-    $config_value[] = $content_type;
-    $config->set('type_settings.entity_types.node', $config_value)->save();
+    $this->workflow->getTypePlugin()->addEntityTypeAndBundle('node', $content_type);
+    $this->workflow->save();
     $this->handlePermissions('grant', $content_type);
   }
 
@@ -61,29 +56,10 @@ class CorporateWorkflowInstaller {
    *   The content type to uninstall the workflow from.
    */
   public function uninstallWorkflow(string $content_type): void {
-    $config = $this->configFactory->getEditable('workflows.workflow.oe_corporate_workflow');
-    $config_values = $config->get('type_settings.entity_types.node');
-    if (!$config_values) {
-      $this->handlePermissions('revoke', $content_type);
-      return;
+    if ($this->workflow->getTypePlugin()->appliesToEntityTypeAndBundle('node', $content_type)) {
+      $this->workflow->getTypePlugin()->removeEntityTypeAndBundle('node', $content_type);
+      $this->workflow->save();
     }
-
-    $search = array_search($content_type, $config_values);
-    if ($search === FALSE) {
-      $this->handlePermissions('revoke', $content_type);
-      return;
-    }
-
-    unset($config_values[$search]);
-
-    if (empty($config_values)) {
-      // We save without any entity types on the workflow.
-      $config->set('type_settings.entity_types', [])->save();
-      $this->handlePermissions('revoke', $content_type);
-      return;
-    }
-
-    $config->set('type_settings.entity_types.node', $config_values)->save();
     $this->handlePermissions('revoke', $content_type);
   }
 

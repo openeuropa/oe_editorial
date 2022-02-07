@@ -59,7 +59,7 @@ function oe_editorial_entity_version_install($is_syncing): void {
   }
 
   // Get the bundles the workflow is associated with.
-  $bundles = isset($corporate_workflow->get('type_settings')['entity_types']['node']) ? $corporate_workflow->get('type_settings')['entity_types']['node'] : [];
+  $bundles = $corporate_workflow->get('type_settings')['entity_types']['node'] ?? [];
   if (!$bundles) {
     return;
   }

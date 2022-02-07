@@ -12,6 +12,7 @@ use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -127,7 +128,13 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $node_revision = NULL) {
-    $this->revision = $this->entityTypeManager->getStorage('node')->loadRevision($node_revision);
+    // We need to anticipate string or NodeInterface types of $node_revision to
+    // be compatible with both core versions v9.2 and v9.3.
+    // @see: https://www.drupal.org/project/drupal/issues/2730631
+    $this->revision = $node_revision;
+    if (!$this->revision instanceof NodeInterface) {
+      $this->revision = $this->entityTypeManager->getStorage('node')->loadRevision($node_revision);
+    }
     $this->versionField = $this->getVersionField($this->revision);
     $form = parent::buildForm($form, $form_state);
 
