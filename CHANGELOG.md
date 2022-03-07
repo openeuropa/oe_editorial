@@ -1,11 +1,28 @@
 # Changelog
 
+## [1.13.0](https://github.com/openeuropa/oe_editorial/tree/1.13.0) (2022-03-07)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.12.0...1.13.0)
+
+**Merged pull requests:**
+
+- EWPP-1996: Remove non-existing workflow permission in D9.3 from config. [\#104](https://github.com/openeuropa/oe_editorial/pull/104) ([22Alexandra](https://github.com/22Alexandra))
+
+## [1.12.0](https://github.com/openeuropa/oe_editorial/tree/1.12.0) (2022-02-07)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.11.0...1.12.0)
+
+**Merged pull requests:**
+
+- EWPP-1912: Update to PHP8 and Composer v2. [\#102](https://github.com/openeuropa/oe_editorial/pull/102) ([22Alexandra](https://github.com/22Alexandra))
+
 ## [1.11.0](https://github.com/openeuropa/oe_editorial/tree/1.11.0) (2021-11-08)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.10.0...1.11.0)
 
 **Merged pull requests:**
 
+- Prepare release 1.11.0. [\#100](https://github.com/openeuropa/oe_editorial/pull/100) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-1706: Minor fix on the node version test. [\#99](https://github.com/openeuropa/oe_editorial/pull/99) ([upchuk](https://github.com/upchuk))
 - EWPP-921: Fixing oe\_translation test autoload paths. [\#98](https://github.com/openeuropa/oe_editorial/pull/98) ([upchuk](https://github.com/upchuk))
 - EWPP-921 - Drupal 9 compatibility fixes [\#92](https://github.com/openeuropa/oe_editorial/pull/92) ([GilNovacomm](https://github.com/GilNovacomm))
