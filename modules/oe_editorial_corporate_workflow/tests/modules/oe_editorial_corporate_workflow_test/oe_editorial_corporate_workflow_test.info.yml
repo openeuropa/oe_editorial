@@ -1,0 +1,8 @@
+name: OpenEuropa Editorial Corporate Workflow Test
+description: Test module for the OpenEuropa Editorial Corporate Workflow
+package: Testing
+type: module
+core_version_requirement: ^8.9 || ^9.1
+
+dependencies:
+  - oe_editorial_corporate_workflow:oe_editorial_corporate_workflow

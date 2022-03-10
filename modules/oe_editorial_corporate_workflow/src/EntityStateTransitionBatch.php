@@ -116,6 +116,7 @@ class EntityStateTransitionBatch implements ContainerInjectionInterface {
     }
 
     $entity = $context['sandbox']['current_revision'];
+    $original = clone $entity;
     $to_state = array_shift($context['sandbox']['transitions']);
 
     // Create a new revision for the transition change and save the entity.
@@ -124,6 +125,7 @@ class EntityStateTransitionBatch implements ContainerInjectionInterface {
     $entity = $storage->createRevision($entity, $entity->isDefaultRevision());
     // Set the next state id.
     $entity->set('moderation_state', $to_state);
+    $entity->original = $original;
 
     if ($entity instanceof RevisionLogInterface) {
       $entity->setRevisionCreationTime($this->time->getRequestTime());

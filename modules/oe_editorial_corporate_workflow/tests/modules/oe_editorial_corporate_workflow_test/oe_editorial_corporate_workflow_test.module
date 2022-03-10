@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @file
+ * OpenEuropa Editorial Corporate Workflow Test module.
+ */
+
+declare(strict_types = 1);
+
+use Drupal\node\NodeInterface;
+
+/**
+ * Implements hook_ENTITY_TYPE_update().
+ *
+ * Keep track of the state changes of a given entity when batching the
+ * multiple changes in one.
+ */
+function oe_editorial_corporate_workflow_test_node_update(NodeInterface $entity) {
+  if (!\Drupal::state()->get('oe_editorial_corporate_workflow_test_track_entity_state_changes', FALSE)) {
+    return;
+  }
+  /** @var \Drupal\Core\Entity\EntityInterface $original */
+  $original = $entity->original;
+  $states = \Drupal::state()->get('oe_editorial_corporate_workflow_test_entity_states', []);
+  $entity_states = $states[$entity->id()] ?? [];
+  $entity_states[] = [
+    'original' => $original->get('moderation_state')->value,
+    'new' => $entity->get('moderation_state')->value,
+  ];
+
+  $states[$entity->id()] = $entity_states;
+  \Drupal::state()->set('oe_editorial_corporate_workflow_test_entity_states', $states);
+}
