@@ -1,11 +1,20 @@
 # Changelog
 
+## [1.14.0](https://github.com/openeuropa/oe_editorial/tree/1.14.0) (2022-04-11)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.13.0...1.14.0)
+
+**Merged pull requests:**
+
+- EWPP-1856: Ensure the entity state change in batch execution keeps the revision states correct. [\#101](https://github.com/openeuropa/oe_editorial/pull/101) ([upchuk](https://github.com/upchuk))
+
 ## [1.13.0](https://github.com/openeuropa/oe_editorial/tree/1.13.0) (2022-03-07)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.12.0...1.13.0)
 
 **Merged pull requests:**
 
+- Prepare release 1.13.0. [\#105](https://github.com/openeuropa/oe_editorial/pull/105) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-1996: Remove non-existing workflow permission in D9.3 from config. [\#104](https://github.com/openeuropa/oe_editorial/pull/104) ([22Alexandra](https://github.com/22Alexandra))
 
 ## [1.12.0](https://github.com/openeuropa/oe_editorial/tree/1.12.0) (2022-02-07)
@@ -60,7 +69,7 @@
 - EWPP-0000: Preparing for 1.8.0 release. [\#82](https://github.com/openeuropa/oe_editorial/pull/82) ([hernani](https://github.com/hernani))
 - EWPP-53: Add usage of entity version settings. [\#81](https://github.com/openeuropa/oe_editorial/pull/81) ([nagyad](https://github.com/nagyad))
 
-## [1.7.0](https://github.com/openeuropa/oe_editorial/tree/1.7.0) (2020-08-04)
+## [1.7.0](https://github.com/openeuropa/oe_editorial/tree/1.7.0) (2020-08-06)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.6.0...1.7.0)
 
