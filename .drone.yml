@@ -45,10 +45,10 @@ pipeline:
   composer-install-highest:
     group: prepare
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
+    secrets: [ github_api_token, composer_auth ]
     volumes:
       - /cache/${DRONE_REPO_NAME}:/cache
     commands:
-      - composer self-update --2
       - composer config --global github-oauth.github.com $${GITHUB_API_TOKEN}
       - composer install --ansi --no-progress
     when:
@@ -58,6 +58,7 @@ pipeline:
   composer-update-lowest:
     group: post-prepare
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
+    secrets: [ github_api_token, composer_auth ]
     volumes:
       - /cache/${DRONE_REPO_NAME}:/cache
     commands:
