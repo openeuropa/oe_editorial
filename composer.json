@@ -5,6 +5,7 @@
     "license": "EUPL-1.2",
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "version": "1.14.0",
     "require": {
         "php": ">=7.4",
         "cweagans/composer-patches": "~1.4",
