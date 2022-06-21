@@ -1,11 +1,20 @@
 # Changelog
 
+## [1.14.1](https://github.com/openeuropa/oe_editorial/tree/1.14.1) (2022-06-21)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.14.0...1.14.1)
+
+**Merged pull requests:**
+
+- EWPP-2195: Fix dependency from composer patches. [\#107](https://github.com/openeuropa/oe_editorial/pull/107) ([yenyasinn](https://github.com/yenyasinn))
+
 ## [1.14.0](https://github.com/openeuropa/oe_editorial/tree/1.14.0) (2022-04-11)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.13.0...1.14.0)
 
 **Merged pull requests:**
 
+- Prepare release 1.14.0. [\#106](https://github.com/openeuropa/oe_editorial/pull/106) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-1856: Ensure the entity state change in batch execution keeps the revision states correct. [\#101](https://github.com/openeuropa/oe_editorial/pull/101) ([upchuk](https://github.com/upchuk))
 
 ## [1.13.0](https://github.com/openeuropa/oe_editorial/tree/1.13.0) (2022-03-07)
