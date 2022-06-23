@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.2](https://github.com/openeuropa/oe_editorial/tree/1.14.2) (2022-06-23)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.14.1...1.14.2)
+
+**Merged pull requests:**
+
+- EWPP-0000: Solve conflict with oe\_translation dependency. [\#110](https://github.com/openeuropa/oe_editorial/pull/110) ([hernani](https://github.com/hernani))
+
 ## [1.14.1](https://github.com/openeuropa/oe_editorial/tree/1.14.1) (2022-06-21)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.14.0...1.14.1)
