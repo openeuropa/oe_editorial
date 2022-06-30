@@ -8,7 +8,7 @@
     "require": {
         "php": ">=7.4",
         "cweagans/composer-patches": "~1.4",
-        "drupal/core": "^9.2"
+        "drupal/core": "^9.3"
     },
     "require-dev": {
         "behat/behat": "^3.10",
@@ -17,15 +17,15 @@
         "drupal/address": "^1.8",
         "drupal/config_devel": "^1.2",
         "drupal/content_lock": "^2.2",
-        "drupal/core-composer-scaffold": "^9.2",
-        "drupal/core-dev": "^9.2",
+        "drupal/core-composer-scaffold": "^9.3",
+        "drupal/core-dev": "^9.3",
         "drupal/ctools": "^3.7",
         "drupal/drupal-extension": "^4.0",
         "drupal/entity_version": "^1.0-beta8",
         "drupal/token": "^1.10",
         "drush/drush": "^10.3",
         "ec-europa/oe-poetry-client": "^0.6",
-        "egulias/email-validator": "^2.1.22 || ^3.0",
+        "fabpot/goutte": "^3.3",
         "instaclick/php-webdriver": "^1.4.7",
         "nikic/php-parser": "^4.12.0",
         "openeuropa/behat-transformation-context": "~0.1",
@@ -80,8 +80,8 @@
             }
         },
         "_readme": [
-            "Explicit minimum version requirement of drupal/ctools module due to D9.2 compatability.",
-            "Explicit requirement for egulias/email-validator due to https://www.drupal.org/project/drupal/issues/3061074#comment-14300579. It can be removed when Drupal core 9.2 support is droppped.",
+            "Explicit minimum version requirement of drupal/ctools module due to D9.3 compatability.",
+            "Explicit minimum version requirement of fabpot/goutte due to Drupal 9.3 compatibility.",
             "Explicit requirement of drupal/token module due to PHP7.4 compatbility.",
             "Explicit minimum version requirement of behat library due to PHP compatibility.",
             "Explicit minimum version requirement for symfony/dom-crawler due to its lower versions using the deprecated function libxml_disable_entity_loader() in PHP8."
