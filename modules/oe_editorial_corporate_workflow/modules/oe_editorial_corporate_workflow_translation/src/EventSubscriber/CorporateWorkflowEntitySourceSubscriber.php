@@ -50,9 +50,13 @@ class CorporateWorkflowEntitySourceSubscriber implements EventSubscriberInterfac
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    return [
-      ContentEntitySourceEntityEvent::EVENT => ['getEntity', 0],
-    ];
+    if (class_exists('\Drupal\oe_translation\Event\ContentEntitySourceEntityEvent')) {
+      return [
+        ContentEntitySourceEntityEvent::EVENT => ['getEntity', 0],
+      ];
+    }
+
+    return [];
   }
 
   /**
