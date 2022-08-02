@@ -1,18 +1,30 @@
 # Changelog
 
+## [1.15.0](https://github.com/openeuropa/oe_editorial/tree/1.15.0) (2022-08-01)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.14.2...1.15.0)
+
+**Merged pull requests:**
+
+- EWPP: Fix ctools version. [\#114](https://github.com/openeuropa/oe_editorial/pull/114) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- EWPP-2358: Drupal 9.4 support. [\#109](https://github.com/openeuropa/oe_editorial/pull/109) ([yenyasinn](https://github.com/yenyasinn))
+
 ## [1.14.2](https://github.com/openeuropa/oe_editorial/tree/1.14.2) (2022-06-23)
+
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.14.1...1.14.2)
 
 **Merged pull requests:**
 
+- EWPP-0000: Prepare for release 1.14.2. [\#111](https://github.com/openeuropa/oe_editorial/pull/111) ([hernani](https://github.com/hernani))
 - EWPP-0000: Solve conflict with oe\_translation dependency. [\#110](https://github.com/openeuropa/oe_editorial/pull/110) ([hernani](https://github.com/hernani))
 
-## [1.14.1](https://github.com/openeuropa/oe_editorial/tree/1.14.1) (2022-06-21)
+## [1.14.1](https://github.com/openeuropa/oe_editorial/tree/1.14.1) (2022-06-22)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.14.0...1.14.1)
 
 **Merged pull requests:**
 
+- Prepare release 1.14.1. [\#108](https://github.com/openeuropa/oe_editorial/pull/108) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2195: Fix dependency from composer patches. [\#107](https://github.com/openeuropa/oe_editorial/pull/107) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.14.0](https://github.com/openeuropa/oe_editorial/tree/1.14.0) (2022-04-11)
@@ -159,10 +171,6 @@
 ## [1.2.1](https://github.com/openeuropa/oe_editorial/tree/1.2.1) (2020-01-31)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.2.0...1.2.1)
-
-**Merged pull requests:**
-
-- OPENEUROPA-0000: Fixing update path of role label. [\#55](https://github.com/openeuropa/oe_editorial/pull/55) ([nagyad](https://github.com/nagyad))
 
 ## [1.2.0](https://github.com/openeuropa/oe_editorial/tree/1.2.0) (2020-01-13)
 
