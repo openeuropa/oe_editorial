@@ -36,11 +36,15 @@ function oe_editorial_entity_version_install($is_syncing): void {
       ],
       'validated_to_draft' => [
         'minor' => 'increase',
-        'check_values_changed' => '1',
       ],
       'published_to_draft' => [
         'minor' => 'increase',
-        'check_values_changed' => '1',
+      ],
+      'published_to_archived' => [
+        'minor' => 'increase',
+      ],
+      'published_to_expired' => [
+        'minor' => 'increase',
       ],
       'archived_to_draft' => [
         'minor' => 'increase',

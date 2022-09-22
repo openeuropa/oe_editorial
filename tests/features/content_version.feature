@@ -2,7 +2,7 @@
 Feature: Content version
   As a content editor
   I can moderate content and its version will change according to the corporate rules.
-
+  
   Scenario: The version field value changes based on the configured transitions.
     Given users:
       | name        | roles                                          |
@@ -65,13 +65,77 @@ Feature: Content version
       | major | 1 |
       | minor | 0 |
       | patch | 0 |
-    # Set to Published and back to Draft.
-    When I select "Published" from "Change to"
-    And I press "Apply"
-    And I click "New draft"
+    # Set to draft by making a change.
+    When I click "Edit draft"
+    And I fill in "Title" with "Workflow node 3"
     And I press "Save"
-    Then the node "Workflow node 2" should have the following version:
+    Then the node "Workflow node 3" should have the following version:
       | major | 1 |
       | minor | 1 |
       | patch | 0 |
-
+    # Set back to validated.
+    When I select "Validated" from "Change to"
+    And I press "Apply"
+    And I wait for the batch to complete
+    Then the node "Workflow node 3" should have the following version:
+      | major | 2 |
+      | minor | 0 |
+      | patch | 0 |
+    # Set to draft by not making a change. It should increase the minor even
+    # if we didn't make any change
+    When I click "Edit draft"
+    And I press "Save"
+    Then the node "Workflow node 3" should have the following version:
+      | major | 2 |
+      | minor | 1 |
+      | patch | 0 |
+    # Set back to validated.
+    When I select "Validated" from "Change to"
+    And I press "Apply"
+    And I wait for the batch to complete
+    Then the node "Workflow node 3" should have the following version:
+      | major | 3 |
+      | minor | 0 |
+      | patch | 0 |
+    # Set to Published and back to Draft.
+    When I select "Published" from "Change to"
+    And I press "Apply"
+    And I wait for the batch to complete
+    And I click "New draft"
+    And I press "Save"
+    Then the node "Workflow node 3" should have the following version:
+      | major | 3 |
+      | minor | 1 |
+      | patch | 0 |
+    # Set to published.
+    When I select "Published" from "Change to"
+    And I press "Apply"
+    And I wait for the batch to complete
+    Then the node "Workflow node 3" should have the following version:
+      | major | 4 |
+      | minor | 0 |
+      | patch | 0 |
+    # Unpublish the node by archiving it.
+    When I click "Unpublish"
+    And I select "Archived" from "Select the unpublishing state"
+    And I press "Unpublish"
+    Then the node "Workflow node 3" should have the following version:
+      | major | 4 |
+      | minor | 1 |
+      | patch | 0 |
+    # Publish again.
+    When I select "Published" from "Change to"
+    And I press "Apply"
+    And I wait for the batch to complete
+    Then the node "Workflow node 3" should have the following version:
+      | major | 5 |
+      | minor | 0 |
+      | patch | 0 |
+    # Unpublish using the expired state.
+    When I click "Unpublish"
+    And I select "Expired" from "Select the unpublishing state"
+    And I press "Unpublish"
+    Then the node "Workflow node 3" should have the following version:
+      | major | 5 |
+      | minor | 1 |
+      | patch | 0 |
