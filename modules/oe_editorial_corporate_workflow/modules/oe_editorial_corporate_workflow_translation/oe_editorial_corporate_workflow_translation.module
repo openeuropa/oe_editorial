@@ -48,6 +48,13 @@ function oe_editorial_corporate_workflow_translation_node_presave(EntityInterfac
       $entity->set('status', $source->get('status')->value);
     }
 
+    // We need to do the same for the moderation state.
+    $translation_state = $entity->get('moderation_state')->value;
+    $untranslated_state = $entity->getUntranslated()->get('moderation_state')->value;
+    if ($translation_state !== $entity->getUntranslated()->get('moderation_state')->value) {
+      $entity->set('moderation_state', $untranslated_state);
+    }
+
     return;
   }
 
