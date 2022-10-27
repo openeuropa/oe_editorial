@@ -45,3 +45,31 @@ function oe_editorial_entity_version_post_update_configure_workflow(): void {
 
   \Drupal::service('entity_version.entity_version_installer')->install('node', $bundles, $default_values);
 }
+
+/**
+ * Updates the corporate workflow entity version rules.
+ */
+function oe_editorial_entity_version_post_update_update_workflow(): void {
+  $corporate_workflow = \Drupal::entityTypeManager()->getStorage('workflow')->load('oe_corporate_workflow');
+  if ($corporate_workflow instanceof WorkflowInterface) {
+    $data = [
+      'validated_to_draft' => [
+        'minor' => 'increase',
+      ],
+      'published_to_draft' => [
+        'minor' => 'increase',
+      ],
+      'published_to_archived' => [
+        'minor' => 'increase',
+      ],
+      'published_to_expired' => [
+        'minor' => 'increase',
+      ],
+    ];
+
+    foreach ($data as $key => $value) {
+      $corporate_workflow->setThirdPartySetting('entity_version_workflows', $key, $value);
+    }
+    $corporate_workflow->save();
+  }
+}

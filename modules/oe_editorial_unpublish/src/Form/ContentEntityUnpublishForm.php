@@ -179,6 +179,15 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
     $default_revision = $this->getUnpublishingRevision();
     $default_revision_id = $default_revision->getRevisionId();
     $default_revision->moderation_state->value = $form_state->getValue('unpublish_state');
+    if ($latest_revision_id !== (int) $default_revision_id) {
+      // If we have forward drafts, tell the entity version module to use the
+      // current (published) revision when determining the moderation state so
+      // that the resulting transition which gives the version bump is the
+      // correct one: published to "unpublished". Otherwise, it would be draft
+      // to "unpublished" which is different than it would be if there were no
+      // forward drafts.
+      $default_revision->entity_version_use_current_revision = TRUE;
+    }
     $default_revision->save();
 
     // If the absolute last revision ID of the entity was not the default one,
@@ -194,7 +203,6 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
       $latest_revision->entity_version_no_update = TRUE;
       $latest_revision->setNewRevision();
       $latest_revision->save();
-
     }
     $this->messenger()->addStatus($this->t('The content %label has been unpublished.', [
       '%label' => $default_revision->label(),

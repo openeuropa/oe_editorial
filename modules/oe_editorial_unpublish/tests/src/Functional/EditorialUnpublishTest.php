@@ -164,9 +164,9 @@ class EditorialUnpublishTest extends BrowserTestBase {
     $previous_revision = $this->nodeStorage->loadRevision(6);
     $this->assertEquals($unpublish_state, $previous_revision->moderation_state->value);
     $this->assertEquals('My node', $previous_revision->label());
-    // The archived revision has the same version as when it was published.
+    // The archived revision got a minor version increase (just like the draft).
     $this->assertEquals(1, $previous_revision->get('version')->major);
-    $this->assertEquals(0, $previous_revision->get('version')->minor);
+    $this->assertEquals(1, $previous_revision->get('version')->minor);
     $this->assertEquals(0, $previous_revision->get('version')->patch);
   }
 
