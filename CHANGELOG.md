@@ -1,12 +1,21 @@
 # Changelog
 
-## [1.15.0](https://github.com/openeuropa/oe_editorial/tree/1.15.0) (2022-08-01)
+## [1.15.1](https://github.com/openeuropa/oe_editorial/tree/1.15.1) (2022-11-04)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.15.0...1.15.1)
+
+**Merged pull requests:**
+
+- EWPP-2619: Corporate workflow bug fixes. [\#115](https://github.com/openeuropa/oe_editorial/pull/115) ([upchuk](https://github.com/upchuk))
+
+## [1.15.0](https://github.com/openeuropa/oe_editorial/tree/1.15.0) (2022-08-02)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.14.2...1.15.0)
 
 **Merged pull requests:**
 
 - EWPP: Fix ctools version. [\#114](https://github.com/openeuropa/oe_editorial/pull/114) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- Prepare release 1.15.0. [\#113](https://github.com/openeuropa/oe_editorial/pull/113) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2358: Drupal 9.4 support. [\#109](https://github.com/openeuropa/oe_editorial/pull/109) ([yenyasinn](https://github.com/yenyasinn))
 
 ## [1.14.2](https://github.com/openeuropa/oe_editorial/tree/1.14.2) (2022-06-23)

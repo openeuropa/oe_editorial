@@ -20,7 +20,7 @@
         "drupal/core-composer-scaffold": "^9.3",
         "drupal/core-dev": "^9.3",
         "drupal/drupal-extension": "^4.0",
-        "drupal/entity_version": "^1.0-beta8",
+        "drupal/entity_version": "^1.1",
         "drupal/token": "^1.10",
         "drush/drush": "^10.3",
         "ec-europa/oe-poetry-client": "^0.6",
@@ -72,9 +72,6 @@
             "drupal/content_lock": {
                 "https://www.drupal.org/project/content_lock/issues/2919019": "https://www.drupal.org/files/issues/content_lock-caching-invalidation-2919019-3.patch",
                 "https://www.drupal.org/project/content_lock/issues/2949198": "https://git.drupalcode.org/project/content_lock/-/merge_requests/3.patch"
-            },
-            "drupal/entity_version": {
-                "latest-master": "https://github.com/openeuropa/entity_version/compare/8.x-1.0...EWPP-2619.diff"
             }
         },
         "drupal-scaffold": {
