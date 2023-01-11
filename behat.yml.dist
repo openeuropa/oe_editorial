@@ -19,7 +19,7 @@ default:
         - Drupal\Tests\oe_editorial\Behat\TextFormatContext
   extensions:
     Drupal\MinkExtension:
-      goutte: ~
+      browserkit_http: ~
       ajax_timeout: 10
       browser_name: 'chrome'
       javascript_session: selenium2
