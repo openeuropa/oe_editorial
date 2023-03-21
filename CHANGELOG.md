@@ -1,11 +1,20 @@
 # Changelog
 
+## [1.16.0](https://github.com/openeuropa/oe_editorial/tree/1.16.0) (2023-03-21)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.15.1...1.16.0)
+
+**Merged pull requests:**
+
+- EWPP-2910: Update to PHP 8.1 and D9.4. [\#117](https://github.com/openeuropa/oe_editorial/pull/117) ([22Alexandra](https://github.com/22Alexandra))
+
 ## [1.15.1](https://github.com/openeuropa/oe_editorial/tree/1.15.1) (2022-11-04)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.15.0...1.15.1)
 
 **Merged pull requests:**
 
+- Prepare release 1.15.1. [\#116](https://github.com/openeuropa/oe_editorial/pull/116) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-2619: Corporate workflow bug fixes. [\#115](https://github.com/openeuropa/oe_editorial/pull/115) ([upchuk](https://github.com/upchuk))
 
 ## [1.15.0](https://github.com/openeuropa/oe_editorial/tree/1.15.0) (2022-08-02)
