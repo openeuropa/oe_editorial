@@ -59,7 +59,7 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
    *
    * @param \Drupal\workflows\StateInterface $current_state
    *   The actual state.
-   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   * @param \Drupal\Core\Entity\ContentEntityInterface|null $entity
    *   The entity under moderation.
    * @param array $next_transitions
    *   The next available transitions in the chain that we keep track of by
@@ -68,7 +68,7 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
    * @return array
    *   The next available transitions in the chain.
    */
-  protected function getNextTransitions(StateInterface $current_state, ContentEntityInterface $entity, array &$next_transitions = []): array {
+  public function getNextTransitions(StateInterface $current_state, ?ContentEntityInterface $entity = NULL, array &$next_transitions = []): array {
     $transitions = $current_state->getTransitions();
     if (empty($next_transitions)) {
       $next_transitions = $transitions;
