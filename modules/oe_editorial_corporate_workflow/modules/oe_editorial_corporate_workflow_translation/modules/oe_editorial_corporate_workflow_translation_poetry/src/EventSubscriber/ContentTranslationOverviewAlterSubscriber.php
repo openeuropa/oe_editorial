@@ -39,9 +39,14 @@ class ContentTranslationOverviewAlterSubscriber implements EventSubscriberInterf
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    return [
-      ContentTranslationOverviewAlterEvent::NAME => 'alterOverview',
-    ];
+    if (class_exists('\Drupal\oe_translation\Event\ContentTranslationOverviewAlterEvent')) {
+      return [
+        ContentTranslationOverviewAlterEvent::NAME => 'alterOverview',
+      ];
+    }
+
+    return [];
+
   }
 
   /**
