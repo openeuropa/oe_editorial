@@ -1,7 +1,13 @@
-# Changelog
+# Change Log
+
+## [1.17.0](https://github.com/openeuropa/oe_editorial/tree/1.17.0) (2023-04-21)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.16.0...1.17.0)
+
+**Merged pull requests:**
+
+- EWPP-2310: Preparing some events for deprecation. [\#112](https://github.com/openeuropa/oe_editorial/pull/112) ([upchuk](https://github.com/upchuk))
 
 ## [1.16.0](https://github.com/openeuropa/oe_editorial/tree/1.16.0) (2023-03-21)
-
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.15.1...1.16.0)
 
 **Merged pull requests:**
