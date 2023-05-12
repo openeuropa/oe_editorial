@@ -36,33 +36,14 @@ services:
       - NODE_MAX_SESSION=5
 
 pipeline:
-  composer-install-highest:
+  composer-install:
     group: prepare
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
-    secrets: [ github_api_token, composer_auth ]
     volumes:
-      - /cache/${DRONE_REPO_NAME}:/cache
+      - /cache:/cache
     commands:
       - composer self-update --2
-      - composer config --global github-oauth.github.com $${GITHUB_API_TOKEN}
-      - composer install --ansi --no-progress
-    when:
-      matrix:
-        COMPOSER_BOUNDARY: highest
-
-  composer-update-lowest:
-    group: post-prepare
-    image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
-    secrets: [ github_api_token, composer_auth ]
-    volumes:
-      - /cache/${DRONE_REPO_NAME}:/cache
-    commands:
-      - composer self-update --2
-      - composer config --global github-oauth.github.com $${GITHUB_API_TOKEN}
-      - composer update --prefer-lowest --prefer-stable --ansi --no-progress --no-interaction
-    when:
-      matrix:
-        COMPOSER_BOUNDARY: lowest
+      - composer require drupal/core:~${CORE_VERSION} drupal/core-composer-scaffold:~${CORE_VERSION} --update-with-all-dependencies --ansi --no-progress --no-interaction
 
   site-install:
     image: registry.fpfis.eu/fpfis/httpd-php:${PHP_VERSION}-ci
@@ -98,9 +79,10 @@ pipeline:
       status: failure
 
 matrix:
-  COMPOSER_BOUNDARY:
-    - lowest
-    - highest
-  PHP_VERSION:
-    - 8.0
-    - 8.1
+  include:
+    - CORE_VERSION: 9.4.0
+      PHP_VERSION: 8.0
+    - CORE_VERSION: 9.4.0
+      PHP_VERSION: 8.1
+    - CORE_VERSION: 10.0
+      PHP_VERSION: 8.1
