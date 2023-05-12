@@ -305,7 +305,7 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
 
     // Allow other modules to change the list of unpublishable states.
     $event = new UnpublishStatesEvent($entity, $unpublishable_states);
-    $this->eventDispatcher->dispatch(UnpublishStatesEvent::EVENT_NAME, $event);
+    $this->eventDispatcher->dispatch($event, UnpublishStatesEvent::EVENT_NAME);
     $unpublishable_states = $event->getStates();
 
     return $unpublishable_states;

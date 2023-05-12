@@ -501,6 +501,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
     ];
 
     $ids = \Drupal::entityTypeManager()->getStorage('tmgmt_local_task_item')->getQuery()
+      ->accessCheck(FALSE)
       ->sort('tltiid', 'DESC')
       ->execute();
     $id = reset($ids);
