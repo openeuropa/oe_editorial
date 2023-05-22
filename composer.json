@@ -24,7 +24,6 @@
         "drupal/entity_version": "^1.1",
         "drupal/token": "^1.10",
         "drush/drush": "^11.1",
-        "ec-europa/oe-poetry-client": "dev-master",
         "guzzlehttp/guzzle": "^7.0",
         "instaclick/php-webdriver": "^1.4.7",
         "masterminds/html5": "^2.7.6",
@@ -67,8 +66,7 @@
     "autoload-dev": {
         "psr-4": {
             "Drupal\\Tests\\oe_editorial\\": "./tests/src",
-            "Drupal\\Tests\\oe_translation\\": "./build/modules/contrib/oe_translation/tests/src",
-            "Drupal\\Tests\\oe_translation_poetry\\": "./build/modules/contrib/oe_translation/modules/oe_translation_poetry/tests/src"
+            "Drupal\\Tests\\oe_translation\\": "./build/modules/contrib/oe_translation/tests/src"
         }
     },
     "extra": {

@@ -2,43 +2,20 @@
 
 This module provides editorial features for the OpenEuropa project.
 
+## Drupal 10 support.
+
+Support for Drupal 10 will be added only in 2.x releases.
+
+## Upgrading from 1.x to 2.x
+
+In 2.x, the support to Poetry has been dropped. In order to upgrade from 1.x to 2.x:
+
+- uninstall `oe_editorial_corporate_workflow_translation_poetry`;
+- upgrade to a 2.x release.
+
 ## Development setup
 
-You can build the development site by running the following steps:
-
-* Install the Composer dependencies:
-
-```bash
-composer install
-```
-
-A post command hook (`drupal:site-setup`) is triggered automatically after `composer install`.
-It will make sure that the necessary symlinks are properly setup in the development site.
-It will also perform token substitution in development configuration files such as `behat.yml.dist`.
-
-* Install test site by running:
-
-```bash
-./vendor/bin/run drupal:site-install
-```
-
-Your test site will be available at `./build`.
-
-**Please note:** project files and directories are symlinked within the test site by using the
-[OpenEuropa Task Runner's Drupal project symlink](https://github.com/openeuropa/task-runner-drupal-project-symlink) command.
-
-If you add a new file or directory in the root of the project, you need to re-run `drupal:site-setup` in order to make
-sure they are be correctly symlinked.
-
-If you don't want to re-run a full site setup for that, you can simply run:
-
-```
-$ ./vendor/bin/run drupal:symlink-project
-```
-
-### Using Docker Compose
-
-Alternatively, you can build a development site using [Docker](https://www.docker.com/get-docker) and
+You can build a development site using [Docker](https://www.docker.com/get-docker) and
 [Docker Compose](https://docs.docker.com/compose/) with the provided configuration.
 
 Docker provides the necessary services and tools such as a web server and a database server to get the site running,
