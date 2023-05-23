@@ -1,6 +1,9 @@
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  module:
+    - content_moderation
+    - node
 id: oe_reviewer
 label: Reviewer
 weight: 3
