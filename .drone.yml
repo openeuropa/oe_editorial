@@ -18,12 +18,6 @@ services:
     environment: &web-environment
       - DOCUMENT_ROOT=/test/oe_editorial
       - COMPOSERVER=--2
-      - POETRY_IDENTIFIER_SEQUENCE=NEXT_EUROPA_COUNTER
-      - POETRY_SERVICE_ENDPOINT=http://web:8080/build/poetry-mock/wsdl
-      - POETRY_SERVICE_USERNAME=admin
-      - POETRY_SERVICE_PASSWORD=admin
-      - POETRY_NOTIFICATION_USERNAME=admin
-      - POETRY_NOTIFICATION_PASSWORD=admin
   mysql:
     image: registry.fpfis.eu/fpfis/sql:percona-5.7
     command: --innodb-log-file-size=1G --max_allowed_packet=1G --innodb-buffer-pool-size=512M --wait_timeout=3000 --net_write_timeout=3000 --log_error_verbosity=3
