@@ -82,6 +82,7 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
    * Tests that translations can be dropped when validating content.
    */
   public function testTranslationRevisionsDropDefault(): void {
+    $this->markTestSkipped('oe_translation.permission_translator does not exist in 2.x.');
     /** @var \Drupal\node\NodeStorageInterface $node_storage */
     $node_storage = $this->entityTypeManager->getStorage('node');
 
@@ -215,6 +216,7 @@ class CorporateWorkflowTranslationDropTest extends WebDriverTestBase {
    * Tests that translation dropping works also with the shortcuts.
    */
   public function testTranslationRevisionsDropWithShortcuts(): void {
+    $this->markTestSkipped('oe_translation.permission_translator does not exist in 2.x.');
     /** @var \Drupal\node\NodeStorageInterface $node_storage */
     $node_storage = $this->entityTypeManager->getStorage('node');
 
