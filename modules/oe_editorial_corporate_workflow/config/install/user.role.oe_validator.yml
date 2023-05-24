@@ -1,6 +1,8 @@
 langcode: en
 status: true
 dependencies:
+  config:
+    - workflows.workflow.oe_corporate_workflow
   module:
     - content_moderation
     - node
