@@ -46,6 +46,7 @@ class CorporateWorkflowTranslationRevisionTest extends BrowserTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'datetime',
     'tmgmt',
     'tmgmt_local',
     'tmgmt_content',

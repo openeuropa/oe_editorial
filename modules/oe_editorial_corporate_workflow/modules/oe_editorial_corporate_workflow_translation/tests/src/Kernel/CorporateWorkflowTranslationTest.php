@@ -18,6 +18,7 @@ class CorporateWorkflowTranslationTest extends KernelTestBase {
    * {@inheritdoc}
    */
   protected static $modules = [
+    'datetime',
     'system',
     'node',
     'tmgmt',
