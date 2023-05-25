@@ -77,6 +77,7 @@ class CorporateWorkflowTranslationTest extends KernelTestBase {
    * Tests that revisions do not get created when deleting a translation.
    */
   public function testTranslationDeletion(): void {
+    $this->markTestSkipped('oe_translation does not integrate with tmgmt in 2.x.');
     /** @var \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager */
     $entity_type_manager = $this->container->get('entity_type.manager');
     /** @var \Drupal\node\NodeInterface $node */
