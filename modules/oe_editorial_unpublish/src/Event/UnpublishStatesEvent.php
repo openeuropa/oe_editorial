@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Drupal\oe_editorial_unpublish\Event;
 
 use Drupal\Core\Entity\ContentEntityInterface;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Event for altering the list of available states that unpublish an entity.

@@ -1,6 +1,11 @@
 langcode: en
 status: true
-dependencies: {  }
+dependencies:
+  config:
+    - workflows.workflow.oe_corporate_workflow
+  module:
+    - content_moderation
+    - node
 id: oe_author
 label: Author
 weight: 2
@@ -16,6 +21,6 @@ permissions:
   - 'use oe_corporate_workflow transition validated_to_draft'
   - 'use oe_corporate_workflow transition validated_to_published'
   - 'view all revisions'
-  - 'view latest version'
   - 'view any unpublished content'
+  - 'view latest version'
   - 'view own unpublished content'

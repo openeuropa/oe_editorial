@@ -126,3 +126,4 @@ type_settings:
         - validated
       to: published
       weight: 1
+  entity_types: {  }

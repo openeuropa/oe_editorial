@@ -1,4 +1,4 @@
-(function ($, Drupal) {
+(function ($, Drupal, once) {
   Drupal.behaviors.filterHelp = {
     attach: function attach(context) {
       function updateFilterHelp(event) {
@@ -7,7 +7,7 @@
         $this.closest('.filter-wrapper').find('.filter-help-item').hide().filter('.filter-help-' + value).show();
       }
 
-      $(context).find('.filter-help').once('filter-help').closest('.filter-wrapper').find('select.text-format-filter-list').on('change.filterHelp', updateFilterHelp).trigger('change.filterHelp');
+      $(once('filter-help', '.filter-help', context)).closest('.filter-wrapper').find('select.text-format-filter-list').on('change.filterHelp', updateFilterHelp).trigger('change.filterHelp');
     }
   };
-})(jQuery, Drupal);
+})(jQuery, Drupal, once);
