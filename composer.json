@@ -24,7 +24,6 @@
         "openeuropa/code-review": "^2.0",
         "openeuropa/oe_multilingual": "^1.13",
         "openeuropa/oe_paragraphs": "^1.19",
-        "openeuropa/oe_translation": "dev-EWPP-2965-2.x",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0-beta6",
         "phpspec/prophecy-phpunit": "^2",
         "symfony/phpunit-bridge": "^6.0"
@@ -46,8 +45,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Drupal\\Tests\\oe_editorial\\": "./tests/src",
-            "Drupal\\Tests\\oe_translation\\": "./build/modules/contrib/oe_translation/tests/src"
+            "Drupal\\Tests\\oe_editorial\\": "./tests/src"
         }
     },
     "extra": {
