@@ -60,7 +60,8 @@ class CorporateWorkflowStateTransitionValidation extends StateTransitionValidati
    * @param \Drupal\workflows\StateInterface $current_state
    *   The actual state.
    * @param \Drupal\Core\Entity\ContentEntityInterface|null $entity
-   *   The entity under moderation.
+   *   (deprecated) The entity under moderation. The parameter is
+   *   deprecated in 2.0.0 and will be removed from 3.0.0.
    * @param array $next_transitions
    *   The next available transitions in the chain that we keep track of by
    *   recursion.
