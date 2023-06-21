@@ -157,6 +157,12 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
     $this->revision->setChangedTime($this->time->getRequestTime());
     $this->revision->set('moderation_state', 'draft');
 
+    // With took over translation, the changed time should be
+    // updated accordingly.
+    foreach ($this->revision->getTranslationLanguages(FALSE) as $language) {
+      $this->revision->getTranslation($language->getId())->setChangedTime($this->time->getRequestTime());
+    }
+
     // Load the latest revision to make sure the version numbers continue
     // from the last version to increase the minor by one.
     $latest_revision_id = $node_storage->getLatestRevisionId($this->revision->id());
