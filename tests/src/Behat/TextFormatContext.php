@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace Drupal\Tests\oe_editorial\Behat;
 
 use Behat\Behat\Hook\Scope\AfterScenarioScope;
-use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Behat\Gherkin\Node\TableNode;
+use Drupal\DrupalExtension\Context\RawDrupalContext;
 use Drupal\filter\Entity\FilterFormat;
 use Drupal\user\Entity\Role;
 
