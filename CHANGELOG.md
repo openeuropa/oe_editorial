@@ -1,10 +1,21 @@
-# Change Log
+# Changelog
+
+## [2.1.0](https://github.com/openeuropa/oe_editorial/tree/2.1.0) (2023-06-30)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.0.0...2.1.0)
+
+**Merged pull requests:**
+
+- EWPP-3361: Order use statements alphabetically. [\#126](https://github.com/openeuropa/oe_editorial/pull/126) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- EWPP-3080: Make getNextTransitions public and NULL out unused argument. [\#119](https://github.com/openeuropa/oe_editorial/pull/119) ([nagyad](https://github.com/nagyad))
 
 ## [2.0.0](https://github.com/openeuropa/oe_editorial/tree/2.0.0) (2023-05-25)
+
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.17.0...2.0.0)
 
 **Merged pull requests:**
 
+- Release-2.0.0: Changelog. [\#123](https://github.com/openeuropa/oe_editorial/pull/123) ([22Alexandra](https://github.com/22Alexandra))
 - EWPP-3027: Drupal 10 compatibility. [\#122](https://github.com/openeuropa/oe_editorial/pull/122) ([brummbar](https://github.com/brummbar))
 - EWPP-0000: Drop Poetry support. [\#121](https://github.com/openeuropa/oe_editorial/pull/121) ([brummbar](https://github.com/brummbar))
 
