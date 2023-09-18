@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.1.1](https://github.com/openeuropa/oe_editorial/tree/2.1.1) (2023-09-14)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.1.0...2.1.1)
+
+**Merged pull requests:**
+
+- EWPP-3344: Fix restored revision. [\#124](https://github.com/openeuropa/oe_editorial/pull/124) ([sergepavle](https://github.com/sergepavle))
+
 ## [2.1.0](https://github.com/openeuropa/oe_editorial/tree/2.1.0) (2023-06-30)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.0.0...2.1.0)
@@ -7,6 +15,7 @@
 **Merged pull requests:**
 
 - EWPP-3361: Order use statements alphabetically. [\#126](https://github.com/openeuropa/oe_editorial/pull/126) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- Prepare release 2.1.0 [\#125](https://github.com/openeuropa/oe_editorial/pull/125) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-3080: Make getNextTransitions public and NULL out unused argument. [\#119](https://github.com/openeuropa/oe_editorial/pull/119) ([nagyad](https://github.com/nagyad))
 
 ## [2.0.0](https://github.com/openeuropa/oe_editorial/tree/2.0.0) (2023-05-25)
