@@ -1,4 +1,19 @@
-# Changelog
+# ChangeLog
+
+## [2.1.2](https://github.com/openeuropa/oe_editorial/tree/2.1.2) (2024-01-15)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.1.1...2.1.2)
+
+**Merged pull requests:**
+
+- EWPP-3610: Use static patch instead of direct MR. [\#128](https://github.com/openeuropa/oe_editorial/pull/128) ([hernani](https://github.com/hernani))
+
+## [2.1.1](https://github.com/openeuropa/oe_editorial/tree/2.1.1) (2023-09-18)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.1.0...2.1.1)
+
+**Merged pull requests:**
+
+- Prepare release 2.1.1. [\#127](https://github.com/openeuropa/oe_editorial/pull/127) ([imanoleguskiza](https://github.com/imanoleguskiza))
+- EWPP-3344: Fix restored revision. [\#124](https://github.com/openeuropa/oe_editorial/pull/124) ([sergepavle](https://github.com/sergepavle))
 
 ## [2.1.1](https://github.com/openeuropa/oe_editorial/tree/2.1.1) (2023-09-14)
 
