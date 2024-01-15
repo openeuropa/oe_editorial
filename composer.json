@@ -20,12 +20,14 @@
         "drupal/entity_version": "^1.1",
         "drush/drush": "^11.1",
         "mikey179/vfsstream": "^1.6.10",
+        "nikic/php-parser": "^4.18",
         "openeuropa/behat-transformation-context": "~0.1",
         "openeuropa/code-review": "^2.0",
         "openeuropa/oe_multilingual": "^1.13",
         "openeuropa/oe_paragraphs": "^1.19",
         "openeuropa/task-runner-drupal-project-symlink": "^1.0-beta6",
         "phpspec/prophecy-phpunit": "^2",
+        "phpunit/phpunit": "^9.0",
         "symfony/phpunit-bridge": "^6.0"
     },
     "scripts": {
@@ -60,7 +62,7 @@
         "patches": {
             "drupal/content_lock": {
                 "https://www.drupal.org/project/content_lock/issues/2919019": "https://www.drupal.org/files/issues/content_lock-caching-invalidation-2919019-3.patch",
-                "https://www.drupal.org/project/content_lock/issues/2949198": "https://git.drupalcode.org/project/content_lock/-/merge_requests/3.patch"
+                "https://www.drupal.org/project/content_lock/issues/2949198": "https://www.drupal.org/files/issues/2024-01-15/content_lock-unlocking-already-locked-2949198-14.patch"
             }
         },
         "drupal-scaffold": {
@@ -69,7 +71,8 @@
             }
         },
         "_readme": [
-            "Explicit requirement of symfony/phpunit-bridge to replace drupal/core-dev testing classes and traits."
+            "Explicit requirement of symfony/phpunit-bridge to replace drupal/core-dev testing classes and traits.",
+            "Explicit requirement of nikic/php-parser as ^5.0 generates GrumPHP Parser issues."
         ]
     },
     "config": {
