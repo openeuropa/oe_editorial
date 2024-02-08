@@ -7,18 +7,18 @@
     "prefer-stable": true,
     "require": {
         "php": ">=8.0",
-        "cweagans/composer-patches": "~1.4",
-        "drupal/core": "^9.4 || ^10"
+        "cweagans/composer-patches": "~1.4 || ^2",
+        "drupal/core": "^10"
     },
     "require-dev": {
         "composer/installers": "^1.5",
         "drupal/address": "^1.8",
         "drupal/config_devel": "^1.9",
         "drupal/content_lock": "^2.2",
-        "drupal/core-composer-scaffold": "^9.4 || ^10",
+        "drupal/core-composer-scaffold": "^10",
         "drupal/drupal-extension": "^5.0",
         "drupal/entity_version": "^1.1",
-        "drush/drush": "^11.1",
+        "drush/drush": "^12",
         "mikey179/vfsstream": "^1.6.10",
         "nikic/php-parser": "^4.18",
         "openeuropa/behat-transformation-context": "~0.1",
