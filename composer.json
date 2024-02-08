@@ -62,7 +62,8 @@
         "patches": {
             "drupal/content_lock": {
                 "https://www.drupal.org/project/content_lock/issues/2919019": "https://www.drupal.org/files/issues/content_lock-caching-invalidation-2919019-3.patch",
-                "https://www.drupal.org/project/content_lock/issues/2949198": "https://www.drupal.org/files/issues/2024-01-15/content_lock-unlocking-already-locked-2949198-14.patch"
+                "https://www.drupal.org/project/content_lock/issues/2949198": "https://www.drupal.org/files/issues/2024-01-15/content_lock-unlocking-already-locked-2949198-14.patch",
+                "Fix PHP 8.2+ deprecation notices https://www.drupal.org/project/content_lock/issues/3343964": "https://www.drupal.org/files/issues/2023-05-22/3343964-5.patch"
             }
         },
         "drupal-scaffold": {
