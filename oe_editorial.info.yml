@@ -2,4 +2,4 @@ name: OpenEuropa Editorial
 description: Editorial features for the OpenEuropa project.
 package: OpenEuropa
 type: module
-core_version_requirement: ^9.4 || ^10
+core_version_requirement: ^10
