@@ -5,7 +5,7 @@
  * OpenEuropa Editorial Corporate Workflow post updates.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use Drupal\user\Entity\Role;
 use Drupal\user\RoleInterface;

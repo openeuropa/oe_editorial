@@ -5,7 +5,7 @@
  * OpenEuropa Editorial Unpublish module.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use Drupal\Core\Entity\ContentEntityTypeInterface;
 use Drupal\oe_editorial_unpublish\Form\ContentEntityUnpublishForm;
