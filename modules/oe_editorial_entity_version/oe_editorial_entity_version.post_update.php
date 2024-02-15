@@ -5,7 +5,7 @@
  * Editorial Entity Version post update functions.
  */
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use Drupal\workflows\WorkflowInterface;
 
