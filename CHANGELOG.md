@@ -1,11 +1,20 @@
 # Changelog
 
+## [2.3.0](https://github.com/openeuropa/oe_editorial/tree/2.3.0) (2024-06-10)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.2.0...2.3.0)
+
+**Merged pull requests:**
+
+- EWPP-000: Update content\_lock patch after new release. [\#133](https://github.com/openeuropa/oe_editorial/pull/133) ([imanoleguskiza](https://github.com/imanoleguskiza))
+
 ## [2.2.0](https://github.com/openeuropa/oe_editorial/tree/2.2.0) (2024-02-15)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.1.2...2.2.0)
 
 **Merged pull requests:**
 
+- Release-2.2.0: Update changelog. [\#131](https://github.com/openeuropa/oe_editorial/pull/131) ([nagyad](https://github.com/nagyad))
 - EWPP-3951: Add Drupal 10.2.x and PHP 8.2 to matrix. [\#130](https://github.com/openeuropa/oe_editorial/pull/130) ([brummbar](https://github.com/brummbar))
 
 ## [2.1.2](https://github.com/openeuropa/oe_editorial/tree/2.1.2) (2024-01-15)
