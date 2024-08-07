@@ -8,66 +8,82 @@
 declare(strict_types=1);
 
 use Drupal\Core\Batch\BatchBuilder;
+use Drupal\Core\Entity\ContentEntityForm;
+use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\node\NodeInterface;
 use Drupal\oe_editorial_corporate_workflow\EntityStateTransitionBatch;
+use Drupal\workflows\Entity\Workflow;
 
 /**
  * Implements hook_menu_local_tasks_alter().
  */
 function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
-  $node = \Drupal::routeMatch()->getParameter('node');
-  if (!$node instanceof NodeInterface) {
+  /** @var \Drupal\workflows\WorkflowInterface $workflow */
+  $workflow = Workflow::load('oe_corporate_workflow');
+  $entity_types = $workflow->get('type_settings')['entity_types'];
+  $entity = NULL;
+  foreach (array_keys($entity_types) as $entity_type) {
+    $route_entity = \Drupal::routeMatch()->getParameter($entity_type);
+    if (!$route_entity instanceof ContentEntityInterface) {
+      continue;
+    }
+
+    if (!in_array($route_entity->bundle(), $entity_types[$entity_type])) {
+      continue;
+    }
+
+    $entity = $route_entity;
+    break;
+  }
+
+  if (!$entity) {
     return;
   }
 
-  /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
-  $moderation_info = \Drupal::service('content_moderation.moderation_information');
-  /** @var \Drupal\workflows\WorkflowInterface $workflow */
-  $workflow = $moderation_info->getWorkflowForEntity($node);
-  if (!$workflow || $workflow->id() !== 'oe_corporate_workflow') {
-    return;
-  }
+  $entity_type = $entity->getEntityTypeId();
 
   // Edit tab.
-  if (!empty($data['tabs'][0]['entity.node.edit_form']['#link'])) {
-    if (_oe_editorial_corporate_workflow_is_last_revision_published($node)) {
-      $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('New draft');
+  if (!empty($data['tabs'][0]['entity.' . $entity_type . '.edit_form']['#link'])) {
+    if (_oe_editorial_corporate_workflow_is_last_revision_published($entity)) {
+      $data['tabs'][0]['entity.' . $entity_type . '.edit_form']['#link']['title'] = t('New draft');
     }
     else {
-      $data['tabs'][0]['entity.node.edit_form']['#link']['title'] = t('Edit draft');
+      $data['tabs'][0]['entity.' . $entity_type . '.edit_form']['#link']['title'] = t('Edit draft');
     }
   }
 
   // Latest revision tab.
-  if (!empty($data['tabs'][0]['content_moderation.workflows:node.latest_version_tab'])) {
-    $data['tabs'][0]['content_moderation.workflows:node.latest_version_tab']['#link']['title'] = t('View draft');
+  if (!empty($data['tabs'][0]['content_moderation.workflows:' . $entity_type . '.latest_version_tab'])) {
+    $data['tabs'][0]['content_moderation.workflows:' . $entity_type . '.latest_version_tab']['#link']['title'] = t('View draft');
+    $data['tabs'][0]['content_moderation.workflows:' . $entity_type . '.latest_version_tab']['#weight'] = -1;
   }
 
   // View tab.
-  if (!empty($data['tabs'][0]['entity.node.canonical']['#link'])) {
+  if (!empty($data['tabs'][0]['entity.' . $entity_type . '.canonical']['#link'])) {
     /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
     $moderation_info = \Drupal::service('content_moderation.moderation_information');
-    if ($moderation_info->isDefaultRevisionPublished($node) || $moderation_info->isLiveRevision($node)) {
-      $data['tabs'][0]['entity.node.canonical']['#link']['title'] = t('View published');
+    if ($moderation_info->isDefaultRevisionPublished($entity) || $moderation_info->isLiveRevision($entity)) {
+      $data['tabs'][0]['entity.' . $entity_type . '.canonical']['#link']['title'] = t('View published');
     }
     else {
-      $data['tabs'][0]['entity.node.canonical']['#link']['title'] = t('View draft');
+      $data['tabs'][0]['entity.' . $entity_type . '.canonical']['#link']['title'] = t('View draft');
     }
+    $data['tabs'][0]['entity.' . $entity_type . '.canonical']['#weight'] = 0;
   }
 }
 
 /**
- * Implements hook_form_FORM_ID_alter().
+ * Implements hook_form_alter().
  *
- * Force the Draft state on node forms.
+ * Force the Draft state on corporate workflow forms.
  */
-function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  /** @var \Drupal\node\NodeInterface $node */
-  $entity = $form_state->getFormObject()->getEntity();
-  if (!$entity instanceof NodeInterface) {
+function oe_editorial_corporate_workflow_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  $form_object = $form_state->getFormObject();
+  if (!$form_object instanceof ContentEntityForm) {
     return;
   }
+
+  $entity = $form_object->getEntity();
   /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
   $moderation_info = \Drupal::service('content_moderation.moderation_information');
   /** @var \Drupal\workflows\WorkflowInterface $workflow */
@@ -81,16 +97,21 @@ function oe_editorial_corporate_workflow_form_node_form_alter(&$form, FormStateI
     return;
   }
 
-  // Enforce Draft state in forms.
-  $options = [
-    'draft' => $workflow->getTypePlugin()->getState('draft')->label(),
-  ];
+  // Enforce Draft state in forms if we are on the original language. We don't
+  // need to do this in case we are on the translation.
+  if ($entity->isDefaultTranslation()) {
+    $options = [
+      'draft' => $workflow->getTypePlugin()->getState('draft')->label(),
+    ];
+    $form_options = $options;
+  }
 
-  // Remove access because Draft is the only option.
-  $form['moderation_state']['widget'][0]['state']['#access'] = FALSE;
-  $form['moderation_state']['widget'][0]['state']['#default_value'] = 'draft';
-
-  $form_options = $options;
+  // Remove access because either Draft is the only option or the moderation
+  // state cannot be changed.
+  $form['moderation_state']['#access'] = FALSE;
+  if ($entity->isDefaultTranslation()) {
+    $form['moderation_state']['widget'][0]['state']['#default_value'] = 'draft';
+  }
 }
 
 /**
@@ -104,19 +125,19 @@ function oe_editorial_corporate_workflow_form_content_moderation_entity_moderati
     return;
   }
 
-  /** @var \Drupal\node\NodeInterface $node */
-  $node = $form_state->get('entity');
+  /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+  $entity = $form_state->get('entity');
   /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
   $moderation_info = \Drupal::service('content_moderation.moderation_information');
   /** @var \Drupal\workflows\WorkflowInterface $workflow */
-  $workflow = $moderation_info->getWorkflowForEntity($node);
+  $workflow = $moderation_info->getWorkflowForEntity($entity);
 
   if (!$workflow || $workflow->id() !== 'oe_corporate_workflow') {
     return;
   }
 
   if (count($form['new_state']['#options']) > 1) {
-    $upcoming_transitions = $workflow->getTypePlugin()->getTransitionsForState($node->moderation_state->value);
+    $upcoming_transitions = $workflow->getTypePlugin()->getTransitionsForState($entity->moderation_state->value);
     $transition = end($upcoming_transitions);
     if (in_array($transition->to()->id(), array_keys($form['new_state']['#options']))) {
       $form['new_state']['#default_value'] = $transition->to()->id();
@@ -174,22 +195,22 @@ function _oe_editorial_corporate_workflow_moderation_submit(array &$form, FormSt
 /**
  * Helper function to determine if the last revision is published.
  *
- * @param \Drupal\node\NodeInterface $node
- *   The node object.
+ * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+ *   The entity.
  *
  * @return bool
- *   True if the node is published.
+ *   True if the entity is published.
  */
-function _oe_editorial_corporate_workflow_is_last_revision_published(NodeInterface $node): bool {
-  // We bail out if the node is new (has no ID).
-  if ($node->isNew()) {
+function _oe_editorial_corporate_workflow_is_last_revision_published(ContentEntityInterface $entity): bool {
+  // We bail out if the entity is new (has no ID).
+  if ($entity->isNew()) {
     return FALSE;
   }
 
   /** @var \Drupal\content_moderation\ModerationInformationInterface $moderation_info */
   $moderation_info = \Drupal::service('content_moderation.moderation_information');
-  $storage = \Drupal::entityTypeManager()->getStorage($node->getEntityTypeId());
-  $latest_revision_id = $storage->getLatestTranslationAffectedRevisionId($node->id(), $node->language()->getId());
+  $storage = \Drupal::entityTypeManager()->getStorage($entity->getEntityTypeId());
+  $latest_revision_id = $storage->getLatestTranslationAffectedRevisionId($entity->id(), $entity->language()->getId());
 
-  return $latest_revision_id !== NULL && !$moderation_info->hasPendingRevision($node) && $moderation_info->isDefaultRevisionPublished($node);
+  return $latest_revision_id !== NULL && !$moderation_info->hasPendingRevision($entity) && $moderation_info->isDefaultRevisionPublished($entity);
 }

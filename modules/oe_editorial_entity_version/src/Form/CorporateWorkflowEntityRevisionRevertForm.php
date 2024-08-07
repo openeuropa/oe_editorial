@@ -6,24 +6,25 @@ namespace Drupal\oe_editorial_entity_version\Form;
 
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
+use Drupal\Core\Entity\EntityChangedInterface;
 use Drupal\Core\Entity\EntityFieldManagerInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\RevisionableInterface;
+use Drupal\Core\Entity\RevisionLogInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Provides a form for reverting a node revision.
+ * Provides a form for reverting a corporate workflow entity revision.
  */
-class NodeRevisionRevertForm extends ConfirmFormBase {
+class CorporateWorkflowEntityRevisionRevertForm extends ConfirmFormBase {
 
   /**
-   * The node revision.
+   * The revision.
    *
-   * @var \Drupal\node\NodeInterface
+   * @var \Drupal\Core\Entity\ContentEntityInterface
    */
   protected $revision;
 
@@ -63,7 +64,7 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
   protected $time;
 
   /**
-   * Constructs a new NodeRevisionRevertForm.
+   * Constructs a new CorporateWorkflowEntityRevisionRevertForm.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
@@ -97,7 +98,7 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getFormId() {
-    return 'node_version_restore_confirm';
+    return 'entity_version_restore_confirm';
   }
 
   /**
@@ -114,7 +115,7 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl(): Url {
-    return new Url('entity.node.version_history', ['node' => $this->revision->id()]);
+    return new Url('entity.' . $this->revision->getEntityTypeId() . '.version_history', [$this->revision->getEntityTypeId() => $this->revision->id()]);
   }
 
   /**
@@ -127,46 +128,42 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $node_revision = NULL) {
-    // We need to anticipate string or NodeInterface types of $node_revision to
-    // be compatible with both core versions v9.2 and v9.3.
-    // @see: https://www.drupal.org/project/drupal/issues/2730631
-    $this->revision = $node_revision;
-    if (!$this->revision instanceof NodeInterface) {
-      $this->revision = $this->entityTypeManager->getStorage('node')->loadRevision($node_revision);
-    }
+  public function buildForm(array $form, FormStateInterface $form_state, $_entity_revision = NULL) {
+    $this->revision = $_entity_revision;
     $this->versionField = $this->getVersionField($this->revision);
-    $form = parent::buildForm($form, $form_state);
-
-    return $form;
+    return parent::buildForm($form, $form_state);
   }
 
   /**
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $node_storage = $this->entityTypeManager->getStorage('node');
+    $entity_type = $this->revision->getEntityTypeId();
+    $storage = $this->entityTypeManager->getStorage($entity_type);
     $this->revision->setNewRevision();
     $revision_version_string = $this->getVersionString($this->revision);
-    $this->revision->revision_log = $this->t('Version @version has been restored by @user.', [
-      '@version' => $revision_version_string,
-      '@user' => $this->currentUser()->getDisplayName(),
-    ]);
-    $this->revision->setRevisionUserId($this->currentUser()->id());
-    $this->revision->setRevisionCreationTime($this->time->getRequestTime());
-    $this->revision->setChangedTime($this->time->getRequestTime());
-    $this->revision->set('moderation_state', 'draft');
-
-    // Set the same changed time for existing translations of the current
-    // revision.
-    foreach ($this->revision->getTranslationLanguages(FALSE) as $language) {
-      $this->revision->getTranslation($language->getId())->setChangedTime($this->time->getRequestTime());
+    if ($this->revision instanceof RevisionLogInterface) {
+      $this->revision->revision_log = $this->t('Version @version has been restored by @user.', [
+        '@version' => $revision_version_string,
+        '@user' => $this->currentUser()->getDisplayName(),
+      ]);
+      $this->revision->setRevisionUserId($this->currentUser()->id());
+      $this->revision->setRevisionCreationTime($this->time->getRequestTime());
     }
+
+    if ($this->revision instanceof EntityChangedInterface) {
+      $this->revision->setChangedTime($this->time->getRequestTime());
+      foreach ($this->revision->getTranslationLanguages(FALSE) as $language) {
+        $this->revision->getTranslation($language->getId())->setChangedTime($this->time->getRequestTime());
+      }
+    }
+
+    $this->revision->set('moderation_state', 'draft');
 
     // Load the latest revision to make sure the version numbers continue
     // from the last version to increase the minor by one.
-    $latest_revision_id = $node_storage->getLatestRevisionId($this->revision->id());
-    $latest_revision = $node_storage->loadRevision($latest_revision_id);
+    $latest_revision_id = $storage->getLatestRevisionId($this->revision->id());
+    $latest_revision = $storage->loadRevision($latest_revision_id);
     $latest_revision->get('version')->first()->increase('minor');
     $this->revision->set('version', $latest_revision->get('version')->getValue());
 
@@ -177,7 +174,7 @@ class NodeRevisionRevertForm extends ConfirmFormBase {
     $this->messenger()->addStatus($this->t('Version @version has been restored.', [
       '@version' => $revision_version_string,
     ]));
-    $form_state->setRedirect('entity.node.version_history', ['node' => $this->revision->id()]);
+    $form_state->setRedirect('entity.' . $entity_type . '.version_history', [$entity_type => $this->revision->id()]);
   }
 
   /**
