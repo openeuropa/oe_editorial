@@ -1,11 +1,21 @@
 # Changelog
 
-## [2.3.0](https://github.com/openeuropa/oe_editorial/tree/2.3.0) (2024-06-10)
+## [2.4.0](https://github.com/openeuropa/oe_editorial/tree/2.4.0) (2024-08-28)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.3.0...2.4.0)
+
+**Merged pull requests:**
+
+- OEL-3048: Update to Drupal 10.3 [\#135](https://github.com/openeuropa/oe_editorial/pull/135) ([AaronGilMartinez](https://github.com/AaronGilMartinez))
+- EWPP-4233: Making editorial logic generic to all entity types. [\#132](https://github.com/openeuropa/oe_editorial/pull/132) ([upchuk](https://github.com/upchuk))
+
+## [2.3.0](https://github.com/openeuropa/oe_editorial/tree/2.3.0) (2024-06-11)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.2.0...2.3.0)
 
 **Merged pull requests:**
 
+- Prepare release 2.3.0. [\#134](https://github.com/openeuropa/oe_editorial/pull/134) ([imanoleguskiza](https://github.com/imanoleguskiza))
 - EWPP-000: Update content\_lock patch after new release. [\#133](https://github.com/openeuropa/oe_editorial/pull/133) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [2.2.0](https://github.com/openeuropa/oe_editorial/tree/2.2.0) (2024-02-15)
