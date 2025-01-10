@@ -270,7 +270,7 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
    * @return array
    *   An array of states keyed by the state id.
    */
-  protected function getUnpublishingStates(WorkflowInterface $workflow, ContentEntityInterface $entity, AccountInterface $account = NULL): array {
+  protected function getUnpublishingStates(WorkflowInterface $workflow, ContentEntityInterface $entity, ?AccountInterface $account = NULL): array {
     $account = $account ?? $this->currentUser;
     $workflow_type = $workflow->getTypePlugin();
 
