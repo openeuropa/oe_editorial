@@ -156,6 +156,7 @@ class LinkListsVersionRestoreTest extends BrowserTestBase {
     $this->assertSession()->pageTextContains('Version 0.1.0 has been restored.');
 
     // Reload the link list.
+    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage('link_list');
     $link_list = $storage->load($this->linkList->id());
     // The link list should be still published.

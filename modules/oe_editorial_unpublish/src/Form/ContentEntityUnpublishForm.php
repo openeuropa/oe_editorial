@@ -321,6 +321,7 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
    *   The revision.
    */
   protected function getUnpublishingRevision(): ContentEntityInterface {
+    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage($this->entity->getEntityTypeId());
     $revision_id = $this->moderationInfo->getDefaultRevisionId($this->entity->getEntityTypeId(), $this->entity->id());
     return $storage->loadRevision($revision_id);
