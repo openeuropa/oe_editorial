@@ -38,7 +38,7 @@ interface ShortcutRevisionHandlerInterface {
    *   in the same request is very slow, use self::getTransitionsToState() and
    *   a batch like EntityStateTransitionBatch.
    */
-  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL): EntityInterface;
+  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, ?string $revision_message = NULL): EntityInterface;
 
   /**
    * Gets a series of transitions needed for an entity to reach a target state.

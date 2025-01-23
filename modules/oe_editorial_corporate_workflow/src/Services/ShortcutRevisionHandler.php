@@ -68,7 +68,7 @@ class ShortcutRevisionHandler implements ShortcutRevisionHandlerInterface {
   /**
    * {@inheritdoc}
    */
-  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, string $revision_message = NULL): EntityInterface {
+  public function createShortcutRevisions(string $target_state, ContentEntityInterface $entity, ?string $revision_message = NULL): EntityInterface {
     /** @var \Drupal\workflows\WorkflowInterface $workflow */
     $workflow = $this->moderationInfo->getWorkflowForEntity($entity);
     /** @var \Drupal\workflows\WorkflowTypeInterface $workflow_plugin */

@@ -270,7 +270,7 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
    * @return array
    *   An array of states keyed by the state id.
    */
-  protected function getUnpublishingStates(WorkflowInterface $workflow, ContentEntityInterface $entity, AccountInterface $account = NULL): array {
+  protected function getUnpublishingStates(WorkflowInterface $workflow, ContentEntityInterface $entity, ?AccountInterface $account = NULL): array {
     $account = $account ?? $this->currentUser;
     $workflow_type = $workflow->getTypePlugin();
 
@@ -321,6 +321,7 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
    *   The revision.
    */
   protected function getUnpublishingRevision(): ContentEntityInterface {
+    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage($this->entity->getEntityTypeId());
     $revision_id = $this->moderationInfo->getDefaultRevisionId($this->entity->getEntityTypeId(), $this->entity->id());
     return $storage->loadRevision($revision_id);

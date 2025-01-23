@@ -15,4 +15,3 @@ config_devel:
     - user.role.oe_author
     - user.role.oe_reviewer
     - user.role.oe_validator
-

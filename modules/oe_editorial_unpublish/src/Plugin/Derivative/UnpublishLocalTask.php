@@ -22,6 +22,13 @@ class UnpublishLocalTask extends DeriverBase implements ContainerDeriverInterfac
   protected $entityTypeManager;
 
   /**
+   * The base plugin ID.
+   *
+   * @var string
+   */
+  protected string $basePluginId;
+
+  /**
    * Constructs an instance of UnpublishLocalTask.
    *
    * @param string $base_plugin_id
@@ -30,6 +37,7 @@ class UnpublishLocalTask extends DeriverBase implements ContainerDeriverInterfac
    *   The entity type manager.
    */
   public function __construct(string $base_plugin_id, EntityTypeManagerInterface $entityTypeManager) {
+    $this->basePluginId = $base_plugin_id;
     $this->entityTypeManager = $entityTypeManager;
   }
 

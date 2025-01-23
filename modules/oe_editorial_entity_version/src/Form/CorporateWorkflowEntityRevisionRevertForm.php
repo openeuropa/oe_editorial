@@ -139,6 +139,7 @@ class CorporateWorkflowEntityRevisionRevertForm extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $entity_type = $this->revision->getEntityTypeId();
+    /** @var \Drupal\Core\Entity\RevisionableStorageInterface $storage */
     $storage = $this->entityTypeManager->getStorage($entity_type);
     $this->revision->setNewRevision();
     $revision_version_string = $this->getVersionString($this->revision);
