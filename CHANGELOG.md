@@ -1,16 +1,22 @@
-# Changelog
+# Change Log
 
-## [2.4.0](https://github.com/openeuropa/oe_editorial/tree/2.4.0) (2024-08-28)
+## [2.5.0](https://github.com/openeuropa/oe_editorial/tree/2.5.0) (2025-01-28)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.4.0...2.5.0)
 
+**Merged pull requests:**
+
+- EWPP-4991: Ensure PHP8.3 compatibility. [\#138](https://github.com/openeuropa/oe_editorial/pull/138) ([nagyad](https://github.com/nagyad))
+
+## [2.4.0](https://github.com/openeuropa/oe_editorial/tree/2.4.0) (2024-08-29)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.3.0...2.4.0)
 
 **Merged pull requests:**
 
+- Release-2.4.0: Update changelog. [\#136](https://github.com/openeuropa/oe_editorial/pull/136) ([nagyad](https://github.com/nagyad))
 - OEL-3048: Update to Drupal 10.3 [\#135](https://github.com/openeuropa/oe_editorial/pull/135) ([AaronGilMartinez](https://github.com/AaronGilMartinez))
 - EWPP-4233: Making editorial logic generic to all entity types. [\#132](https://github.com/openeuropa/oe_editorial/pull/132) ([upchuk](https://github.com/upchuk))
 
 ## [2.3.0](https://github.com/openeuropa/oe_editorial/tree/2.3.0) (2024-06-11)
-
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.2.0...2.3.0)
 
 **Merged pull requests:**
@@ -19,7 +25,6 @@
 - EWPP-000: Update content\_lock patch after new release. [\#133](https://github.com/openeuropa/oe_editorial/pull/133) ([imanoleguskiza](https://github.com/imanoleguskiza))
 
 ## [2.2.0](https://github.com/openeuropa/oe_editorial/tree/2.2.0) (2024-02-15)
-
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.1.2...2.2.0)
 
 **Merged pull requests:**
@@ -28,7 +33,6 @@
 - EWPP-3951: Add Drupal 10.2.x and PHP 8.2 to matrix. [\#130](https://github.com/openeuropa/oe_editorial/pull/130) ([brummbar](https://github.com/brummbar))
 
 ## [2.1.2](https://github.com/openeuropa/oe_editorial/tree/2.1.2) (2024-01-15)
-
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.1.1...2.1.2)
 
 **Merged pull requests:**
@@ -37,7 +41,6 @@
 - EWPP-3610: Use static patch instead of direct MR. [\#128](https://github.com/openeuropa/oe_editorial/pull/128) ([hernani](https://github.com/hernani))
 
 ## [2.1.1](https://github.com/openeuropa/oe_editorial/tree/2.1.1) (2023-09-18)
-
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.1.0...2.1.1)
 
 **Merged pull requests:**
@@ -54,7 +57,6 @@
 - EWPP-3344: Fix restored revision. [\#124](https://github.com/openeuropa/oe_editorial/pull/124) ([sergepavle](https://github.com/sergepavle))
 
 ## [2.1.0](https://github.com/openeuropa/oe_editorial/tree/2.1.0) (2023-06-30)
-
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.0.0...2.1.0)
 
 **Merged pull requests:**
@@ -64,7 +66,6 @@
 - EWPP-3080: Make getNextTransitions public and NULL out unused argument. [\#119](https://github.com/openeuropa/oe_editorial/pull/119) ([nagyad](https://github.com/nagyad))
 
 ## [2.0.0](https://github.com/openeuropa/oe_editorial/tree/2.0.0) (2023-05-25)
-
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/1.17.0...2.0.0)
 
 **Merged pull requests:**
