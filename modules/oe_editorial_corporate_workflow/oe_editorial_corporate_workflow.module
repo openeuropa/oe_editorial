@@ -18,6 +18,12 @@ use Drupal\workflows\Entity\Workflow;
  * Implements hook_menu_local_tasks_alter().
  */
 function oe_editorial_corporate_workflow_menu_local_tasks_alter(&$data): void {
+  $data['cacheability']->addCacheContexts(['user.roles:authenticated']);
+  if (!\Drupal::currentUser()->isAuthenticated()) {
+    // Don't even bother if the user is not logged in.
+    return;
+  }
+
   /** @var \Drupal\workflows\WorkflowInterface $workflow */
   $workflow = Workflow::load('oe_corporate_workflow');
   $entity_types = $workflow->get('type_settings')['entity_types'];
