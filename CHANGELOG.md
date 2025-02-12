@@ -1,10 +1,18 @@
 # Change Log
 
+## [2.6.0](https://github.com/openeuropa/oe_editorial/tree/2.6.0) (2025-02-11)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.5.0...2.6.0)
+
+**Merged pull requests:**
+
+- EWPP-5204: Prevent menu\_local\_task\_alter to run for anons. [\#140](https://github.com/openeuropa/oe_editorial/pull/140) ([upchuk](https://github.com/upchuk))
+
 ## [2.5.0](https://github.com/openeuropa/oe_editorial/tree/2.5.0) (2025-01-28)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.4.0...2.5.0)
 
 **Merged pull requests:**
 
+- Release-2.5.0: Update changelog. [\#139](https://github.com/openeuropa/oe_editorial/pull/139) ([nagyad](https://github.com/nagyad))
 - EWPP-4991: Ensure PHP8.3 compatibility. [\#138](https://github.com/openeuropa/oe_editorial/pull/138) ([nagyad](https://github.com/nagyad))
 
 ## [2.4.0](https://github.com/openeuropa/oe_editorial/tree/2.4.0) (2024-08-29)
