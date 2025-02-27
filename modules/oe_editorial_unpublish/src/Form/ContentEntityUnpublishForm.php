@@ -227,7 +227,7 @@ class ContentEntityUnpublishForm extends ContentEntityConfirmFormBase {
     [$entity_type_id, $operation] = explode('.', $entity_form);
     $entity = $this->getEntityFromRouteMatch($routeMatch, $entity_type_id);
     $cache = new CacheableMetadata();
-    $cache->addCacheContexts(['url']);
+    $cache->addCacheContexts(['route']);
 
     if (!$entity) {
       return AccessResult::forbidden('No entity found in the route.')->addCacheableDependency($cache);
