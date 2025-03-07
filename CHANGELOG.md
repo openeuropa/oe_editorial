@@ -1,10 +1,18 @@
 # Change Log
 
-## [2.6.0](https://github.com/openeuropa/oe_editorial/tree/2.6.0) (2025-02-11)
+## [2.6.1](https://github.com/openeuropa/oe_editorial/tree/2.6.1) (2025-03-07)
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.6.0...2.6.1)
+
+**Merged pull requests:**
+
+- EWPP-5279: No need for the url cache context on the unpublish form. [\#142](https://github.com/openeuropa/oe_editorial/pull/142) ([upchuk](https://github.com/upchuk))
+
+## [2.6.0](https://github.com/openeuropa/oe_editorial/tree/2.6.0) (2025-02-12)
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.5.0...2.6.0)
 
 **Merged pull requests:**
 
+- Release-2.6.0: Update changelog. [\#141](https://github.com/openeuropa/oe_editorial/pull/141) ([nagyad](https://github.com/nagyad))
 - EWPP-5204: Prevent menu\_local\_task\_alter to run for anons. [\#140](https://github.com/openeuropa/oe_editorial/pull/140) ([upchuk](https://github.com/upchuk))
 
 ## [2.5.0](https://github.com/openeuropa/oe_editorial/tree/2.5.0) (2025-01-28)
