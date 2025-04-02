@@ -20,7 +20,6 @@
         "drupal/entity_version": "^1.1",
         "drush/drush": "^12",
         "mikey179/vfsstream": "^1.6.10",
-        "nikic/php-parser": "^4.18",
         "openeuropa/behat-transformation-context": "~0.1",
         "openeuropa/code-review-drupal": "^1.0.0-alpha",
         "openeuropa/oe_link_lists": "^1.4",
@@ -72,8 +71,7 @@
             }
         },
         "_readme": [
-            "Explicit requirement of symfony/phpunit-bridge to replace drupal/core-dev testing classes and traits.",
-            "Explicit requirement of nikic/php-parser as ^5.0 generates GrumPHP Parser issues."
+            "Explicit requirement of symfony/phpunit-bridge to replace drupal/core-dev testing classes and traits."
         ]
     },
     "config": {
