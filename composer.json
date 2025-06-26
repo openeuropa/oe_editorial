@@ -58,7 +58,7 @@
         },
         "patches": {
             "drupal/content_lock": {
-                "https://www.drupal.org/project/content_lock/issues/2949198": "https://www.drupal.org/files/issues/2025-03-31/content_lock-unlocking-already-locked-2949198-3.0.0-alpha2-16.patch"
+                "https://www.drupal.org/project/content_lock/issues/2949198": "https://www.drupal.org/files/issues/2025-06-20/content_lock-unlocking-already-locked-2949198-3.0.0-alpha3-19.patch"
             }
         },
         "drupal-scaffold": {
