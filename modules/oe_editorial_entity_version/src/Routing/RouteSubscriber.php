@@ -21,6 +21,9 @@ class RouteSubscriber extends RouteSubscriberBase {
   protected function alterRoutes(RouteCollection $collection) {
     /** @var \Drupal\workflows\WorkflowInterface $workflow */
     $workflow = Workflow::load('oe_corporate_workflow');
+    if (!$workflow) {
+      return;
+    }
     $entity_types = $workflow->get('type_settings')['entity_types'];
     foreach (array_keys($entity_types) as $entity_type) {
       $route_name = $entity_type === 'node' ? 'node.revision_revert_confirm' : 'entity.' . $entity_type . '.revision_revert_form';
