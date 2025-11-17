@@ -1,11 +1,23 @@
 # Changelog
 
+## [2.7.1](https://github.com/openeuropa/oe_editorial/tree/2.7.1) (2025-11-17)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.7.0...2.7.1)
+
+**Merged pull requests:**
+
+- EWPP-6076: Upgrade to Drupal 11.2. [\#149](https://github.com/openeuropa/oe_editorial/pull/149) ([sergepavle](https://github.com/sergepavle))
+- EWPP-6004: Move CI to github actions. [\#148](https://github.com/openeuropa/oe_editorial/pull/148) ([hernani](https://github.com/hernani))
+- EWPP-5768: Update Drupal to 10.5. [\#147](https://github.com/openeuropa/oe_editorial/pull/147) ([intelektron](https://github.com/intelektron))
+- EWPP-5699: Update docker PHP image. [\#146](https://github.com/openeuropa/oe_editorial/pull/146) ([nagyad](https://github.com/nagyad))
+
 ## [2.7.0](https://github.com/openeuropa/oe_editorial/tree/2.7.0) (2025-05-23)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.6.1...2.7.0)
 
 **Merged pull requests:**
 
+- Release-2.7.0: Update changelog. [\#145](https://github.com/openeuropa/oe_editorial/pull/145) ([nagyad](https://github.com/nagyad))
 - EWPP-4645: Update to Drupal 11. [\#144](https://github.com/openeuropa/oe_editorial/pull/144) ([kp77](https://github.com/kp77))
 
 ## [2.6.1](https://github.com/openeuropa/oe_editorial/tree/2.6.1) (2025-03-07)
