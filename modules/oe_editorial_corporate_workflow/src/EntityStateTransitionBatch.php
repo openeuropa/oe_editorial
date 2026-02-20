@@ -125,7 +125,14 @@ class EntityStateTransitionBatch implements ContainerInjectionInterface {
     $entity = $storage->createRevision($entity, $entity->isDefaultRevision());
     // Set the next state id.
     $entity->set('moderation_state', $to_state);
-    $entity->original = $original;
+    if (version_compare(\Drupal::VERSION, '11', '>=')) {
+      $entity->setOriginal($original);
+    }
+    // @todo Remove this once Drupal 10 support is dropped.
+    else {
+      // Drupal 10 fallback.
+      $entity->original = $original;
+    }
 
     if ($entity instanceof RevisionLogInterface) {
       $entity->setRevisionCreationTime($this->time->getRequestTime());
