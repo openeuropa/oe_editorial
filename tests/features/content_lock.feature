@@ -8,7 +8,7 @@ Feature: Content lock
   Scenario: Content gets lock and another user cannot edit it until the lock is broken.
     Given I am logged in as a user with the "Author" role
     And I am viewing my "Demo" content titled "Demo site"
-    When I click "Edit"
+    When I click "Edit draft"
     Then I should see "This content is now locked against simultaneous editing. This content will remain locked if you navigate away from this page without saving or unlocking it."
     # Another user can't edit it.
     Given I am logged in as a user with the "bypass node access, break content lock" permission

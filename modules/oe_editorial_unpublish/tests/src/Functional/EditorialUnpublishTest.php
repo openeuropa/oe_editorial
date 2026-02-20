@@ -128,7 +128,7 @@ class EditorialUnpublishTest extends BrowserTestBase {
     $this->assertEquals(1, $this->node->get('version')->minor);
     $this->assertEquals(0, $this->node->get('version')->patch);
 
-    $this->assertCount(5, $this->nodeStorage->revisionIds($this->node));
+    $this->assertCount(5, $this->nodeStorage->getQuery()->accessCheck(FALSE)->allRevisions()->condition('nid', $this->node->id())->execute());
 
     $unpublish_url = Url::fromRoute('entity.node.unpublish', [
       'node' => $this->node->id(),
@@ -146,7 +146,7 @@ class EditorialUnpublishTest extends BrowserTestBase {
 
     // An extra 2 revisions got created: one for the unpublished state and one
     // for the extra draft.
-    $this->assertCount(7, $this->nodeStorage->revisionIds($this->node));
+    $this->assertCount(7, $this->nodeStorage->getQuery()->accessCheck(FALSE)->allRevisions()->condition('nid', $this->node->id())->execute());
 
     // Since none of the revisions are now published, loading the entity will
     // return the latest revision.

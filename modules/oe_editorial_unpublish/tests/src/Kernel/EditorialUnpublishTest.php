@@ -25,6 +25,7 @@ class EditorialUnpublishTest extends KernelTestBase {
   protected static $modules = [
     'user',
     'node',
+    'node_storage_body_field',
     'field',
     'text',
     'system',
@@ -47,6 +48,7 @@ class EditorialUnpublishTest extends KernelTestBase {
     $this->installConfig([
       'user',
       'node',
+      'node_storage_body_field',
       'system',
       'field',
       'workflows',
