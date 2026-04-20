@@ -1,11 +1,21 @@
 # Changelog
 
+## [2.7.2](https://github.com/openeuropa/oe_editorial/tree/2.7.2) (2026-04-20)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.7.1...2.7.2)
+
+**Merged pull requests:**
+
+- EWPP-6429: Change to use new method to access original entity. [\#152](https://github.com/openeuropa/oe_editorial/pull/152) ([gorsky87](https://github.com/gorsky87))
+- EWPP-6339: Cache docker images for GitHub actions. [\#151](https://github.com/openeuropa/oe_editorial/pull/151) ([nagyad](https://github.com/nagyad))
+
 ## [2.7.1](https://github.com/openeuropa/oe_editorial/tree/2.7.1) (2025-11-17)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.7.0...2.7.1)
 
 **Merged pull requests:**
 
+- Release-2.7.1: Update changelog. [\#150](https://github.com/openeuropa/oe_editorial/pull/150) ([nagyad](https://github.com/nagyad))
 - EWPP-6076: Upgrade to Drupal 11.2. [\#149](https://github.com/openeuropa/oe_editorial/pull/149) ([sergepavle](https://github.com/sergepavle))
 - EWPP-6004: Move CI to github actions. [\#148](https://github.com/openeuropa/oe_editorial/pull/148) ([hernani](https://github.com/hernani))
 - EWPP-5768: Update Drupal to 10.5. [\#147](https://github.com/openeuropa/oe_editorial/pull/147) ([intelektron](https://github.com/intelektron))

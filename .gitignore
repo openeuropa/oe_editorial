@@ -11,5 +11,6 @@ package-lock.json
 phpunit.xml
 runner.yml
 vendor
+recipes
 yarn.lock
 /.gitattributes
