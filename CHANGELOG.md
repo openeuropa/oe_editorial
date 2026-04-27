@@ -1,11 +1,20 @@
 # Changelog
 
+## [2.8.0](https://github.com/openeuropa/oe_editorial/tree/2.8.0) (2026-04-27)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.7.2...2.8.0)
+
+**Merged pull requests:**
+
+- EWPP-6514: Support D11.3. [\#153](https://github.com/openeuropa/oe_editorial/pull/153) ([nagyad](https://github.com/nagyad))
+
 ## [2.7.2](https://github.com/openeuropa/oe_editorial/tree/2.7.2) (2026-04-20)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.7.1...2.7.2)
 
 **Merged pull requests:**
 
+- Release-2.7.2: Update changelog. [\#154](https://github.com/openeuropa/oe_editorial/pull/154) ([nagyad](https://github.com/nagyad))
 - EWPP-6429: Change to use new method to access original entity. [\#152](https://github.com/openeuropa/oe_editorial/pull/152) ([gorsky87](https://github.com/gorsky87))
 - EWPP-6339: Cache docker images for GitHub actions. [\#151](https://github.com/openeuropa/oe_editorial/pull/151) ([nagyad](https://github.com/nagyad))
 
