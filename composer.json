@@ -8,6 +8,7 @@
     "require": {
         "php": ">=8.3",
         "cweagans/composer-patches": "~1.4 || ^2",
+        "drupal/backport_node_storage_body_field": "^1 || ^2",
         "drupal/core": "^10 || ^11"
     },
     "require-dev": {
