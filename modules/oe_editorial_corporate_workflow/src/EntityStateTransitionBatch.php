@@ -6,6 +6,7 @@ namespace Drupal\oe_editorial_corporate_workflow;
 
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\content_moderation\ModerationInformationInterface;
+use Drupal\Core\Cache\CacheTagsInvalidatorInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\DependencyInjection\DependencySerializationTrait;
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -61,6 +62,13 @@ class EntityStateTransitionBatch implements ContainerInjectionInterface {
   protected $time;
 
   /**
+   * The cache tags invalidator.
+   *
+   * @var \Drupal\Core\Cache\CacheTagsInvalidatorInterface
+   */
+  protected $cacheTagsInvalidator;
+
+  /**
    * Create a new EntityStateTransitionBatch object.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
@@ -73,13 +81,16 @@ class EntityStateTransitionBatch implements ContainerInjectionInterface {
    *   The current user.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   The messenger service.
+   * @param \Drupal\Core\Cache\CacheTagsInvalidatorInterface $cacheTagsInvalidator
+   *   The cache tags invalidator.
    */
-  public function __construct(EntityTypeManagerInterface $entityTypeManager, ModerationInformationInterface $moderationInformation, TimeInterface $time, AccountInterface $currentUser, MessengerInterface $messenger) {
+  public function __construct(EntityTypeManagerInterface $entityTypeManager, ModerationInformationInterface $moderationInformation, TimeInterface $time, AccountInterface $currentUser, MessengerInterface $messenger, CacheTagsInvalidatorInterface $cacheTagsInvalidator) {
     $this->entityTypeManager = $entityTypeManager;
     $this->moderationInformation = $moderationInformation;
     $this->time = $time;
     $this->currentUser = $currentUser;
     $this->messenger = $messenger;
+    $this->cacheTagsInvalidator = $cacheTagsInvalidator;
   }
 
   /**
@@ -91,7 +102,8 @@ class EntityStateTransitionBatch implements ContainerInjectionInterface {
       $container->get('content_moderation.moderation_information'),
       $container->get('datetime.time'),
       $container->get('current_user'),
-      $container->get('messenger')
+      $container->get('messenger'),
+      $container->get('cache_tags.invalidator')
     );
   }
 
@@ -166,6 +178,7 @@ class EntityStateTransitionBatch implements ContainerInjectionInterface {
   public function finish(bool $success, array $results): ?RedirectResponse {
     /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
     $entity = $results['current_revision'];
+    drupal_register_shutdown_function([$this, 'finishClearEntityCache'], $entity);
 
     $this->messenger->addStatus($this->t('The moderation state has been updated.'));
 
@@ -180,6 +193,21 @@ class EntityStateTransitionBatch implements ContainerInjectionInterface {
     }
 
     return NULL;
+  }
+
+  /**
+   * Clears the entity cache in the end of the workflow operations.
+   *
+   * This is used to avoid race conditions due to slowness on the transitions.
+   *
+   * @param \Drupal\Core\Entity\ContentEntityInterface $entity
+   *   The entity in the batch.
+   */
+  public function finishClearEntityCache(ContentEntityInterface $entity) {
+    // Clears entity cache in the end of the batch operations.
+    $this->entityTypeManager->getStorage($entity->getEntityTypeId())->resetCache([$entity->id()]);
+    // Clears the entity cache tag.
+    $this->cacheTagsInvalidator->invalidateTags([$entity->getEntityTypeId() . ':' . $entity->id()]);
   }
 
 }
