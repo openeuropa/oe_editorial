@@ -16,7 +16,7 @@ Feature: Content lock
     And I click "Edit"
     Then the "Save" button is disabled
     # After breaking the lock the content can be saved.
-    When I click "Break lock"
+    When I click "Break the lock"
     And I press "Confirm break lock"
     Then I should see "Unlocked. Anyone can now edit this content."
     And I press "Save"
