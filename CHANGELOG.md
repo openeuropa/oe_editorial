@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.9.0](https://github.com/openeuropa/oe_editorial/tree/2.9.0) (2026-07-10)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.8.0...2.9.0)
+
+**Merged pull requests:**
+
+- EWPP-7095: Fix content lock test. [\#157](https://github.com/openeuropa/oe_editorial/pull/157) ([hernani](https://github.com/hernani))
+- EWPP-7031: Final entity cache clear to avoid race condition. [\#156](https://github.com/openeuropa/oe_editorial/pull/156) ([hernani](https://github.com/
+  hernani))
+
 ## [2.8.0](https://github.com/openeuropa/oe_editorial/tree/2.8.0) (2026-04-27)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.7.2...2.8.0)
