@@ -34,7 +34,6 @@ class ContentLockContext extends RawDrupalContext {
     $node = (object) [
       'title' => $title,
       'type' => $content_type,
-      'body' => $this->getRandom()->name(255),
       'uid' => $this->getUserManager()->getCurrentUser()->uid,
     ];
     $saved = $this->nodeCreate($node);

@@ -2,26 +2,15 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.field.node.oe_workflow_demo.body
     - node.type.oe_workflow_demo
     - workflows.workflow.oe_corporate_workflow
   module:
     - content_moderation
-    - text
 id: node.oe_workflow_demo.default
 targetEntityType: node
 bundle: oe_workflow_demo
 mode: default
 content:
-  body:
-    type: text_textarea_with_summary
-    weight: 1
-    region: content
-    settings:
-      rows: 9
-      summary_rows: 3
-      placeholder: ''
-    third_party_settings: {  }
   created:
     type: datetime_timestamp
     weight: 3
