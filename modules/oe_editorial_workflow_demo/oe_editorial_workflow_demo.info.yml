@@ -5,7 +5,6 @@ type: module
 core_version_requirement: ^10 || ^11
 
 dependencies:
-  - drupal:node_storage_body_field
   - oe_editorial_entity_version:oe_editorial_entity_version
   - oe_editorial_unpublish:oe_editorial_unpublish
   - drupal:content_translation
