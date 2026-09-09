@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.10.0](https://github.com/openeuropa/oe_editorial/tree/2.10.0) (2026-09-09)
+
+[Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.9.0...2.10.0)
+
+**Merged pull requests:**
+
+- EWPP-6988: Trigger pipeline. [\#159](https://github.com/openeuropa/oe_editorial/pull/159) ([nagyad](https://github.com/nagyad))
+
 ## [2.9.0](https://github.com/openeuropa/oe_editorial/tree/2.9.0) (2026-07-10)
 
 [Full Changelog](https://github.com/openeuropa/oe_editorial/compare/2.8.0...2.9.0)
