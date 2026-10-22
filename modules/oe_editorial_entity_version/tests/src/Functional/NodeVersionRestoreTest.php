@@ -16,13 +16,6 @@ class NodeVersionRestoreTest extends BrowserTestBase {
   use CorporateWorkflowTrait;
 
   /**
-   * The entity type manager.
-   *
-   * @var \Drupal\node\NodeStorageInterface
-   */
-  protected $nodeStorage;
-
-  /**
    * The test node.
    *
    * @var \Drupal\node\NodeInterface
@@ -77,8 +70,7 @@ class NodeVersionRestoreTest extends BrowserTestBase {
     $this->user = $this->drupalCreateUser($permissions);
     $this->drupalLogin($this->user);
 
-    $this->nodeStorage = $entity_type_manager->getStorage('node');
-    $this->node = $this->nodeStorage->create(
+    $this->node = $entity_type_manager->getStorage('node')->create(
       [
         'type' => 'oe_workflow_demo',
         'title' => 'My node',
@@ -124,7 +116,8 @@ class NodeVersionRestoreTest extends BrowserTestBase {
     $this->assertSession()->pageTextContains('Version 0.1.0 has been restored.');
 
     // Reload the node.
-    $node = $this->nodeStorage->load($this->node->id());
+    $node_storage = $this->container->get('entity_type.manager')->getStorage('node');
+    $node = $node_storage->load($this->node->id());
     // The node should be still published.
     $this->assertEquals('My node ready to publish', $this->node->getTitle());
     $this->assertFalse($node->isLatestRevision());
@@ -133,7 +126,7 @@ class NodeVersionRestoreTest extends BrowserTestBase {
     $this->assertEquals('published', $node->moderation_state->value);
     $this->assertEquals($published_vid, $node->getRevisionId());
     // Load the latest revision.
-    $latest_revision = $this->nodeStorage->loadRevision($this->nodeStorage->getLatestRevisionId($node->id()));
+    $latest_revision = $node_storage->loadRevision($node_storage->getLatestRevisionId($node->id()));
     $this->assertTrue($latest_revision->isLatestRevision());
     $this->assertEquals('My node', $latest_revision->getTitle());
     $this->assertEquals('draft', $latest_revision->moderation_state->value);

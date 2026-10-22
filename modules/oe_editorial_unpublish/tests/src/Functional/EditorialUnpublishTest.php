@@ -13,13 +13,6 @@ use Drupal\Tests\BrowserTestBase;
 class EditorialUnpublishTest extends BrowserTestBase {
 
   /**
-   * The entity type manager.
-   *
-   * @var \Drupal\node\NodeStorageInterface
-   */
-  protected $nodeStorage;
-
-  /**
    * The test node.
    *
    * @var \Drupal\node\NodeInterface
@@ -60,8 +53,7 @@ class EditorialUnpublishTest extends BrowserTestBase {
     parent::setUp();
 
     $entity_type_manager = $this->container->get('entity_type.manager');
-    $this->nodeStorage = $entity_type_manager->getStorage('node');
-    $this->node = $this->nodeStorage->create(
+    $this->node = $entity_type_manager->getStorage('node')->create(
       [
         'type' => 'oe_workflow_demo',
         'title' => 'My node',
@@ -98,7 +90,7 @@ class EditorialUnpublishTest extends BrowserTestBase {
     // Assert the unpublish button is there and using it we unpublish the node.
     $this->assertSession()->buttonExists('Unpublish')->press();
     $this->assertSession()->pageTextContains('The content My node has been unpublished.');
-    $node = $this->nodeStorage->load($this->node->id());
+    $node = $this->container->get('entity_type.manager')->getStorage('node')->load($this->node->id());
     $this->assertEquals($node->moderation_state->value, $unpublish_state);
   }
 
@@ -128,7 +120,8 @@ class EditorialUnpublishTest extends BrowserTestBase {
     $this->assertEquals(1, $this->node->get('version')->minor);
     $this->assertEquals(0, $this->node->get('version')->patch);
 
-    $this->assertCount(5, $this->nodeStorage->getQuery()->accessCheck(FALSE)->allRevisions()->condition('nid', $this->node->id())->execute());
+    $node_storage = $this->container->get('entity_type.manager')->getStorage('node');
+    $this->assertCount(5, $node_storage->getQuery()->accessCheck(FALSE)->allRevisions()->condition('nid', $this->node->id())->execute());
 
     $unpublish_url = Url::fromRoute('entity.node.unpublish', [
       'node' => $this->node->id(),
@@ -146,11 +139,11 @@ class EditorialUnpublishTest extends BrowserTestBase {
 
     // An extra 2 revisions got created: one for the unpublished state and one
     // for the extra draft.
-    $this->assertCount(7, $this->nodeStorage->getQuery()->accessCheck(FALSE)->allRevisions()->condition('nid', $this->node->id())->execute());
+    $this->assertCount(7, $node_storage->getQuery()->accessCheck(FALSE)->allRevisions()->condition('nid', $this->node->id())->execute());
 
     // Since none of the revisions are now published, loading the entity will
     // return the latest revision.
-    $node = $this->nodeStorage->load($this->node->id());
+    $node = $node_storage->load($this->node->id());
     $this->assertEquals(7, $node->getRevisionId());
     // Assert that the current revision is the same as the previous draft.
     $this->assertEquals('draft', $node->moderation_state->value);
@@ -161,7 +154,7 @@ class EditorialUnpublishTest extends BrowserTestBase {
     $this->assertEquals(0, $node->get('version')->patch);
 
     // Assert that the previous revision is archived.
-    $previous_revision = $this->nodeStorage->loadRevision(6);
+    $previous_revision = $node_storage->loadRevision(6);
     $this->assertEquals($unpublish_state, $previous_revision->moderation_state->value);
     $this->assertEquals('My node', $previous_revision->label());
     // The archived revision got a minor version increase (just like the draft).
